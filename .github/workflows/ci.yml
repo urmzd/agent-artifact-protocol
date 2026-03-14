@@ -23,17 +23,31 @@ jobs:
       - name: Verify benchmarks compile
         run: cargo bench --no-run
 
-      - name: Install Chrome
-        run: sudo apt-get update && sudo apt-get install -y chromium-browser
+      - name: Install Chrome dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 \
+            libxcomposite1 libxdamage1 libxrandr2 libgbm1 libpango-1.0-0 \
+            libcairo2 libasound2 libxshmfence1
 
       - name: Test (HTML → PDF)
         run: |
           echo "<h1>ci</h1>" > /tmp/test.html
           ./target/debug/artifact-generator /tmp/test.html --output /tmp/test.pdf &
           PID=$!
-          sleep 5
+          # Poll for PDF instead of fixed sleep
+          for i in $(seq 1 30); do
+            if [ -s /tmp/test.pdf ]; then
+              echo "PASS: PDF is non-empty (after ${i}s)"
+              kill $PID 2>/dev/null || true
+              exit 0
+            fi
+            sleep 1
+          done
           kill $PID 2>/dev/null || true
-          test -s /tmp/test.pdf && echo "PASS: PDF is non-empty" || (echo "FAIL: PDF missing or empty" && exit 1)
+          echo "FAIL: PDF missing or empty after 30s"
+          exit 1
 
   python:
     name: Python benchmarks
