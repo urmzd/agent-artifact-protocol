@@ -44,6 +44,11 @@ The **Agent-Artifact Protocol (AAP)** is a portable, format-agnostic standard th
 | **Flush point** | A semantically meaningful boundary where partial content can be rendered |
 | **Producer** | The system generating artifacts (typically an LLM or agent) |
 | **Consumer** | The system receiving, applying, and rendering artifacts |
+| **Rendering hint** | Optional display metadata attached to an envelope, section, or chunk |
+| **Entity state** | Lifecycle state of a managed artifact (`draft`, `published`, `archived`) |
+| **Sandbox policy** | Constraints on executable content (scripts, forms, popups) |
+| **Advisory lock** | Non-mandatory lock hint to coordinate concurrent editors |
+| **SSE binding** | Normative Server-Sent Events wire format for streaming ([AAP-SSE](aap-sse.md)) |
 
 ---
 
@@ -521,6 +526,8 @@ The protocol is transport-agnostic. Reference transports:
 | **WebSocket** | Each chunk frame is a WebSocket text message |
 | **stdio** | Each chunk frame is a line on stdout |
 
+A normative SSE transport binding is defined in [AAP-SSE](aap-sse.md).
+
 ---
 
 ## 7. Token Budgeting
@@ -549,7 +556,297 @@ The final envelope (or final chunk frame) MUST include `tokens_used` — the act
 
 ---
 
-## 8. Conformance Levels
+## 8. Rendering Layer
+
+Artifacts carry optional **rendering hints** — metadata that tells consumers how to display content without dictating a specific UI framework. All rendering fields are optional; consumers that do not support rendering hints MUST ignore them.
+
+### 8.1 Envelope-Level Rendering Hints
+
+Add an optional `rendering` object to the envelope:
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `display` | string | no | Display mode (see [Section 8.1.1](#811-display-registry)) |
+| `language` | string | no | Syntax highlighting language (e.g., `"python"`, `"javascript"`). Meaningful when `display` is `"code"` |
+| `theme` | string | no | Theme preference: `"light"`, `"dark"`, `"auto"` |
+| `line_numbers` | boolean | no | Show line numbers. Default: `false` |
+| `word_wrap` | boolean | no | Enable word wrapping. Default: `true` |
+| `max_height` | string | no | CSS-compatible max height (e.g., `"80vh"`, `"600px"`) |
+| `sandbox` | object | no | Sandbox policy for executable content (see [Section 8.3](#83-sandbox-policy)) |
+| `accessibility` | object | no | Accessibility metadata (see [Section 8.4](#84-accessibility-hints)) |
+| `progressive` | object | no | Progressive rendering control (see [Section 8.2](#82-progressive-rendering)) |
+
+**Example** (code artifact):
+
+```json
+{
+  "protocol": "aap/1.0",
+  "id": "utils-py",
+  "version": 1,
+  "format": "text/x-python",
+  "mode": "full",
+  "rendering": {
+    "display": "code",
+    "language": "python",
+    "theme": "dark",
+    "line_numbers": true,
+    "word_wrap": false
+  },
+  "content": "def fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)\n"
+}
+```
+
+**Example** (live-preview HTML dashboard):
+
+```json
+{
+  "protocol": "aap/1.0",
+  "id": "dashboard-001",
+  "version": 1,
+  "format": "text/html",
+  "mode": "full",
+  "rendering": {
+    "display": "preview",
+    "theme": "auto",
+    "max_height": "80vh",
+    "sandbox": {
+      "allow_scripts": true,
+      "allow_forms": false,
+      "allow_same_origin": false
+    },
+    "accessibility": {
+      "label": "Q4 Revenue Dashboard",
+      "description": "Interactive dashboard showing revenue, users, and order metrics"
+    }
+  },
+  "content": "<!DOCTYPE html><html>...</html>"
+}
+```
+
+#### 8.1.1 Display Registry
+
+Producers MUST use one of the following registered display values, or a custom value prefixed with `x-`:
+
+| Value | Description |
+|---|---|
+| `code` | Source code with syntax highlighting |
+| `preview` | Live rendered preview (HTML, SVG, etc.) |
+| `form` | Interactive form or input interface |
+| `dashboard` | Multi-panel data visualization |
+| `document` | Rich text document (Markdown, prose) |
+| `diagram` | Visual diagram (Mermaid, SVG, flowchart) |
+| `raw` | Plain text, no special rendering |
+
+Custom values (e.g., `x-terminal`, `x-spreadsheet`) are permitted. Consumers that encounter an unknown display value SHOULD fall back to `raw`.
+
+### 8.2 Progressive Rendering
+
+The `progressive` object controls how streaming content is displayed before the final chunk arrives.
+
+| Field | Type | Description |
+|---|---|---|
+| `min_bytes` | integer | Minimum accumulated bytes before first render. Default: `0` |
+| `skeleton_content` | string | Placeholder content shown while streaming (e.g., loading skeleton HTML) |
+| `reveal` | string | Reveal strategy: `"streaming"`, `"section"`, `"final"`. Default: `"streaming"` |
+
+**Reveal strategies:**
+
+| Strategy | Behavior |
+|---|---|
+| `streaming` | Append chunks as they arrive. Default |
+| `section` | Buffer until a `flush: true` chunk, then reveal the accumulated content |
+| `final` | Show `skeleton_content` (or nothing) until `final: true`, then reveal all at once |
+
+The `reveal` strategy interacts with the `flush` field on chunk frames ([Section 6.1](#61-chunk-frame)). When `reveal` is `"section"`, consumers render only at flush boundaries.
+
+### 8.3 Sandbox Policy
+
+The `sandbox` object constrains executable content. It maps to HTML `<iframe sandbox>` attributes but is expressed at the protocol level so non-browser consumers can enforce equivalent restrictions.
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `allow_scripts` | boolean | `false` | Permit JavaScript execution |
+| `allow_forms` | boolean | `false` | Permit form submission |
+| `allow_same_origin` | boolean | `false` | Permit same-origin access |
+| `allow_popups` | boolean | `false` | Permit `window.open` / `target=_blank` |
+| `allow_modals` | boolean | `false` | Permit `alert` / `confirm` / `prompt` |
+| `csp` | string | none | Content Security Policy directive string |
+
+Producers SHOULD set `sandbox` on any artifact with `format: "text/html"` that contains `<script>` tags. Consumers MUST default to fully sandboxed (all `false`) when `sandbox` is absent on executable content.
+
+### 8.4 Accessibility Hints
+
+| Field | Type | Description |
+|---|---|---|
+| `label` | string | Short accessible label (maps to `aria-label`) |
+| `description` | string | Longer description (maps to `aria-description`) |
+| `role` | string | ARIA role hint: `"document"`, `"application"`, `"img"`, `"table"` |
+| `lang` | string | BCP 47 language tag for the content (e.g., `"en"`, `"ja"`) |
+
+### 8.5 Section-Level Rendering
+
+The `SectionDef` ([Section 3.2](#32-sections)) is extended with an optional `rendering` field that uses the same schema as the envelope-level rendering object. Section-level hints override envelope-level hints for that section.
+
+**Example** (mixed-content artifact):
+
+```json
+{
+  "protocol": "aap/1.0",
+  "id": "tutorial-page",
+  "version": 1,
+  "format": "text/html",
+  "mode": "full",
+  "rendering": {"display": "document", "theme": "light"},
+  "sections": [
+    {"id": "prose", "label": "Introduction"},
+    {"id": "code-sample", "label": "Example", "rendering": {"display": "code", "language": "python", "line_numbers": true}},
+    {"id": "live-demo", "label": "Try It", "rendering": {"display": "preview", "sandbox": {"allow_scripts": true}}}
+  ],
+  "content": "..."
+}
+```
+
+### 8.6 Chunk-Level Rendering
+
+The chunk frame ([Section 6.1](#61-chunk-frame)) is extended with an optional `rendering` field. This allows the producer to change rendering hints mid-stream (e.g., as different sections stream in).
+
+---
+
+## 9. Artifact Entity State
+
+Artifacts can optionally be treated as **managed entities** with lifecycle states, ownership, relationships, and expiration. All entity fields are optional — Level 0-3 consumers ignore them.
+
+### 9.1 State Machine
+
+```
+              publish           archive
+  ┌─────────┐ ──────▶ ┌───────────┐ ──────▶ ┌──────────┐
+  │  draft   │         │ published  │         │ archived  │
+  └─────────┘ ◀────── └───────────┘         └──────────┘
+              unpublish          restore
+                                  ◀──────────────────────
+```
+
+| State | Description |
+|---|---|
+| `draft` | Work-in-progress. MAY be updated freely. Not visible to downstream consumers |
+| `published` | Stable release. Updates create new versions; artifact is considered live |
+| `archived` | Retired. Read-only. No further updates permitted until restored |
+
+**Transitions:**
+
+| Transition | From | To |
+|---|---|---|
+| `publish` | draft | published |
+| `unpublish` | published | draft |
+| `archive` | published | archived |
+| `restore` | archived | published |
+
+New envelope fields:
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `state` | string | no | Entity state: `"draft"`, `"published"`, `"archived"`. Default: `"draft"` |
+| `state_changed_at` | string | no | ISO 8601 timestamp of last state transition |
+
+### 9.2 Entity Metadata
+
+The optional `entity` object carries ownership and organizational metadata:
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `owner` | string | no | Owning user or system identifier |
+| `created_by` | string | no | Creator identifier |
+| `tags` | array of strings | no | Freeform classification tags |
+| `permissions` | object | no | Access control (see [Section 9.3](#93-permissions)) |
+| `collection` | string | no | Workspace or collection grouping identifier |
+| `ttl` | integer | no | Time-to-live in seconds from `updated_at` |
+| `expires_at` | string | no | ISO 8601 expiration timestamp (takes precedence over `ttl`) |
+| `relationships` | array | no | Links to other artifacts (see [Section 9.4](#94-relationships)) |
+
+**Example:**
+
+```json
+{
+  "protocol": "aap/1.0",
+  "id": "dashboard-001",
+  "version": 3,
+  "format": "text/html",
+  "mode": "full",
+  "state": "published",
+  "entity": {
+    "owner": "user:alice",
+    "created_by": "agent:claude",
+    "tags": ["dashboard", "q4", "revenue"],
+    "collection": "workspace:finance-team",
+    "ttl": 86400,
+    "permissions": {
+      "read": ["team:finance", "user:bob"],
+      "write": ["user:alice", "agent:claude"],
+      "admin": ["user:alice"]
+    }
+  },
+  "content": "..."
+}
+```
+
+### 9.3 Permissions
+
+The `permissions` object uses a role-based model:
+
+| Field | Type | Description |
+|---|---|---|
+| `read` | array of strings | Principals that can read the artifact |
+| `write` | array of strings | Principals that can update the artifact |
+| `admin` | array of strings | Principals that can change state, permissions, and delete |
+
+Principal identifiers follow the format `<type>:<id>` (e.g., `"user:alice"`, `"team:finance"`, `"agent:claude"`, `"*"` for public). Enforcement is outside protocol scope — this is metadata for the platform to act on.
+
+### 9.4 Relationships
+
+Artifacts can declare typed relationships:
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `type` | string | YES | Relationship type: `"depends_on"`, `"parent"`, `"child"`, `"derived_from"`, `"supersedes"`, `"related"` |
+| `target` | string | YES | Target artifact ID |
+| `version` | integer | no | Specific version of the target (omit for latest) |
+
+**Example:**
+
+```json
+"relationships": [
+  {"type": "depends_on", "target": "shared-css-001"},
+  {"type": "derived_from", "target": "template-dashboard", "version": 2}
+]
+```
+
+Relationships are informational. Consumers MAY use them for dependency resolution but MUST NOT require them for correct envelope processing.
+
+### 9.5 Optimistic Locking
+
+The existing `version` + `base_version` mechanism ([Section 3.3](#33-version-chain)) provides optimistic concurrency control. State transitions MUST include `base_version` matching the current version.
+
+For advisory (non-mandatory) locking, an optional `lock` object may be included:
+
+| Field | Type | Description |
+|---|---|---|
+| `held_by` | string | Principal holding the lock |
+| `acquired_at` | string | ISO 8601 timestamp |
+| `ttl` | integer | Lock duration in seconds (auto-releases after expiry) |
+
+Advisory locks are hints only. The `version`/`base_version` mechanism remains the authoritative concurrency control.
+
+### 9.6 TTL and Expiration
+
+- When `ttl` is set, the artifact expires at `updated_at + ttl` seconds
+- When `expires_at` is set, it takes precedence over `ttl`
+- Expired artifacts SHOULD transition to `"archived"` state automatically
+- Consumers SHOULD check expiration on read and treat expired artifacts as archived
+
+---
+
+## 10. Conformance Levels
 
 Implementations declare their conformance level. Each level is a superset of the previous.
 
@@ -581,18 +878,30 @@ Implementations declare their conformance level. Each level is a superset of the
 - MUST support token budgeting (`token_budget` and `tokens_used`)
 - MUST support adaptive flush strategy
 
+### Level 4 — Extended
+
+- Level 3, plus:
+- MUST support `rendering` hints on envelopes and pass them to the rendering layer ([Section 8](#8-rendering-layer))
+- MUST enforce `sandbox` policy for executable artifacts ([Section 8.3](#83-sandbox-policy))
+- MUST support SSE transport binding ([AAP-SSE](aap-sse.md))
+- MUST support `state` field and enforce state machine transitions ([Section 9.1](#91-state-machine))
+- MUST support `entity` metadata storage and retrieval ([Section 9.2](#92-entity-metadata))
+- MUST enforce TTL/expiration ([Section 9.6](#96-ttl-and-expiration))
+
 ---
 
-## 9. Security Considerations
+## 11. Security Considerations
 
 - **Content injection**: consumers MUST sanitize artifact content before rendering in privileged contexts (e.g., web browsers)
 - **URI resolution**: `composite` mode URIs MUST be validated against an allowlist; arbitrary URI fetch is a server-side request forgery (SSRF) risk
 - **Checksum verification**: consumers SHOULD verify `checksum` when present to detect tampering or corruption
 - **Token budget enforcement**: producers MUST NOT exceed declared budgets; consumers SHOULD reject payloads that claim to use fewer tokens than they actually contain
+- **Sandbox enforcement**: consumers rendering executable artifacts (HTML with scripts) MUST enforce the `sandbox` policy ([Section 8.3](#83-sandbox-policy)). When no sandbox is specified, consumers MUST default to fully restricted
+- **Entity permissions**: `permissions` in the `entity` object are metadata only — consumers MUST enforce access control at the platform level, not rely solely on envelope metadata
 
 ---
 
-## 10. IANA Considerations
+## 12. IANA Considerations
 
 This specification does not require any IANA registrations. The `format` field uses existing MIME types.
 
@@ -606,6 +915,10 @@ Machine-validatable schemas for all protocol structures are provided in the `sch
 - [`diff-operation.json`](schemas/diff-operation.json) — Diff operation schema
 - [`template-binding.json`](schemas/template-binding.json) — Template binding schema
 - [`chunk-frame.json`](schemas/chunk-frame.json) — Streaming chunk frame schema
+- [`rendering-hints.json`](schemas/rendering-hints.json) — Rendering hints schema
+- [`entity-metadata.json`](schemas/entity-metadata.json) — Entity metadata schema
+- [`relationship.json`](schemas/relationship.json) — Artifact relationship schema
+- [`sse-error.json`](schemas/sse-error.json) — SSE error event schema
 
 ## Appendix B: Token Savings Reference
 

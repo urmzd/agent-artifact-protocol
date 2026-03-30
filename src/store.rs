@@ -158,6 +158,11 @@ mod tests {
             section_prompts: None,
             section_id: None,
             content_encoding: None,
+            rendering: None,
+            state: None,
+            state_changed_at: None,
+            entity: None,
+            lock: None,
         }
     }
 
@@ -186,6 +191,11 @@ mod tests {
             section_prompts: None,
             section_id: None,
             content_encoding: None,
+            rendering: None,
+            state: None,
+            state_changed_at: None,
+            entity: None,
+            lock: None,
         }
     }
 

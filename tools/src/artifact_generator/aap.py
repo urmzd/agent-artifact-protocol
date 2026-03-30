@@ -19,6 +19,197 @@ Priority = Literal["completeness", "brevity", "fidelity"]
 
 PROTOCOL_VERSION = "aap/1.0"
 
+DisplayMode = Literal["code", "preview", "form", "dashboard", "document", "diagram", "raw"]
+ArtifactState = Literal["draft", "published", "archived"]
+RevealStrategy = Literal["streaming", "section", "final"]
+RelationshipType = Literal["depends_on", "parent", "child", "derived_from", "supersedes", "related"]
+
+
+@dataclass
+class SandboxPolicy:
+    allow_scripts: bool = False
+    allow_forms: bool = False
+    allow_same_origin: bool = False
+    allow_popups: bool = False
+    allow_modals: bool = False
+    csp: str | None = None
+
+    def to_dict(self) -> dict:
+        d: dict = {}
+        if self.allow_scripts:
+            d["allow_scripts"] = True
+        if self.allow_forms:
+            d["allow_forms"] = True
+        if self.allow_same_origin:
+            d["allow_same_origin"] = True
+        if self.allow_popups:
+            d["allow_popups"] = True
+        if self.allow_modals:
+            d["allow_modals"] = True
+        if self.csp is not None:
+            d["csp"] = self.csp
+        return d
+
+
+@dataclass
+class AccessibilityHints:
+    label: str | None = None
+    description: str | None = None
+    role: str | None = None
+    lang: str | None = None
+
+    def to_dict(self) -> dict:
+        d: dict = {}
+        if self.label:
+            d["label"] = self.label
+        if self.description:
+            d["description"] = self.description
+        if self.role:
+            d["role"] = self.role
+        if self.lang:
+            d["lang"] = self.lang
+        return d
+
+
+@dataclass
+class ProgressiveRendering:
+    min_bytes: int | None = None
+    skeleton_content: str | None = None
+    reveal: RevealStrategy | None = None
+
+    def to_dict(self) -> dict:
+        d: dict = {}
+        if self.min_bytes is not None:
+            d["min_bytes"] = self.min_bytes
+        if self.skeleton_content is not None:
+            d["skeleton_content"] = self.skeleton_content
+        if self.reveal is not None:
+            d["reveal"] = self.reveal
+        return d
+
+
+@dataclass
+class RenderingHints:
+    display: str | None = None
+    language: str | None = None
+    theme: str | None = None
+    line_numbers: bool | None = None
+    word_wrap: bool | None = None
+    max_height: str | None = None
+    sandbox: SandboxPolicy | None = None
+    accessibility: AccessibilityHints | None = None
+    progressive: ProgressiveRendering | None = None
+
+    def to_dict(self) -> dict:
+        d: dict = {}
+        if self.display is not None:
+            d["display"] = self.display
+        if self.language is not None:
+            d["language"] = self.language
+        if self.theme is not None:
+            d["theme"] = self.theme
+        if self.line_numbers is not None:
+            d["line_numbers"] = self.line_numbers
+        if self.word_wrap is not None:
+            d["word_wrap"] = self.word_wrap
+        if self.max_height is not None:
+            d["max_height"] = self.max_height
+        if self.sandbox is not None:
+            d["sandbox"] = self.sandbox.to_dict()
+        if self.accessibility is not None:
+            d["accessibility"] = self.accessibility.to_dict()
+        if self.progressive is not None:
+            d["progressive"] = self.progressive.to_dict()
+        return d
+
+
+@dataclass
+class Permissions:
+    read: list[str] = field(default_factory=list)
+    write: list[str] = field(default_factory=list)
+    admin: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict:
+        d: dict = {}
+        if self.read:
+            d["read"] = self.read
+        if self.write:
+            d["write"] = self.write
+        if self.admin:
+            d["admin"] = self.admin
+        return d
+
+
+@dataclass
+class Relationship:
+    type: RelationshipType
+    target: str
+    version: int | None = None
+
+    def to_dict(self) -> dict:
+        d: dict = {"type": self.type, "target": self.target}
+        if self.version is not None:
+            d["version"] = self.version
+        return d
+
+
+@dataclass
+class EntityMetadata:
+    owner: str | None = None
+    created_by: str | None = None
+    tags: list[str] = field(default_factory=list)
+    permissions: Permissions | None = None
+    collection: str | None = None
+    ttl: int | None = None
+    expires_at: str | None = None
+    relationships: list[Relationship] = field(default_factory=list)
+
+    def to_dict(self) -> dict:
+        d: dict = {}
+        if self.owner is not None:
+            d["owner"] = self.owner
+        if self.created_by is not None:
+            d["created_by"] = self.created_by
+        if self.tags:
+            d["tags"] = self.tags
+        if self.permissions is not None:
+            d["permissions"] = self.permissions.to_dict()
+        if self.collection is not None:
+            d["collection"] = self.collection
+        if self.ttl is not None:
+            d["ttl"] = self.ttl
+        if self.expires_at is not None:
+            d["expires_at"] = self.expires_at
+        if self.relationships:
+            d["relationships"] = [r.to_dict() for r in self.relationships]
+        return d
+
+
+@dataclass
+class AdvisoryLock:
+    held_by: str
+    acquired_at: str
+    ttl: int
+
+    def to_dict(self) -> dict:
+        return {"held_by": self.held_by, "acquired_at": self.acquired_at, "ttl": self.ttl}
+
+
+@dataclass
+class SseError:
+    code: str
+    message: str
+    fatal: bool = False
+    seq: int | None = None
+
+    def to_dict(self) -> dict:
+        d: dict = {"code": self.code, "message": self.message}
+        if self.fatal:
+            d["fatal"] = True
+        if self.seq is not None:
+            d["seq"] = self.seq
+        return d
+
 
 @dataclass
 class Target:
@@ -67,6 +258,7 @@ class SectionDef:
     label: str | None = None
     start_marker: str | None = None
     end_marker: str | None = None
+    rendering: RenderingHints | None = None
 
     def to_dict(self) -> dict:
         d: dict = {"id": self.id}
@@ -76,6 +268,8 @@ class SectionDef:
             d["start_marker"] = self.start_marker
         if self.end_marker:
             d["end_marker"] = self.end_marker
+        if self.rendering:
+            d["rendering"] = self.rendering.to_dict()
         return d
 
 
@@ -157,6 +351,13 @@ class Envelope:
     skeleton: str | None = None
     section_prompts: list[SectionPrompt] = field(default_factory=list)
     section_id: str | None = None
+    # Rendering layer (Section 8)
+    rendering: RenderingHints | None = None
+    # Entity state (Section 9)
+    state: ArtifactState | None = None
+    state_changed_at: str | None = None
+    entity: EntityMetadata | None = None
+    lock: AdvisoryLock | None = None
 
     def to_dict(self) -> dict:
         d: dict = {
@@ -202,6 +403,16 @@ class Envelope:
             d["section_id"] = self.section_id
         if self.content_encoding:
             d["content_encoding"] = self.content_encoding
+        if self.rendering:
+            d["rendering"] = self.rendering.to_dict()
+        if self.state is not None:
+            d["state"] = self.state
+        if self.state_changed_at:
+            d["state_changed_at"] = self.state_changed_at
+        if self.entity:
+            d["entity"] = self.entity.to_dict()
+        if self.lock:
+            d["lock"] = self.lock.to_dict()
         return d
 
     def to_json(self, indent: int = 2) -> str:
@@ -232,6 +443,7 @@ class ChunkFrame:
     content: str
     envelope: dict | None = None
     section_id: str | None = None
+    rendering: RenderingHints | None = None
     flush: bool = False
     final: bool = False
 
@@ -241,6 +453,8 @@ class ChunkFrame:
             d["envelope"] = self.envelope
         if self.section_id:
             d["section_id"] = self.section_id
+        if self.rendering:
+            d["rendering"] = self.rendering.to_dict()
         if self.flush:
             d["flush"] = True
         if self.final:

@@ -39,6 +39,10 @@
       "type": "boolean",
       "default": false,
       "description": "True on the last chunk"
+    },
+    "rendering": {
+      "$ref": "rendering-hints.json",
+      "description": "Rendering hint overrides for this chunk onward"
     }
   }
 }
