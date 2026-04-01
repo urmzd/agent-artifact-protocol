@@ -24,6 +24,7 @@ fn single_diff_ops() -> Vec<DiffOp> {
             lines: None,
             offsets: None,
             section: None,
+            pointer: None,
         },
         content: Some("27,103".into()),
     }]
@@ -33,22 +34,22 @@ fn multi_diff_ops() -> Vec<DiffOp> {
     vec![
         DiffOp {
             op: OpType::Replace,
-            target: Target { search: Some("24,891".into()), lines: None, offsets: None, section: None },
+            target: Target { search: Some("24,891".into()), lines: None, offsets: None, section: None, pointer: None },
             content: Some("31,205".into()),
         },
         DiffOp {
             op: OpType::Replace,
-            target: Target { search: Some("$182,430".into()), lines: None, offsets: None, section: None },
+            target: Target { search: Some("$182,430".into()), lines: None, offsets: None, section: None, pointer: None },
             content: Some("$210,880".into()),
         },
         DiffOp {
             op: OpType::Replace,
-            target: Target { search: Some("3,047".into()), lines: None, offsets: None, section: None },
+            target: Target { search: Some("3,047".into()), lines: None, offsets: None, section: None, pointer: None },
             content: Some("4,112".into()),
         },
         DiffOp {
             op: OpType::Replace,
-            target: Target { search: Some("99.97%".into()), lines: None, offsets: None, section: None },
+            target: Target { search: Some("99.97%".into()), lines: None, offsets: None, section: None, pointer: None },
             content: Some("99.99%".into()),
         },
     ]
@@ -185,12 +186,12 @@ fn bench_diff(c: &mut Criterion) {
     group.bench_with_input(
         BenchmarkId::new("single_replace", format!("{}B payload", payload_bytes(&single))),
         &single,
-        |b, ops| b.iter(|| apply_diff(FULL_HTML, ops).unwrap()),
+        |b, ops| b.iter(|| apply_diff(FULL_HTML, ops, "text/html", None).unwrap()),
     );
     group.bench_with_input(
         BenchmarkId::new("four_replaces", format!("{}B payload", payload_bytes(&multi))),
         &multi,
-        |b, ops| b.iter(|| apply_diff(FULL_HTML, ops).unwrap()),
+        |b, ops| b.iter(|| apply_diff(FULL_HTML, ops, "text/html", None).unwrap()),
     );
     group.finish();
 }
@@ -203,12 +204,12 @@ fn bench_section(c: &mut Criterion) {
     group.bench_with_input(
         BenchmarkId::new("one_section", format!("{}B payload", section_payload_bytes(&single))),
         &single,
-        |b, updates| b.iter(|| apply_section_update(FULL_HTML, updates).unwrap()),
+        |b, updates| b.iter(|| apply_section_update(FULL_HTML, updates, "text/html", None).unwrap()),
     );
     group.bench_with_input(
         BenchmarkId::new("two_sections", format!("{}B payload", section_payload_bytes(&multi))),
         &multi,
-        |b, updates| b.iter(|| apply_section_update(FULL_HTML, updates).unwrap()),
+        |b, updates| b.iter(|| apply_section_update(FULL_HTML, updates, "text/html", None).unwrap()),
     );
     group.finish();
 }
@@ -231,7 +232,7 @@ fn bench_manifest_assembly(c: &mut Criterion) {
 
     c.bench_function(
         &format!("manifest_assemble/4_sections_{}B", total_section_bytes),
-        |b| b.iter(|| assemble_manifest(&skeleton, &sections).unwrap()),
+        |b| b.iter(|| assemble_manifest(&skeleton, &sections, "text/html", None).unwrap()),
     );
 }
 

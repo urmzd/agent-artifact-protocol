@@ -19,108 +19,8 @@ Priority = Literal["completeness", "brevity", "fidelity"]
 
 PROTOCOL_VERSION = "aap/1.0"
 
-DisplayMode = Literal["code", "preview", "form", "dashboard", "document", "diagram", "raw"]
 ArtifactState = Literal["draft", "published", "archived"]
-RevealStrategy = Literal["streaming", "section", "final"]
 RelationshipType = Literal["depends_on", "parent", "child", "derived_from", "supersedes", "related"]
-
-
-@dataclass
-class SandboxPolicy:
-    allow_scripts: bool = False
-    allow_forms: bool = False
-    allow_same_origin: bool = False
-    allow_popups: bool = False
-    allow_modals: bool = False
-    csp: str | None = None
-
-    def to_dict(self) -> dict:
-        d: dict = {}
-        if self.allow_scripts:
-            d["allow_scripts"] = True
-        if self.allow_forms:
-            d["allow_forms"] = True
-        if self.allow_same_origin:
-            d["allow_same_origin"] = True
-        if self.allow_popups:
-            d["allow_popups"] = True
-        if self.allow_modals:
-            d["allow_modals"] = True
-        if self.csp is not None:
-            d["csp"] = self.csp
-        return d
-
-
-@dataclass
-class AccessibilityHints:
-    label: str | None = None
-    description: str | None = None
-    role: str | None = None
-    lang: str | None = None
-
-    def to_dict(self) -> dict:
-        d: dict = {}
-        if self.label:
-            d["label"] = self.label
-        if self.description:
-            d["description"] = self.description
-        if self.role:
-            d["role"] = self.role
-        if self.lang:
-            d["lang"] = self.lang
-        return d
-
-
-@dataclass
-class ProgressiveRendering:
-    min_bytes: int | None = None
-    skeleton_content: str | None = None
-    reveal: RevealStrategy | None = None
-
-    def to_dict(self) -> dict:
-        d: dict = {}
-        if self.min_bytes is not None:
-            d["min_bytes"] = self.min_bytes
-        if self.skeleton_content is not None:
-            d["skeleton_content"] = self.skeleton_content
-        if self.reveal is not None:
-            d["reveal"] = self.reveal
-        return d
-
-
-@dataclass
-class RenderingHints:
-    display: str | None = None
-    language: str | None = None
-    theme: str | None = None
-    line_numbers: bool | None = None
-    word_wrap: bool | None = None
-    max_height: str | None = None
-    sandbox: SandboxPolicy | None = None
-    accessibility: AccessibilityHints | None = None
-    progressive: ProgressiveRendering | None = None
-
-    def to_dict(self) -> dict:
-        d: dict = {}
-        if self.display is not None:
-            d["display"] = self.display
-        if self.language is not None:
-            d["language"] = self.language
-        if self.theme is not None:
-            d["theme"] = self.theme
-        if self.line_numbers is not None:
-            d["line_numbers"] = self.line_numbers
-        if self.word_wrap is not None:
-            d["word_wrap"] = self.word_wrap
-        if self.max_height is not None:
-            d["max_height"] = self.max_height
-        if self.sandbox is not None:
-            d["sandbox"] = self.sandbox.to_dict()
-        if self.accessibility is not None:
-            d["accessibility"] = self.accessibility.to_dict()
-        if self.progressive is not None:
-            d["progressive"] = self.progressive.to_dict()
-        return d
 
 
 @dataclass
@@ -217,8 +117,11 @@ class Target:
     lines: tuple[int, int] | None = None
     offsets: tuple[int, int] | None = None
     search: str | None = None
+    pointer: str | None = None
 
     def to_dict(self) -> dict:
+        if self.pointer is not None:
+            return {"pointer": self.pointer}
         if self.section is not None:
             return {"section": self.section}
         if self.lines is not None:
@@ -258,7 +161,6 @@ class SectionDef:
     label: str | None = None
     start_marker: str | None = None
     end_marker: str | None = None
-    rendering: RenderingHints | None = None
 
     def to_dict(self) -> dict:
         d: dict = {"id": self.id}
@@ -268,8 +170,6 @@ class SectionDef:
             d["start_marker"] = self.start_marker
         if self.end_marker:
             d["end_marker"] = self.end_marker
-        if self.rendering:
-            d["rendering"] = self.rendering.to_dict()
         return d
 
 
@@ -351,9 +251,7 @@ class Envelope:
     skeleton: str | None = None
     section_prompts: list[SectionPrompt] = field(default_factory=list)
     section_id: str | None = None
-    # Rendering layer (Section 8)
-    rendering: RenderingHints | None = None
-    # Entity state (Section 9)
+    # Entity state
     state: ArtifactState | None = None
     state_changed_at: str | None = None
     entity: EntityMetadata | None = None
@@ -403,8 +301,6 @@ class Envelope:
             d["section_id"] = self.section_id
         if self.content_encoding:
             d["content_encoding"] = self.content_encoding
-        if self.rendering:
-            d["rendering"] = self.rendering.to_dict()
         if self.state is not None:
             d["state"] = self.state
         if self.state_changed_at:
@@ -425,15 +321,15 @@ class Envelope:
         if self.mode == "diff":
             if not store or self.id not in store:
                 raise ValueError(f"No base content for artifact {self.id}")
-            return apply_diff(store[self.id], self.operations)
+            return apply_diff(store[self.id], self.operations, self.format, self.sections)
         if self.mode == "section":
             if not store or self.id not in store:
                 raise ValueError(f"No base content for artifact {self.id}")
-            return apply_section_update(store[self.id], self.target_sections)
+            return apply_section_update(store[self.id], self.target_sections, self.format, self.sections)
         if self.mode == "template":
             return fill_template(self.template or "", self.bindings or {})
         if self.mode == "composite":
-            return resolve_composite(self.includes, store or {})
+            return resolve_composite(self.includes, store or {}, self.format, self.sections)
         raise ValueError(f"Unknown mode: {self.mode}")
 
 
@@ -443,7 +339,6 @@ class ChunkFrame:
     content: str
     envelope: dict | None = None
     section_id: str | None = None
-    rendering: RenderingHints | None = None
     flush: bool = False
     final: bool = False
 
@@ -453,8 +348,6 @@ class ChunkFrame:
             d["envelope"] = self.envelope
         if self.section_id:
             d["section_id"] = self.section_id
-        if self.rendering:
-            d["rendering"] = self.rendering.to_dict()
         if self.flush:
             d["flush"] = True
         if self.final:
@@ -480,8 +373,62 @@ def sha256_checksum(content: str) -> str:
     return "sha256:" + hashlib.sha256(content.encode()).hexdigest()
 
 
-def apply_diff(base: str, operations: list[DiffOp]) -> str:
+def _apply_pointer_op(data: dict | list, pointer: str, op: DiffOp) -> None:
+    """Apply a single pointer-targeted operation to parsed JSON data."""
+    parts = [p.replace("~1", "/").replace("~0", "~") for p in pointer.split("/")[1:]]
+    if not parts:
+        raise ValueError("Cannot operate on root pointer")
+
+    # Navigate to parent
+    parent = data
+    for part in parts[:-1]:
+        if isinstance(parent, list):
+            parent = parent[int(part)]
+        else:
+            parent = parent[part]
+
+    key = parts[-1]
+
+    if op.op == "replace":
+        new_val = json.loads(op.content)
+        if isinstance(parent, list):
+            parent[int(key)] = new_val
+        else:
+            parent[key] = new_val
+    elif op.op == "delete":
+        if isinstance(parent, list):
+            del parent[int(key)]
+        else:
+            del parent[key]
+    elif op.op in ("insert_before", "insert_after"):
+        if not isinstance(parent, list):
+            raise ValueError("insert_before/insert_after require array parent")
+        idx = int(key)
+        if op.op == "insert_after":
+            idx += 1
+        new_val = json.loads(op.content)
+        parent.insert(idx, new_val)
+
+
+def apply_diff(
+    base: str,
+    operations: list[DiffOp],
+    format: str = "text/html",
+    sections: list[SectionDef] | None = None,
+) -> str:
     """Apply diff operations sequentially to base content."""
+    from aap.markers import find_section_def, find_section_range
+
+    # Check for pointer operations
+    has_pointer = any(op.target.pointer is not None for op in operations)
+    if has_pointer:
+        data = json.loads(base)
+        for op in operations:
+            if op.target.pointer is None:
+                raise ValueError("Mixing pointer and non-pointer targets is not supported")
+            _apply_pointer_op(data, op.target.pointer, op)
+        return json.dumps(data, indent=2)
+
     result = base
     for op in operations:
         t = op.target
@@ -498,14 +445,8 @@ def apply_diff(base: str, operations: list[DiffOp]) -> str:
             start = sum(len(l) + 1 for l in lines[:s])
             end = sum(len(l) + 1 for l in lines[:e]) - 1
         elif t.section is not None:
-            start_marker = f"<!-- section:{t.section} -->"
-            end_marker = f"<!-- /section:{t.section} -->"
-            si = result.find(start_marker)
-            ei = result.find(end_marker)
-            if si == -1 or ei == -1:
-                raise ValueError(f"Section markers not found: {t.section}")
-            start = si + len(start_marker)
-            end = ei
+            section_def = find_section_def(sections, t.section)
+            start, end = find_section_range(result, t.section, format, section_def)
         else:
             raise ValueError("No addressing mode in target")
 
@@ -521,12 +462,19 @@ def apply_diff(base: str, operations: list[DiffOp]) -> str:
     return result
 
 
-def apply_section_update(base: str, updates: list[SectionUpdate]) -> str:
+def apply_section_update(
+    base: str,
+    updates: list[SectionUpdate],
+    format: str = "text/html",
+    sections: list[SectionDef] | None = None,
+) -> str:
     """Replace section content in base, preserving markers and other sections."""
+    from aap.markers import find_section_def, resolve_markers
+
     result = base
     for update in updates:
-        start_marker = f"<!-- section:{update.id} -->"
-        end_marker = f"<!-- /section:{update.id} -->"
+        section_def = find_section_def(sections, update.id)
+        start_marker, end_marker = resolve_markers(update.id, format, section_def)
         si = result.find(start_marker)
         ei = result.find(end_marker)
         if si == -1 or ei == -1:
@@ -548,8 +496,15 @@ def fill_template(template: str, bindings: dict) -> str:
     return result
 
 
-def resolve_composite(includes: list[Include], store: dict[str, str]) -> str:
+def resolve_composite(
+    includes: list[Include],
+    store: dict[str, str],
+    format: str = "text/html",
+    sections: list[SectionDef] | None = None,
+) -> str:
     """Assemble content from includes."""
+    from aap.markers import find_section_def, find_section_range_inclusive
+
     parts = []
     for inc in includes:
         if inc.content is not None:
@@ -558,12 +513,14 @@ def resolve_composite(includes: list[Include], store: dict[str, str]) -> str:
             if ":" in inc.ref:
                 artifact_id, section_id = inc.ref.split(":", 1)
                 content = store.get(artifact_id, "")
-                start_marker = f"<!-- section:{section_id} -->"
-                end_marker = f"<!-- /section:{section_id} -->"
-                si = content.find(start_marker)
-                ei = content.find(end_marker)
-                if si != -1 and ei != -1:
-                    parts.append(content[si : ei + len(end_marker)])
+                section_def = find_section_def(sections, section_id)
+                try:
+                    start, end = find_section_range_inclusive(
+                        content, section_id, format, section_def
+                    )
+                    parts.append(content[start:end])
+                except ValueError:
+                    pass  # Section not found, skip
             else:
                 parts.append(store.get(inc.ref, ""))
         elif inc.uri is not None:

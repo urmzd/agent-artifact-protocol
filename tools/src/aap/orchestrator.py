@@ -69,20 +69,19 @@ def build_dependency_order(prompts: list[SectionPrompt]) -> list[list[str]]:
     return waves
 
 
-def assemble(skeleton: str, section_results: dict[str, str]) -> str:
-    """Stitch section content into skeleton at marker positions.
+def assemble(
+    skeleton: str,
+    section_results: dict[str, str],
+    format: str = "text/html",
+    sections: list[SectionDef] | None = None,
+) -> str:
+    """Stitch section content into skeleton at marker positions."""
+    from aap.markers import find_section_def, resolve_markers
 
-    Each section marker pair:
-        <!-- section:id --><!-- /section:id -->
-    is replaced with:
-        <!-- section:id -->
-        <content>
-        <!-- /section:id -->
-    """
     result = skeleton
     for section_id, content in section_results.items():
-        start_marker = f"<!-- section:{section_id} -->"
-        end_marker = f"<!-- /section:{section_id} -->"
+        section_def = find_section_def(sections, section_id)
+        start_marker, end_marker = resolve_markers(section_id, format, section_def)
         si = result.find(start_marker)
         ei = result.find(end_marker)
         if si == -1 or ei == -1:
@@ -96,12 +95,16 @@ def assemble(skeleton: str, section_results: dict[str, str]) -> str:
 def assemble_update(
     base_content: str,
     section_results: dict[str, str],
+    format: str = "text/html",
+    sections: list[SectionDef] | None = None,
 ) -> str:
     """Merge section results into existing artifact, preserving unchanged sections."""
+    from aap.markers import find_section_def, resolve_markers
+
     result = base_content
     for section_id, content in section_results.items():
-        start_marker = f"<!-- section:{section_id} -->"
-        end_marker = f"<!-- /section:{section_id} -->"
+        section_def = find_section_def(sections, section_id)
+        start_marker, end_marker = resolve_markers(section_id, format, section_def)
         si = result.find(start_marker)
         ei = result.find(end_marker)
         if si == -1 or ei == -1:
@@ -152,20 +155,24 @@ async def orchestrate(
     # Assemble
     if base_content and manifest.base_version is not None:
         # Update mode: merge into existing
-        final_content = assemble_update(base_content, section_results)
+        final_content = assemble_update(base_content, section_results, manifest.format)
     else:
         # Initial generation: stitch into skeleton
-        final_content = assemble(skeleton, section_results)
+        final_content = assemble(skeleton, section_results, manifest.format)
 
     # Build section definitions from the prompts
-    section_defs = [
-        SectionDef(
+    from aap.markers import resolve_markers
+    section_defs = []
+    for sp in prompts:
+        try:
+            start_marker, end_marker = resolve_markers(sp.id, manifest.format)
+        except ValueError:
+            start_marker, end_marker = None, None
+        section_defs.append(SectionDef(
             id=sp.id,
-            start_marker=f"<!-- section:{sp.id} -->",
-            end_marker=f"<!-- /section:{sp.id} -->",
-        )
-        for sp in prompts
-    ]
+            start_marker=start_marker,
+            end_marker=end_marker,
+        ))
 
     result_envelope = Envelope(
         id=manifest.id,

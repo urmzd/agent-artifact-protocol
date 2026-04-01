@@ -49,6 +49,7 @@ def generate_diff(
     old_content: str,
     new_content: str,
     version: int | None = None,
+    format: str = "text/html",
 ) -> Envelope:
     """Compute minimal diff operations between old and new content.
 
@@ -96,7 +97,7 @@ def generate_diff(
     return Envelope(
         id=artifact_id,
         version=version or base_version + 1,
-        format="text/html",
+        format=format,
         mode="diff",
         base_version=base_version,
         updated_at=now_iso(),
@@ -109,12 +110,13 @@ def generate_section_update(
     base_version: int,
     updates: dict[str, str],
     version: int | None = None,
+    format: str = "text/html",
 ) -> Envelope:
     """Generate a section-mode envelope replacing specific sections."""
     return Envelope(
         id=artifact_id,
         version=version or base_version + 1,
-        format="text/html",
+        format=format,
         mode="section",
         base_version=base_version,
         updated_at=now_iso(),
@@ -161,26 +163,28 @@ def generate_composite(
     )
 
 
-def extract_sections(html: str) -> list[SectionDef]:
-    """Extract section definitions from HTML section markers."""
-    pattern = r"<!-- section:(\S+) -->"
+def extract_sections(content: str, format: str = "text/html") -> list[SectionDef]:
+    """Extract section definitions from content using format-appropriate markers."""
+    from aap.markers import extract_sections_regex, resolve_markers
+
+    pattern = extract_sections_regex(format)
+    if pattern is None:
+        return []
     sections = []
-    for match in re.finditer(pattern, html):
+    for match in re.finditer(pattern, content):
         sid = match.group(1)
+        start_marker, end_marker = resolve_markers(sid, format)
         sections.append(SectionDef(
             id=sid,
-            start_marker=f"<!-- section:{sid} -->",
-            end_marker=f"<!-- /section:{sid} -->",
+            start_marker=start_marker,
+            end_marker=end_marker,
         ))
     return sections
 
 
-def get_section_content(html: str, section_id: str) -> str:
+def get_section_content(content: str, section_id: str, format: str = "text/html") -> str:
     """Extract the content between section markers."""
-    start_marker = f"<!-- section:{section_id} -->"
-    end_marker = f"<!-- /section:{section_id} -->"
-    si = html.find(start_marker)
-    ei = html.find(end_marker)
-    if si == -1 or ei == -1:
-        raise ValueError(f"Section not found: {section_id}")
-    return html[si + len(start_marker) : ei].strip()
+    from aap.markers import find_section_range
+
+    start, end = find_section_range(content, section_id, format)
+    return content[start:end].strip()
