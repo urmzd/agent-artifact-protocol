@@ -4,13 +4,17 @@
 use anyhow::{bail, Context, Result};
 use std::collections::HashMap;
 
-use crate::aap::{DiffOp, Envelope, Include, Mode, OpType, SectionUpdate};
+use crate::aap::{DiffOp, Envelope, Include, Mode, OpType, SectionDef, SectionUpdate};
+use crate::markers::{find_section_def, find_section_range, find_section_range_inclusive, resolve_markers};
 
 /// Resolve an envelope to its final content string.
 ///
 /// For `full` mode, returns content directly.
 /// For other modes, requires the base content from the store.
 pub fn resolve(envelope: &Envelope, store: &HashMap<String, String>) -> Result<String> {
+    let format = envelope.format.as_str();
+    let sections = envelope.sections.as_deref();
+
     match envelope.mode {
         Mode::Full => envelope
             .content
@@ -24,7 +28,7 @@ pub fn resolve(envelope: &Envelope, store: &HashMap<String, String>) -> Result<S
                 .operations
                 .as_ref()
                 .context("diff-mode envelope missing operations")?;
-            apply_diff(base, ops)
+            apply_diff(base, ops, format, sections)
         }
         Mode::Section => {
             let base = store
@@ -34,7 +38,7 @@ pub fn resolve(envelope: &Envelope, store: &HashMap<String, String>) -> Result<S
                 .target_sections
                 .as_ref()
                 .context("section-mode envelope missing target_sections")?;
-            apply_section_update(base, updates)
+            apply_section_update(base, updates, format, sections)
         }
         Mode::Template => {
             let template = envelope
@@ -52,14 +56,9 @@ pub fn resolve(envelope: &Envelope, store: &HashMap<String, String>) -> Result<S
                 .includes
                 .as_ref()
                 .context("composite-mode envelope missing includes")?;
-            resolve_composite(includes, store)
+            resolve_composite(includes, store, format, sections)
         }
         Mode::Manifest => {
-            // Manifest mode is an orchestration concern — the consumer cannot
-            // resolve it directly. It must be processed by an orchestrator that
-            // dispatches section generations and assembles results.
-            // If we receive a manifest with section results already assembled
-            // in the skeleton, we can assemble them.
             let skeleton = envelope
                 .skeleton
                 .as_ref()
@@ -70,11 +69,25 @@ pub fn resolve(envelope: &Envelope, store: &HashMap<String, String>) -> Result<S
 }
 
 /// Apply diff operations sequentially to base content.
-pub fn apply_diff(base: &str, operations: &[DiffOp]) -> Result<String> {
+///
+/// If any operation uses `pointer` targeting, the content is parsed as JSON
+/// and pointer operations are applied on the parsed tree.
+pub fn apply_diff(
+    base: &str,
+    operations: &[DiffOp],
+    format: &str,
+    sections: Option<&[SectionDef]>,
+) -> Result<String> {
+    let has_pointer = operations.iter().any(|op| op.target.pointer.is_some());
+
+    if has_pointer {
+        return apply_diff_with_pointers(base, operations, format);
+    }
+
     let mut result = base.to_string();
 
     for (i, op) in operations.iter().enumerate() {
-        let (start, end) = find_target_range(&result, &op.target)
+        let (start, end) = find_target_range(&result, &op.target, format, sections)
             .with_context(|| format!("operation {i}: target not found"))?;
 
         match op.op {
@@ -99,24 +112,131 @@ pub fn apply_diff(base: &str, operations: &[DiffOp]) -> Result<String> {
     Ok(result)
 }
 
+/// Apply diff operations that use JSON Pointer targeting.
+fn apply_diff_with_pointers(base: &str, operations: &[DiffOp], _format: &str) -> Result<String> {
+    let mut value: serde_json::Value =
+        serde_json::from_str(base).context("pointer targeting requires valid JSON content")?;
+
+    for (i, op) in operations.iter().enumerate() {
+        if let Some(pointer) = &op.target.pointer {
+            apply_pointer_op(&mut value, pointer, op)
+                .with_context(|| format!("operation {i}: pointer op failed"))?;
+        } else {
+            bail!("operation {i}: mixing pointer and non-pointer targets in the same batch is not supported");
+        }
+    }
+
+    serde_json::to_string_pretty(&value).context("failed to re-serialize JSON")
+}
+
+/// Apply a single pointer-targeted operation on a parsed JSON value.
+fn apply_pointer_op(root: &mut serde_json::Value, pointer: &str, op: &DiffOp) -> Result<()> {
+    match op.op {
+        OpType::Replace => {
+            let content = op.content.as_deref().context("replace requires content")?;
+            let new_val: serde_json::Value =
+                serde_json::from_str(content).context("content must be valid JSON")?;
+            let target = root
+                .pointer_mut(pointer)
+                .with_context(|| format!("pointer not found: {pointer}"))?;
+            *target = new_val;
+        }
+        OpType::Delete => {
+            let (parent_ptr, key) =
+                split_pointer(pointer).context("cannot delete root")?;
+            let parent = root
+                .pointer_mut(&parent_ptr)
+                .with_context(|| format!("parent not found: {parent_ptr}"))?;
+            remove_child(parent, &key)?;
+        }
+        OpType::InsertBefore | OpType::InsertAfter => {
+            let content = op.content.as_deref().context("insert requires content")?;
+            let new_val: serde_json::Value =
+                serde_json::from_str(content).context("content must be valid JSON")?;
+            let (parent_ptr, key) =
+                split_pointer(pointer).context("cannot insert at root")?;
+            let parent = root
+                .pointer_mut(&parent_ptr)
+                .with_context(|| format!("parent not found: {parent_ptr}"))?;
+            let arr = parent
+                .as_array_mut()
+                .context("insert_before/insert_after require array parent")?;
+            let index: usize = key
+                .parse()
+                .context("insert_before/insert_after require numeric array index")?;
+            let insert_at = if op.op == OpType::InsertAfter {
+                index + 1
+            } else {
+                index
+            };
+            arr.insert(insert_at, new_val);
+        }
+    }
+    Ok(())
+}
+
+/// Split a JSON Pointer into parent path and final key.
+/// `/a/b/c` → (`/a/b`, `c`)
+/// `/a` → (``, `a`)
+fn split_pointer(pointer: &str) -> Result<(String, String)> {
+    if pointer.is_empty() || !pointer.starts_with('/') {
+        bail!("invalid JSON Pointer: {pointer:?}");
+    }
+    match pointer.rfind('/') {
+        Some(0) => Ok(("".to_string(), pointer[1..].to_string())),
+        Some(pos) => Ok((pointer[..pos].to_string(), pointer[pos + 1..].to_string())),
+        None => bail!("invalid JSON Pointer: {pointer:?}"),
+    }
+}
+
+/// Remove a child from a JSON object or array.
+fn remove_child(parent: &mut serde_json::Value, key: &str) -> Result<()> {
+    // Unescape RFC 6901
+    let unescaped = key.replace("~1", "/").replace("~0", "~");
+
+    if let Some(obj) = parent.as_object_mut() {
+        if obj.remove(&unescaped).is_none() {
+            bail!("key not found: {unescaped}");
+        }
+    } else if let Some(arr) = parent.as_array_mut() {
+        let index: usize = unescaped
+            .parse()
+            .with_context(|| format!("array index expected, got: {unescaped}"))?;
+        if index >= arr.len() {
+            bail!("array index out of bounds: {index}");
+        }
+        arr.remove(index);
+    } else {
+        bail!("parent is neither object nor array");
+    }
+    Ok(())
+}
+
 /// Replace section content, preserving markers and other sections.
-pub fn apply_section_update(base: &str, updates: &[SectionUpdate]) -> Result<String> {
+pub fn apply_section_update(
+    base: &str,
+    updates: &[SectionUpdate],
+    format: &str,
+    sections: Option<&[SectionDef]>,
+) -> Result<String> {
     let mut result = base.to_string();
 
     for update in updates {
-        let start_marker = format!("<!-- section:{} -->", update.id);
-        let end_marker = format!("<!-- /section:{} -->", update.id);
+        let section_def = find_section_def(sections, &update.id);
+        let (start_marker, _end_marker) = resolve_markers(&update.id, format, section_def)
+            .with_context(|| format!("cannot resolve markers for section: {}", update.id))?;
+        let (content_start, content_end) =
+            find_section_range(&result, &update.id, format, section_def)
+                .with_context(|| format!("section not found: {}", update.id))?;
 
-        let si = result
-            .find(&start_marker)
-            .with_context(|| format!("start marker not found for section: {}", update.id))?;
-        let ei = result
-            .find(&end_marker)
-            .with_context(|| format!("end marker not found for section: {}", update.id))?;
-
-        let before = &result[..si + start_marker.len()];
-        let after = &result[ei..];
-        result = format!("{}\n{}\n{}", before, update.content, after);
+        // Rebuild: everything up to and including start marker, new content, then from end marker
+        let marker_end_pos = result[..content_start]
+            .rfind(&start_marker)
+            .map(|pos| pos + start_marker.len())
+            .unwrap_or(content_start);
+        let before = &result[..marker_end_pos];
+        let after = &result[content_end..];
+        result = format!("{before}\n{}\n{after}", update.content);
     }
 
     Ok(result)
@@ -142,6 +262,8 @@ pub fn fill_template(template: &str, bindings: &HashMap<String, serde_json::Valu
 pub fn resolve_composite(
     includes: &[Include],
     store: &HashMap<String, String>,
+    format: &str,
+    sections: Option<&[SectionDef]>,
 ) -> Result<String> {
     let mut parts = Vec::new();
 
@@ -153,15 +275,11 @@ pub fn resolve_composite(
                 let content = store
                     .get(artifact_id)
                     .with_context(|| format!("referenced artifact not found: {artifact_id}"))?;
-                let start_marker = format!("<!-- section:{section_id} -->");
-                let end_marker = format!("<!-- /section:{section_id} -->");
-                let si = content
-                    .find(&start_marker)
-                    .with_context(|| format!("section not found: {section_id}"))?;
-                let ei = content
-                    .find(&end_marker)
-                    .with_context(|| format!("end marker not found: {section_id}"))?;
-                parts.push(content[si..ei + end_marker.len()].to_string());
+                let section_def = find_section_def(sections, section_id);
+                let (start, end) =
+                    find_section_range_inclusive(content, section_id, format, section_def)
+                        .with_context(|| format!("section not found: {section_id}"))?;
+                parts.push(content[start..end].to_string());
             } else {
                 let content = store
                     .get(reference.as_str())
@@ -185,19 +303,24 @@ pub fn resolve_composite(
 pub fn assemble_manifest(
     skeleton: &str,
     section_results: &HashMap<String, String>,
+    format: &str,
+    sections: Option<&[SectionDef]>,
 ) -> Result<String> {
     let mut result = skeleton.to_string();
     for (section_id, content) in section_results {
-        let start_marker = format!("<!-- section:{section_id} -->");
-        let end_marker = format!("<!-- /section:{section_id} -->");
-        let si = result
-            .find(&start_marker)
-            .with_context(|| format!("section marker not found in skeleton: {section_id}"))?;
-        let ei = result
-            .find(&end_marker)
-            .with_context(|| format!("end marker not found in skeleton: {section_id}"))?;
-        let before = &result[..si + start_marker.len()];
-        let after = &result[ei..];
+        let section_def = find_section_def(sections, section_id);
+        let (start_marker, _end_marker) = resolve_markers(section_id, format, section_def)
+            .with_context(|| format!("cannot resolve markers for section: {section_id}"))?;
+        let (content_start, content_end) =
+            find_section_range(&result, section_id, format, section_def)
+                .with_context(|| format!("section marker not found in skeleton: {section_id}"))?;
+
+        let marker_end_pos = result[..content_start]
+            .rfind(&start_marker)
+            .map(|pos| pos + start_marker.len())
+            .unwrap_or(content_start);
+        let before = &result[..marker_end_pos];
+        let after = &result[content_end..];
         result = format!("{before}\n{content}\n{after}");
     }
     Ok(result)
@@ -207,6 +330,8 @@ pub fn assemble_manifest(
 fn find_target_range(
     content: &str,
     target: &crate::aap::Target,
+    format: &str,
+    sections: Option<&[SectionDef]>,
 ) -> Result<(usize, usize)> {
     if let Some(search) = &target.search {
         let idx = content
@@ -230,15 +355,8 @@ fn find_target_range(
             .saturating_sub(1);
         Ok((start, end))
     } else if let Some(section) = &target.section {
-        let start_marker = format!("<!-- section:{section} -->");
-        let end_marker = format!("<!-- /section:{section} -->");
-        let si = content
-            .find(&start_marker)
-            .with_context(|| format!("section start not found: {section}"))?;
-        let ei = content
-            .find(&end_marker)
-            .with_context(|| format!("section end not found: {section}"))?;
-        Ok((si + start_marker.len(), ei))
+        let section_def = find_section_def(sections, section);
+        find_section_range(content, section, format, section_def)
     } else {
         bail!("target has no addressing mode")
     }
@@ -259,10 +377,11 @@ mod tests {
                 lines: None,
                 offsets: None,
                 section: None,
+                pointer: None,
             },
             content: Some("new value".to_string()),
         }];
-        let result = apply_diff(base, &ops).unwrap();
+        let result = apply_diff(base, &ops, "text/html", None).unwrap();
         assert_eq!(result, "<div>new value</div>");
     }
 
@@ -276,10 +395,11 @@ mod tests {
                 lines: None,
                 offsets: None,
                 section: None,
+                pointer: None,
             },
             content: None,
         }];
-        let result = apply_diff(base, &ops).unwrap();
+        let result = apply_diff(base, &ops, "text/html", None).unwrap();
         assert_eq!(result, "keep this, keep that");
     }
 
@@ -290,10 +410,37 @@ mod tests {
             id: "stats".to_string(),
             content: "new stats".to_string(),
         }];
-        let result = apply_section_update(base, &updates).unwrap();
+        let result = apply_section_update(base, &updates, "text/html", None).unwrap();
         assert!(result.contains("new stats"));
         assert!(result.contains("before"));
         assert!(result.contains("after"));
+    }
+
+    #[test]
+    fn test_apply_section_update_python() {
+        let base = "import os\n# region imports\nold imports\n# endregion imports\ncode";
+        let updates = vec![SectionUpdate {
+            id: "imports".to_string(),
+            content: "import sys\nimport json".to_string(),
+        }];
+        let result = apply_section_update(base, &updates, "text/x-python", None).unwrap();
+        assert!(result.contains("import sys\nimport json"));
+        assert!(result.contains("import os"));
+        assert!(result.contains("code"));
+    }
+
+    #[test]
+    fn test_apply_section_update_javascript() {
+        let base = "const a = 1;\n// #region utils\nold utils\n// #endregion utils\nconst b = 2;";
+        let updates = vec![SectionUpdate {
+            id: "utils".to_string(),
+            content: "function helper() {}".to_string(),
+        }];
+        let result =
+            apply_section_update(base, &updates, "application/javascript", None).unwrap();
+        assert!(result.contains("function helper() {}"));
+        assert!(result.contains("const a = 1;"));
+        assert!(result.contains("const b = 2;"));
     }
 
     #[test]
@@ -319,10 +466,126 @@ mod tests {
         let mut sections = HashMap::new();
         sections.insert("nav".to_string(), "<nav>Home</nav>".to_string());
         sections.insert("body".to_string(), "<h1>Hello</h1>".to_string());
-        let result = assemble_manifest(skeleton, &sections).unwrap();
+        let result = assemble_manifest(skeleton, &sections, "text/html", None).unwrap();
         assert!(result.contains("<nav>Home</nav>"));
         assert!(result.contains("<h1>Hello</h1>"));
         assert!(result.contains("<!-- section:nav -->"));
         assert!(result.contains("<!-- /section:body -->"));
+    }
+
+    #[test]
+    fn test_assemble_manifest_python() {
+        let skeleton = "# region header\n# endregion header\n# region body\n# endregion body";
+        let mut sections = HashMap::new();
+        sections.insert("header".to_string(), "import os".to_string());
+        sections.insert("body".to_string(), "print('hello')".to_string());
+        let result =
+            assemble_manifest(skeleton, &sections, "text/x-python", None).unwrap();
+        assert!(result.contains("import os"));
+        assert!(result.contains("print('hello')"));
+    }
+
+    #[test]
+    fn test_diff_with_section_target_python() {
+        let base = "# region config\nold_value = 1\n# endregion config\ncode";
+        let ops = vec![DiffOp {
+            op: OpType::Replace,
+            target: Target {
+                section: Some("config".to_string()),
+                search: None,
+                lines: None,
+                offsets: None,
+                pointer: None,
+            },
+            content: Some("new_value = 2".to_string()),
+        }];
+        let result = apply_diff(base, &ops, "text/x-python", None).unwrap();
+        assert!(result.contains("new_value = 2"));
+        assert!(!result.contains("old_value"));
+    }
+
+    #[test]
+    fn test_pointer_replace() {
+        let base = r#"{"name": "Alice", "age": 30}"#;
+        let ops = vec![DiffOp {
+            op: OpType::Replace,
+            target: Target {
+                pointer: Some("/name".to_string()),
+                search: None,
+                lines: None,
+                offsets: None,
+                section: None,
+            },
+            content: Some(r#""Bob""#.to_string()),
+        }];
+        let result = apply_diff(base, &ops, "application/json", None).unwrap();
+        let parsed: serde_json::Value = serde_json::from_str(&result).unwrap();
+        assert_eq!(parsed["name"], "Bob");
+        assert_eq!(parsed["age"], 30);
+    }
+
+    #[test]
+    fn test_pointer_delete() {
+        let base = r#"{"name": "Alice", "age": 30, "temp": true}"#;
+        let ops = vec![DiffOp {
+            op: OpType::Delete,
+            target: Target {
+                pointer: Some("/temp".to_string()),
+                search: None,
+                lines: None,
+                offsets: None,
+                section: None,
+            },
+            content: None,
+        }];
+        let result = apply_diff(base, &ops, "application/json", None).unwrap();
+        let parsed: serde_json::Value = serde_json::from_str(&result).unwrap();
+        assert!(parsed.get("temp").is_none());
+        assert_eq!(parsed["name"], "Alice");
+    }
+
+    #[test]
+    fn test_pointer_insert_after_array() {
+        let base = r#"{"items": ["a", "b", "c"]}"#;
+        let ops = vec![DiffOp {
+            op: OpType::InsertAfter,
+            target: Target {
+                pointer: Some("/items/1".to_string()),
+                search: None,
+                lines: None,
+                offsets: None,
+                section: None,
+            },
+            content: Some(r#""x""#.to_string()),
+        }];
+        let result = apply_diff(base, &ops, "application/json", None).unwrap();
+        let parsed: serde_json::Value = serde_json::from_str(&result).unwrap();
+        let items: Vec<&str> = parsed["items"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|v| v.as_str().unwrap())
+            .collect();
+        assert_eq!(items, vec!["a", "b", "x", "c"]);
+    }
+
+    #[test]
+    fn test_pointer_nested_replace() {
+        let base = r#"{"db": {"host": "localhost", "port": 5432}}"#;
+        let ops = vec![DiffOp {
+            op: OpType::Replace,
+            target: Target {
+                pointer: Some("/db/host".to_string()),
+                search: None,
+                lines: None,
+                offsets: None,
+                section: None,
+            },
+            content: Some(r#""prod.example.com""#.to_string()),
+        }];
+        let result = apply_diff(base, &ops, "application/json", None).unwrap();
+        let parsed: serde_json::Value = serde_json::from_str(&result).unwrap();
+        assert_eq!(parsed["db"]["host"], "prod.example.com");
+        assert_eq!(parsed["db"]["port"], 5432);
     }
 }
