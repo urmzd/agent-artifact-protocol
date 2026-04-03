@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.6.0 (2026-04-03)
+
+### Breaking Changes
+
+- **apply**: delegate envelope resolution to Rust FFI ([6e3d7d1](https://github.com/urmzd/agent-artifact-protocol/commit/6e3d7d132a0ffd3786b6a163ce3d9f63229062fc))
+- **schema**: introduce typed envelope discriminated unions ([545f415](https://github.com/urmzd/agent-artifact-protocol/commit/545f4151dc4a39031441fc941e70b0d6cc8cf055))
+
+### Documentation
+
+- **justfile**: add bind task and update provider defaults ([99c2571](https://github.com/urmzd/agent-artifact-protocol/commit/99c257114655e73f231f7d829612b52e419e101d))
+
+### Miscellaneous
+
+- **evals**: add HTML dashboard ecommerce evaluation data ([3a303b1](https://github.com/urmzd/agent-artifact-protocol/commit/3a303b1729b7ed9dd488fab8c7954cb736270c18))
+- generate python FFI extension from Rust apply engine ([5fe67e8](https://github.com/urmzd/agent-artifact-protocol/commit/5fe67e8ba7ddebab0ad533a6c078d61bf0752ac8))
+- **deps**: add maturin and cffi build dependencies ([f2db12b](https://github.com/urmzd/agent-artifact-protocol/commit/f2db12bd78ebf48acb22303c6f7ebe094ced6d0e))
+
+[Full Changelog](https://github.com/urmzd/agent-artifact-protocol/compare/v0.5.0...v0.6.0)
+
+
 ## 0.5.0 (2026-04-03)
 
 ### Features
