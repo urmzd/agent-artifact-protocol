@@ -11,6 +11,8 @@ dependencies = [
     "pydantic>=2.0",
     "ragas>=0.4",
     "aiohttp>=3.11",
+    "maturin>=1.8",
+    "cffi",
 ]
 
 [project.scripts]
@@ -23,5 +25,5 @@ build-backend = "maturin"
 [tool.maturin]
 manifest-path = "../Cargo.toml"
 features = ["python"]
-module-name = "aap_evals._engine"
+module-name = "aap_evals.aap"
 python-source = "src"
