@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Health Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f9;
+            color: #333;
+        }
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .dashboard-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        /* Navigation Styling */
+        #nav {
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        #nav a {
+            text-decoration: none;
+            color: #007bff;
+            margin-right: 20px;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        #nav a:hover {
+            background-color: #e9ecef;
+            color: #0056b3;
+        }
+        /* Statistics Cards */
+        #stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+        .stat-card {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            border-left: 5px solid;
+        }
+        .stat-card h3 {
+            margin-top: 0;
+            color: #555;
+            font-size: 1.1em;
+        }
+        .stat-value {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #007bff;
+            margin: 10px 0;
+        }
+        .stat-card.vitals { border-left-color: #28a745; }
+        .stat-card.labs { border-left-color: #ffc107; }
+        .stat-card.meds { border-left-color: #dc3545; }
+
+        /* Main Content Area */
+        #content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+        .data-panel {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        h2 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 0;
+            color: #333;
+        }
+        /* Vital Signs Display Specifics */
+        .vitals-list p {
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dotted #eee;
+        }
+        .vitals-list span {
+            font-weight: 500;
+        }
+
+        /* History Table */
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .history-table th, .history-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .history-table th {
+            background-color: #f8f9fa;
+            color: #666;
+        }
+        .history-table tr:hover {
+            background-color: #eef;
+        }
+
+        /* Footer */
+        #footer {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Central Health Dashboard</h1>
+        <p id="patient-name">Patient: Eleanor Vance | MRN: 783921</p>
+    </header>
+
+    <div class="dashboard-container">
+        
+        <aap:section id="nav">
+            <nav>
+                <a href="#vitals">Vitals Monitoring</a>
+                <a href="#labs">Lab Results</a>
+                <a href="#meds">Medications</a>
+                <a href="#encounter">Encounter Notes</a>
+            </nav>
+        </aap:section>
+
+        <aap:section id="stats">
+            <div class="stat-card vitals">
+                <h3>Heart Rate (BPM)</h3>
+                <div class="stat-value">72</div>
+                <p style="color: #28a745; font-size: 0.9em;">Normal Range</p>
+            </div>
+            <div class="stat-card vitals">
+                <h3>Blood Pressure</h3>
+                <div class="stat-value">128/78</div>
+                <p style="color: #28a745; font-size: 0.9em;">Stable</p>
+            </div>
+            <div class="stat-card labs">
+                <h3>Oxygen Saturation</h3>
+                <div class="stat-value">97%</div>
+                <p style="color: #ffc107; font-size: 0.9em;">Good</p>
+            </div>
+            <div class="stat-card meds">
+                <h3>Allergies</h3>
+                <div class="stat-value">Penicillin</div>
+                <p style="color: #dc3545; font-size: 0.9em;">Rash (Mild)</p>
+            </div>
+        </aap:section>
+
+        <aap:section id="content">
+            
+            <!-- Left Column: Vitals and History -->
+            <div class="data-panel" id="vitals">
+                <h2>Vital Signs Monitoring</h2>
+                <div class="vitals-list">
+                    <p><span>Temperature:</span> <span>98.8°F</span></p>
+                    <p><span>Respiratory Rate:</span> <span>16 breaths/min</span></p>
+                    <p><span>Pain Level (0-10):</span> <span>3</span></p>
+                    <p><span>Last Checked:</span> <span>2024-07-21 09:30 AM</span></p>
+                </div>
+
+                <h3 style="margin-top: 25px;">Recent Vitals Trend</h3>
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>HR</th>
+                            <th>BP</th>
+                            <th>SPO2</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>2024-07-20</td><td>75</td><td>120/76</td><td>98%</td></tr>
+                        <tr><td>2024-07-21</td><td>72</td><td>128/78</td><td>97%</td></tr>
+                        <tr><td>2024-07-22</td><td>70</td><td>122/77</td><td>99%</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Right Column: Labs and Medications -->
+            <div class="data-panel" id="labs">
+                <h2>Latest Lab Results (Blood Panel)</h2>
+                <p><strong>Date Collected:</strong> 2024-07-21</p>
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Test</th>
+                            <th>Result</th>
+                            <th>Unit</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Hemoglobin</td><td>11.5</td><td>g/dL</td><td style="color: green;">Normal</td></tr>
+                        <tr><td>Glucose</td><td>95</td><td>mg/dL</td><td style="color: green;">Normal</td></tr>
+                        <tr><td>Creatinine</td><td>1.1</td><td>mg/dL</td><td style="color: green;">Normal</td></tr>
+                        <tr><td>Potassium</td><td>4.2</td><td>mmol/L</td><td style="color: green;">Normal</td></tr>
+                    </tbody>
+                </table>
+                <button style="margin-top: 20px; background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer;">View Full Report</button>
+            </div>
+        </aap:section>
+
+        <div style="display: flex; gap: 20px;">
+            <!-- Third Column/Wide Area: Medications -->
+            <div class="data-panel" id="meds" style="flex: 1 1 30%;">
+                <h2>Active Medications</h2>
+                <ul style="list-style-type: none; padding: 0;">
+                    <li style="padding: 10px; border: 1px solid #eee; margin-bottom: 10px; border-radius: 4px;">
+                        <strong>Lisinopril</strong> <span style="float: right; color: #007bff;">10mg</span>
+                        <p style="font-size: 0.9em; margin: 5px 0 0;">Take 1 tablet daily in the morning.</p>
+                    </li>
+                    <li style="padding: 10px; border: 1px solid #eee; margin-bottom: 10px; border-radius: 4px;">
+                        <strong>Metformin</strong> <span style="float: right; color: #007bff;">500mg</span>
+                        <p style="font-size: 0.9em; margin: 5px 0 0;">Take 2 tablets twice daily with meals.</p>
+                    </li>
+                    <li style="padding: 10px; border: 1px solid #eee; margin-bottom: 10px; border-radius: 4px; background-color: #fff3cd;">
+                        <strong>Vitamin D</strong> <span style="float: right; color: #007bff;">1000 IU</span>
+                        <p style="font-size: 0.9em; margin: 5px 0 0;">Take 1 capsule daily.</p>
+                    </li>
+                </ul>
+                <p style="margin-top: 20px;"><a href="#" style="color: #dc3545;">[Review Medication List]</a></p>
+            </div>
+
+            <!-- Fourth Column/Wide Area: Encounter Notes -->
+            <div class="data-panel" id="encounter" style="flex: 1 1 40%;">
+                <h2>Latest Physician Notes</h2>
+                <p><strong>Provider:</strong> Dr. Angela Ramirez, MD</p>
+                <p><strong>Date:</strong> 2024-07-21</p>
+                <h4 style="margin-top: 15px;">Summary:</h4>
+                <p style="font-size: 0.95em; line-height: 1.6;">
+                    Patient stable in the telemetry unit following minor GI upset. Vitals remain within acceptable parameters. 
+                    Continue current regimen of antihypertensives and continue cardiac monitoring per protocol. 
+                    Follow-up required with Cardiology in two weeks. Diet consultation recommended.
+                </p>
+                <h4 style="margin-top: 20px;">Plan:</h4>
+                <ol style="padding-left: 20px;">
+                    <li>Continue current medications.</li>
+                    <li>Monitor electrolytes closely.</li>
+                    <li>Physical therapy scheduled for tomorrow morning.</li>
+                </ol>
+            </div>
+        </div>
+        
+    </div>
+
+    <aap:section id="footer">
+        <div id="footer">
+            <small>&copy; 2024 HealthConnect Dashboard. For informational purposes only. Data accurate as of today's session.</small>
+        </div>
+    </aap:section>
+
+</body>
+</html>
