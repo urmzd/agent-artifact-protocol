@@ -164,4 +164,9 @@ Fixed 30-char chunks          2,169        30.0       0.1      23,220k
 
 ## License
 
-Apache 2.0 — see [LICENSE](LICENSE).
+This project is dual-licensed:
+
+- **Code** (`src/`, `tools/`, `benches/`, build files) — [Apache License 2.0](LICENSE)
+- **Specification & docs** (`spec/`, `assets/`, documentation) — [CC-BY 4.0](LICENSE-CC-BY-4.0)
+
+See [NOTICE](NOTICE) for details. Attribution is required under both licenses.

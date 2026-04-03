@@ -1,0 +1,15 @@
+Agent-Artifact Protocol (AAP)
+Copyright 2025-2026 Urmzd Mukhammadnaim
+
+This project is dual-licensed:
+
+  - Source code (src/, tools/, benches/, and build files) is licensed under
+    the Apache License, Version 2.0. See LICENSE for the full text.
+
+  - The protocol specification (spec/), documentation, and visual assets
+    (assets/) are licensed under the Creative Commons Attribution 4.0
+    International License (CC-BY 4.0). See LICENSE-CC-BY-4.0 for the
+    full text.
+
+You must comply with the applicable license for the material you use.
+Attribution is required under both licenses.
