@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aap.dev/schemas/artifact.json",
+  "title": "Artifact",
+  "description": "The actual content being managed — a standalone object, not an envelope.",
+  "type": "object",
+  "required": ["id", "version", "format", "body"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Unique artifact identifier"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Current version number"
+    },
+    "format": {
+      "type": "string",
+      "pattern": "^[a-z]+/[a-z0-9.+-]+$",
+      "description": "MIME type of the artifact content"
+    },
+    "body": {
+      "type": "string",
+      "description": "Full artifact content"
+    }
+  }
+}

@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://aap.dev/schemas/diff-operation.json",
-  "title": "Diff Operation",
-  "description": "A single diff operation applied to an artifact",
+  "title": "Edit Operation",
+  "description": "A single edit operation applied to an artifact. Target addressing uses a discriminated union with type and value fields.",
   "type": "object",
   "required": ["op", "target"],
   "properties": {
@@ -13,67 +13,21 @@
     },
     "target": {
       "type": "object",
-      "description": "Target addressing — exactly one mode must be used",
-      "oneOf": [
-        {
-          "required": ["section"],
-          "properties": {
-            "section": {
-              "type": "string",
-              "description": "Target section by ID"
-            }
-          },
-          "additionalProperties": false
+      "description": "Target addressing — discriminated union on type field",
+      "required": ["type", "value"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["id", "pointer"],
+          "description": "Addressing mode: id (aap:target marker) or pointer (JSON Pointer RFC 6901)"
         },
-        {
-          "required": ["lines"],
-          "properties": {
-            "lines": {
-              "type": "array",
-              "items": { "type": "integer", "minimum": 1 },
-              "minItems": 2,
-              "maxItems": 2,
-              "description": "Line range [start, end] (1-indexed, inclusive)"
-            }
-          },
-          "additionalProperties": false
-        },
-        {
-          "required": ["offsets"],
-          "properties": {
-            "offsets": {
-              "type": "array",
-              "items": { "type": "integer", "minimum": 0 },
-              "minItems": 2,
-              "maxItems": 2,
-              "description": "Character offset range [start, end) (0-indexed, exclusive end)"
-            }
-          },
-          "additionalProperties": false
-        },
-        {
-          "required": ["search"],
-          "properties": {
-            "search": {
-              "type": "string",
-              "minLength": 1,
-              "description": "Literal text to find (first occurrence)"
-            }
-          },
-          "additionalProperties": false
-        },
-        {
-          "required": ["pointer"],
-          "properties": {
-            "pointer": {
-              "type": "string",
-              "pattern": "^(/[^/]*)*$",
-              "description": "JSON Pointer path (RFC 6901) targeting a value in JSON/YAML content"
-            }
-          },
-          "additionalProperties": false
+        "value": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Target identifier or JSON Pointer path"
         }
-      ]
+      },
+      "additionalProperties": false
     },
     "content": {
       "type": "string",

@@ -18,18 +18,19 @@ Targets nest — coarse blocks contain fine-grained value targets:
 ```
 
 Target IDs describe the role, not the current value (e.g., "total-revenue" not "12345").
+Place targets where values are most likely to be revised.
 
-## AAP Diff Envelope
+## AAP Edit Envelope
 
-To edit an artifact, produce a JSON envelope with `name: "diff"`:
+To edit an artifact, produce a JSON envelope with `name: "edit"`:
 
 ```json
 {
   "protocol": "aap/0.1",
   "id": "artifact-id",
   "version": 2,
-  "name": "diff",
-  "operation": {"direction": "output", "format": "text/html"},
+  "name": "edit",
+  "operation": {"direction": "input", "format": "text/html"},
   "content": [
     {"op": "replace", "target": {"type": "id", "value": "revenue-value"}, "content": "$15,720"}
   ]
