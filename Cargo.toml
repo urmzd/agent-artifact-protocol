@@ -2,6 +2,13 @@
 name = "aap"
 version = "0.3.0"
 edition = "2021"
+description = "Agent-Artifact Protocol — token-efficient artifact generation, updates, and streaming for LLMs"
+license = "Apache-2.0"
+repository = "https://github.com/urmzd/artifact-protocol"
+homepage = "https://github.com/urmzd/artifact-protocol"
+readme = "README.md"
+keywords = ["agent-artifact-protocol", "llm", "artifact", "streaming", "diff"]
+categories = ["command-line-utilities", "text-processing"]
 
 [lib]
 name = "aap"
