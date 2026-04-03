@@ -10,6 +10,9 @@ Include:
 
 Use section IDs: progress-bar, step-personal, step-address, step-payment, step-review
 
+Use AAP section markers to delineate each major content block.
+Wrap each logical section with `<aap:section id="ID">` and `</aap:section>`.
+
 All CSS and JS inline. Clean form design with validation styling.
 
 Output raw code only. No markdown fences, no explanation.

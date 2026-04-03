@@ -4,4 +4,8 @@ Include getting started (fork, clone, install, run tests), development workflow 
 
 Use section IDs: getting-started, workflow, standards
 
+Use AAP section markers to delineate each major content block.
+Wrap each logical section with `<aap:section id="ID">` and `</aap:section>`.
+
+
 Output raw code only. No markdown fences, no explanation.

@@ -9,6 +9,9 @@ Include:
 
 Use section IDs: header, addresses, line-items, totals
 
+Use AAP section markers to delineate each major content block.
+Wrap each logical section with `<aap:section id="ID">` and `</aap:section>`.
+
 All CSS inline. Print-friendly layout, max width 800px.
 
 Output raw code only. No markdown fences, no explanation.

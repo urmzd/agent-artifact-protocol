@@ -9,6 +9,9 @@ Include:
 
 Use section IDs: hero, features, pricing, testimonials, footer
 
+Use AAP section markers to delineate each major content block.
+Wrap each logical section with `<aap:section id="ID">` and `</aap:section>`.
+
 All CSS inline. Modern, polished SaaS landing page aesthetic.
 
 Output raw code only. No markdown fences, no explanation.

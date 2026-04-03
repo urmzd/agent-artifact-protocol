@@ -8,6 +8,9 @@ Include:
 
 Use section IDs: header, featured, articles, footer
 
+Use AAP section markers to delineate each major content block.
+Wrap each logical section with `<aap:section id="ID">` and `</aap:section>`.
+
 Table-based layout for email clients. Inline styles only. Max width 600px.
 
 Output raw code only. No markdown fences, no explanation.

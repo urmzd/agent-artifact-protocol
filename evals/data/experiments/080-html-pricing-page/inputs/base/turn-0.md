@@ -9,6 +9,9 @@ Include:
 
 Use section IDs: header, toggle, pricing-cards, comparison-table, faq
 
+Use AAP section markers to delineate each major content block.
+Wrap each logical section with `<aap:section id="ID">` and `</aap:section>`.
+
 All CSS and JS inline. Highlight the "Professional" plan as recommended.
 
 Output raw code only. No markdown fences, no explanation.

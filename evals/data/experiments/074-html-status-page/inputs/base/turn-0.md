@@ -9,6 +9,9 @@ Include:
 
 Use section IDs: header, current-status, services, incidents, uptime-history
 
+Use AAP section markers to delineate each major content block.
+Wrap each logical section with `<aap:section id="ID">` and `</aap:section>`.
+
 All CSS inline. Clean, minimal design with green/yellow/red status colors.
 
 Output raw code only. No markdown fences, no explanation.
