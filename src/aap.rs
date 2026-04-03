@@ -1,12 +1,21 @@
 //! Agent-Artifact Protocol (AAP) data model — Rust implementation of aap/0.1.
 //!
-//! Provides serde-compatible types for envelopes, diff operations, section
-//! updates, template bindings, chunk frames, and token budgets.
+//! Four envelope types: `synthesize` (full generation), `edit` (targeted changes),
+//! `handle` (lightweight reference), `handle_result` (response from handle interaction).
 
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 
 pub const PROTOCOL_VERSION: &str = "aap/0.1";
+
+/// Operation name — four types: synthesize, edit, handle, handle_result.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum Name {
+    Synthesize,
+    Edit,
+    Handle,
+    HandleResult,
+}
 
 /// Artifact lifecycle state.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -17,23 +26,6 @@ pub enum ArtifactState {
     Archived,
 }
 
-/// Operation name — discriminator for envelope content shape.
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-#[serde(rename_all = "lowercase")]
-pub enum Name {
-    Full,
-    Diff,
-    Section,
-    Template,
-    Composite,
-    Manifest,
-    Handle,
-    Projection,
-    Intent,
-    Result,
-    Audit,
-}
-
 /// Token budget constraints.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TokenBudget {
@@ -42,12 +34,9 @@ pub struct TokenBudget {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub priority: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub max_sections: Option<u64>,
 }
 
-/// Operation metadata object (Section 3.1.1 of spec).
+/// Operation metadata object.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Operation {
     pub direction: String,
@@ -60,9 +49,6 @@ pub struct Operation {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub content_encoding: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub section_id: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub token_budget: Option<TokenBudget>,
@@ -86,11 +72,7 @@ pub struct Operation {
     pub state_changed_at: Option<String>,
 }
 
-/// Top-level envelope wrapping all protocol payloads.
-///
-/// The `content` field is always an array of objects whose shape
-/// depends on `name`. We store it as raw JSON values and parse
-/// per-name in the resolve engine.
+/// Top-level envelope.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Envelope {
     pub protocol: String,
@@ -102,53 +84,48 @@ pub struct Envelope {
 }
 
 impl Envelope {
-    /// Check whether this JSON string looks like a protocol envelope.
     pub fn is_envelope(s: &str) -> bool {
         let trimmed = s.trim_start();
         trimmed.starts_with('{') && trimmed.contains("\"aap/")
     }
 
-    /// Parse from JSON string.
     pub fn from_json(s: &str) -> Result<Self, serde_json::Error> {
         serde_json::from_str(s)
     }
 }
 
-/// Section definition within an artifact.
+/// Target definition — metadata about a named target in the artifact.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct SectionDef {
+pub struct TargetDef {
     pub id: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub label: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub start_marker: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub end_marker: Option<String>,
 }
 
-/// Content item for `name: "full"`.
+/// Content item for `name: "synthesize"`.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct FullContentItem {
+pub struct SynthesizeContentItem {
     pub body: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub sections: Option<Vec<SectionDef>>,
+    pub targets: Option<Vec<TargetDef>>,
 }
 
-/// A single diff operation.
+/// Target addressing for edit operations — discriminated union on `type`.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct DiffOp {
-    pub op: OpType,
-    pub target: Target,
+#[serde(tag = "type", content = "value")]
+pub enum Target {
+    /// Target an `<aap:target id="...">` marker by ID.
+    #[serde(rename = "id")]
+    Id(String),
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub content: Option<String>,
+    /// Target a value by JSON Pointer (RFC 6901).
+    #[serde(rename = "pointer")]
+    Pointer(String),
 }
 
-/// Diff operation type.
+/// Edit operation type.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum OpType {
@@ -158,111 +135,29 @@ pub enum OpType {
     Delete,
 }
 
-/// Target addressing for diff operations.
+/// A single edit operation (content item for `name: "edit"`).
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Target {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub section: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub lines: Option<[u64; 2]>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub offsets: Option<[u64; 2]>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub search: Option<String>,
-
-    /// JSON Pointer path (RFC 6901) for targeting values in JSON/YAML content.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub pointer: Option<String>,
-}
-
-/// Section content replacement.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct SectionUpdate {
-    pub id: String,
-    pub content: String,
-}
-
-/// Content item for `name: "template"`.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TemplateContentItem {
-    pub template: String,
-    pub bindings: HashMap<String, serde_json::Value>,
-}
-
-/// Include reference for composite mode.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Include {
-    #[serde(rename = "ref", skip_serializing_if = "Option::is_none")]
-    pub reference: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub uri: Option<String>,
+pub struct DiffOp {
+    pub op: OpType,
+    pub target: Target,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub content: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub hash: Option<String>,
 }
 
-/// Content item for `name: "manifest"`.
+/// Content item for `name: "handle"`.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ManifestContentItem {
-    pub skeleton: String,
-    pub section_prompts: Vec<SectionPromptDef>,
-}
-
-/// Per-section generation instruction in a manifest.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct SectionPromptDef {
-    pub id: String,
-    pub prompt: String,
-
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub dependencies: Vec<String>,
+pub struct HandleContentItem {
+    pub sections: Vec<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub token_budget: Option<u64>,
-}
-
-/// SSE error event payload.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct SseError {
-    pub code: String,
-    pub message: String,
-    #[serde(default, skip_serializing_if = "is_false")]
-    pub fatal: bool,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub seq: Option<u64>,
-}
-
-/// Streaming chunk frame.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ChunkFrame {
-    pub seq: u64,
-    pub content: String,
+    pub token_count: Option<u64>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub envelope: Option<serde_json::Value>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub section_id: Option<String>,
-
-    #[serde(default, skip_serializing_if = "is_false")]
-    pub flush: bool,
-
-    #[serde(default, rename = "final", skip_serializing_if = "is_false")]
-    pub is_final: bool,
+    pub state: Option<ArtifactState>,
 }
 
-fn is_false(b: &bool) -> bool {
-    !b
-}
-
-/// Result status for edit operations.
+/// Result status for edit operations (used in handle_result).
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
 pub enum ResultStatus {
@@ -272,42 +167,30 @@ pub enum ResultStatus {
     Conflict,
 }
 
-/// Description of a single change within a result.
+/// Description of a single change within a handle_result.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ChangeDescription {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub section_id: Option<String>,
+    pub target_id: Option<String>,
     pub description: String,
 }
 
-/// Content item for `name: "handle"`.
+/// Content item for `name: "handle_result"` — discriminated union on `type`.
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct HandleContentItem {
-    pub sections: Vec<SectionDef>,
+#[serde(tag = "type")]
+pub enum HandleResultContentItem {
+    /// Free-form text response (answers, descriptions).
+    #[serde(rename = "text")]
+    Text { body: String },
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub token_count: Option<u64>,
+    /// Edit confirmation with status and change descriptions.
+    #[serde(rename = "edit")]
+    Edit {
+        status: ResultStatus,
+        changes: Vec<ChangeDescription>,
+    },
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub state: Option<ArtifactState>,
-}
-
-/// Content item for `name: "result"`.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ResultContentItem {
-    pub status: ResultStatus,
-    pub mode_used: Name,
-    pub changes: Vec<ChangeDescription>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub tokens_used: Option<u64>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub rejection_reason: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub conflict_detail: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub checksum: Option<String>,
+    /// Error or rejection response.
+    #[serde(rename = "error")]
+    Error { code: String, message: String },
 }
