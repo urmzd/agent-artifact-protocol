@@ -30,7 +30,7 @@ To edit an artifact, produce a JSON envelope with `name: "edit"`:
   "id": "artifact-id",
   "version": 2,
   "name": "edit",
-  "operation": {"direction": "input", "format": "text/html"},
+  "meta": {"format": "text/html"},
   "content": [
     {"op": "replace", "target": {"type": "id", "value": "revenue-value"}, "content": "$15,720"}
   ]
