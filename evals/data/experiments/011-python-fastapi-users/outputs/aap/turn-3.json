@@ -1,0 +1,18 @@
+{
+  "protocol": "aap/0.1",
+  "id": "user-module",
+  "version": 2,
+  "name": "synthesize",
+  "operation": {
+    "direction": "output",
+    "format": "application/json",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "body": "{\n  \"protocol\": \"aap/0.1\",\n  \"id\": \"user-module\",\n  \"version\": 2,\n  \"name\": \"edit\",\n  \"operation\": {\"direction\": \"input\", \"format\": \"text/html\"},\n  \"content\": [\n    {\n      \"op\": \"insert_after\",\n      \"target\": {\"type\": \"id\", \"value\": \"router\"},\n      \"content\": \"\n\n@router.patch(\\\"/{id}/deactivate\\\", response_model=UserResponse)\ndef deactivate(id: int, db: Session = Depends()):\n    user = get_user(db, id)\n    if not user:\n        raise HTTPException(status_code=404, detail=\\\"User not found\\\")\n    user.is_active = False\n    db.commit()\n    db.refresh(user)\n    return user\"\n    }\n  ]\n}"
+    }
+  ]
+}

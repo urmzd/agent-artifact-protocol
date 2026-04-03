@@ -1,0 +1,18 @@
+{
+  "protocol": "aap/0.1",
+  "id": "pricing-page-full",
+  "version": 1,
+  "name": "synthesize",
+  "operation": {
+    "direction": "output",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "body": "<div id=\"pricing-page\">\n  <aap:target id=\"integrations\">\n    <section style=\"max-width: 1100px; margin: 40px auto; padding: 20px;\">\n      <h2>Integrations</h2>\n      <div style=\"display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; text-align: center;\">\n        <div style=\"padding: 20px; border: 1px solid #ddd; border-radius: 8px;\">Logo 1<br>Name</div>\n        <div style=\"padding: 20px; border: 1px solid #ddd; border-radius: 8px;\">Logo 2<br>Name</div>\n        <div style=\"padding: 20px; border: 1px solid #ddd; border-radius: 8px;\">Logo 3<br>Name</div>\n        <div style=\"padding: 20px; border: 1px solid #ddd; border-radius: 8px;\">Logo 4<br>Name</div>\n        <div style=\"padding: 20px; border: 1px solid #ddd; border-radius: 8px;\">Logo 5<br>Name</div>\n        <div style=\"padding: 20px; border: 1px solid #ddd; border-radius: 8px;\">Logo 6<br>Name</div>\n        <div style=\"padding: 20px; border: 1px solid #ddd; border-radius: 8px;\">Logo 7<br>Name</div>\n        <div style=\"padding: 20px; border: 1px solid #ddd; border-radius: 8px;\">Logo 8<br>Name</div>\n      </div>\n    </section>\n  </aap:target>\n  <aap:target id=\"pricing-tiers\">\n    <div style=\"max-width: 1100px; margin: auto; display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;\">\n      <div style=\"flex: 1; min-width: 200px; background: white; padding: 30px; border-radius: 8px; border: 1px solid #ddd;\">\n        <h3>Free</h3>\n        <p style=\"font-size: 2rem; font-weight: bold;\"><aap:target id=\"price-free\">$0</aap:target></p>\n        <p>For individuals.</p>\n      </div>\n      <div style=\"flex: 1; min-width: 200px; background: white; padding: 30px; border-radius: 8px; border: 1px solid #ddd;\">\n        <h3>Starter</h3>\n        <p style=\"font-size: 2rem; font-weight: bold;\"><aap:target id=\"price-starter\">$19</aap:target></p>\n        <p>For professionals.</p>\n      </div>\n      <div style=\"flex: 1; min-width: 200px; background: #764ba2; color: white; padding: 30px; border-radius: 8px;\">\n        <h3>Pro</h3>\n        <p style=\"font-size: 2rem; font-weight: bold;\"><aap:target id=\"price-pro\">$49</aap:target></p>\n        <p>For growing teams.</p>\n      </div>\n      <div style=\"flex: 1; min-width: 200px; background: white; padding: 30px; border-radius: 8px; border: 1px solid #ddd;\">\n        <h3>Enterprise</h3>\n        <p style=\"font-size: 2rem; font-weight: bold;\"><aap:target id=\"price-enterprise\">Custom</aap:target></p>\n        <p>For large organizations.</p>\n      </div>\n    </div>\n  </aap:target>\n</div>"
+    }
+  ]
+}

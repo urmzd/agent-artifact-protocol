@@ -1,0 +1,23 @@
+{
+  "protocol": "aap/0.1",
+  "id": "a72814b6-793e-4054-97c7-c79b92209d02",
+  "version": 1,
+  "name": "edit",
+  "operation": {
+    "direction": "input",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "bounce-rate"
+      },
+      "content": "34.2% <small style=\"color: green; font-size: 0.9rem;\">(-5.1%)</small>"
+    }
+  ]
+}

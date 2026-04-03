@@ -1,0 +1,23 @@
+{
+  "protocol": "aap/0.1",
+  "id": "portfolio-container",
+  "version": 1,
+  "name": "edit",
+  "operation": {
+    "direction": "input",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "projects"
+      },
+      "content": "    <section id=\"projects\" style=\"padding: 4rem 2rem; background: #111;\">\n      <h2 style=\"text-align: center;\">Projects</h2>\n      <div style=\"display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 1200px; margin: auto;\">\n        <aap:target id=\"project-list\"><div style=\"padding: 1.5rem; border: 1px solid #333; border-radius: 8px;\"><h3>Project 1</h3><p>Description</p></div>\n          <div style=\"padding: 1.5rem; border: 1px solid #333; border-radius: 8px;\"><h3>Project 2</h3><p>Description</p></div>\n          <div style=\"padding: 1.5rem; border: 1px solid #333; border-radius: 8px;\"><h3>Project 3</h3><p>Description</p></div>\n          <div style=\"padding: 1.5rem; border: 1px solid #333; border-radius: 8px;\"><h3>Project 4</h3><p>Description</p></div>\n          <div style=\"padding: 1.5rem; border: 1px solid #333; border-radius: 8px;\"><h3>Project 5</h3><p>Description</p></div>\n          <div style=\"padding: 1.5rem; border: 1px solid #333; border-radius: 8px;\"><h3>Project 6</h3><p>Description</p></div>\n          <div style=\"padding: 1.5rem; border: 1px solid #333; border-radius: 8px;\"><h3>Kubernetes Autoscaler</h3><p>Tech: Go, Kubernetes, Prometheus</p></div>\n          <div style=\"padding: 1.5rem; border: 1px solid #333; border-radius: 8px;\"><h3>GraphQL Gateway</h3><p>Tech: Apollo, Node.js, Redis</p></div></aap:target>\n      </div>\n    </section>\n\n    <section id=\"blog\" style=\"padding: 4rem 2rem; max-width: 900px; margin: auto;\">\n      <h2 style=\"text-align: center;\">Recent Blog Posts</h2>\n      <aap:target id=\"blog-list\">\n        <div style=\"margin-bottom: 2rem; border-bottom: 1px solid #333; padding-bottom: 1rem;\">\n          <h3 style=\"margin-bottom: 0.2rem;\">Understanding Kubernetes Networking</h3>\n          <small style=\"color: #888;\">Oct 12, 2023</small>\n          <p>A deep dive into how pods communicate within a cluster and common troubleshooting patterns.</p>\n        </div>\n        <div style=\"margin-bottom: 2rem; border-bottom: 1px solid #333; padding-bottom: 1rem;\">\n          <h3 style=\"margin-bottom: 0.2rem;\">Optimizing GraphQL Queries</h3>\n          <small style=\"color: #888;\">Sep 28, 2023</small>\n          <p>Techniques for reducing latency and preventing N+1 problems in your GraphQL API.</p>\n        </div>\n        <div style=\"margin-bottom: 2rem; border-bottom: 1px solid #333; padding-bottom: 1rem;\">\n          <h3 style=\"margin-bottom: 0.2rem;\">My Journey to Cloud Architecture</h3>\n          <small style=\"color: #888;\">Sep 15, 2023</small>\n          <p>Reflections on the transition from traditional backend development to cloud-native systems.</p>\n        </div>\n      </aap:target>\n    </section>\n"
+    }
+  ]
+}

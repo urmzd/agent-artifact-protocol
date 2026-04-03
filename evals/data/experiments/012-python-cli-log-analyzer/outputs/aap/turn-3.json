@@ -1,0 +1,18 @@
+{
+  "protocol": "aap/0.1",
+  "id": "log-analyzer-script",
+  "version": 3,
+  "name": "synthesize",
+  "operation": {
+    "direction": "output",
+    "format": "text/x-python",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "body": "import argparse\nimport json\nimport csv\nfrom datetime import datetime\nfrom collections import Counter\n\n<aap:target id=\"parser-logic\">\ndef parse_line(line):\n    # Basic dummy parser assuming format: [TIMESTAMP] LEVEL MESSAGE\n    try:\n        parts = line.split(' ', 2)\n        return {\n            'timestamp': datetime.fromisoformat(parts[0].strip('[]')),\n            'level': parts[1],\n            'message': parts[2]\n        }\n    except:\n        return None\n</aap:target>\n\n<aap:target id=\"analysis-logic\">\ndef analyze_logs(logs, limit):\n    return Counter([log['level'] for log in logs]).most_common(limit)\n</aap:target>\n\n<aap:target id=\"formatting-logic\">\ndef format_output(results, format_type):\n    if format_type == 'json':\n        print(json.dumps(results, indent=2))\n    elif format_type == 'csv':\n        writer = csv.writer(import sys)\n        writer.writerow(['Level', 'Count'])\n        writer.writerows(results)\n    else:\n        # Using box-drawing characters\n        print(\"┌───────┬───────┐\")\n        print(\"│ Level │ Count │\")\n        print(\"├───────┼───────┤\")\n        for level, count in results:\n            print(f\"│ {level:<5} │ {count:<5} │\")\n        print(\"└───────┴───────┘\")\n</aap:target>\n\n<aap:target id=\"main-execution\">\ndef main():\n    parser = argparse.ArgumentParser(description=\"Log Analyzer\")\n    parser.add_argument(\"file\", help=\"Path to log file\")\n    parser.add_argument(\"--format\", choices=['table', 'json', 'csv'], default='table')\n    parser.add_argument(\"--limit\", type=int, default=10)\n    parser.add_argument(\"--group-by\", choices=['hour', 'day', 'week'], help=\"Time-based grouping\")\n    args = parser.parse_args()\n\n    logs = []\n    with open(args.file, 'r') as f:\n        for line in f:\n            parsed = parse_line(line)\n            if parsed: logs.append(parsed)\n\n    results = analyze_logs(logs, args.limit)\n    # TODO: Implement grouping logic using args.group_by\n    format_output(results, args.format)\n</aap:target>\n\nif __name__ == \"__main__\":\n    main()\n"
+    }
+  ]
+}

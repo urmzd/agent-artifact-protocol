@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Analytics Dashboard</title>
+<style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f4f7f6; margin: 0; color: #333; }
+    nav { background: #fff; padding: 15px 20px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
+    .breadcrumbs { font-size: 14px; color: #666; }
+    .controls { display: flex; gap: 10px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; padding: 20px; }
+    .card { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .card h3 { margin: 0; font-size: 14px; color: #888; }
+    .card p { margin: 10px 0 0; font-size: 24px; font-weight: bold; }
+    .trend { font-size: 14px; margin-top: 5px; display: block; }
+    .trend.down { color: #27ae60; }
+    .main-container { padding: 0 20px 20px; display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; }
+    th { background: #f8f9fa; padding: 12px; text-align: left; font-size: 12px; border-bottom: 2px solid #eee; }
+    td { padding: 12px; border-bottom: 1px solid #eee; font-size: 13px; }
+    .scroll-box { height: 400px; overflow-y: auto; }
+</style>
+</head>
+<body>
+
+<nav>
+    <div class="breadcrumbs">Analytics / Overview / Traffic</div>
+    <div class="controls">
+        <input type="date" value="2023-10-01"> to <input type="date" value="2023-10-31">
+    </div>
+</nav>
+
+<div class="kpi-grid">
+    <div class="card"><h3>Page Views</h3><p>124,592</p></div>
+    <div class="card"><h3>Unique Visitors</h3><p>88,201</p></div>
+    <div class="card">
+        <h3>Bounce Rate</h3>
+        <p>34.2%</p>
+        <span class="trend down">▼ 5.1% improvement</span>
+    </div>
+    <div class="card"><h3>Avg Session</h3><p>03:12</p></div>
+</div>
+
+<div class="main-container">
+    <div>
+        <h3>Traffic Sources (50+ Rows)</h3>
+        <div class="scroll-box">
+            <table>
+                <thead><tr><th>Source</th><th>Medium</th><th>Sessions</th><th>Bounce</th><th>Conv.</th></tr></thead>
+                <tbody id="trafficTable"></tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div>
+        <h3>Top Referrers</h3>
+        <table>
+            <thead><tr><th>Referrer</th><th>Visits</th></tr></thead>
+            <tbody id="referrersTable"></tbody>
+        </table>
+        <h3 style="margin-top: 20px;">Geography</h3>
+        <table>
+            <thead><tr><th>Country</th><th>Users</th></tr></thead>
+            <tbody id="geoTable"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const sources = ['Google', 'Direct', 'Facebook', 'Twitter', 'LinkedIn', 'Bing', 'Instagram', 'DuckDuckGo'];
+    const table = document.getElementById('trafficTable');
+    for(let i=1; i<=55; i++) {
+        table.innerHTML += `<tr><td>${sources[i%sources.length]}</td><td>${i%2 ? 'organic' : 'referral'}</td><td>${Math.floor(Math.random()*1000)}</td><td>${(Math.random()*50+20).toFixed(1)}%</td><td>${Math.floor(Math.random()*50)}</td></tr>`;
+    }
+
+    const refs = document.getElementById('referrersTable');
+    for(let i=1; i<=20; i++) {
+        refs.innerHTML += `<tr><td>ref-site-${i}.com</td><td>${Math.floor(Math.random()*500)}</td></tr>`;
+    }
+
+    const geos = document.getElementById('geoTable');
+    const countries = ['USA', 'UK', 'Germany', 'Canada', 'India', 'France', 'Australia', 'Brazil', 'Japan', 'Italy', 'Spain', 'Mexico', 'Netherlands', 'Sweden', 'China', 'South Korea', 'Italy', 'Norway', 'Finland', 'Denmark', 'Switzerland', 'Poland', 'Belgium', 'Austria', 'Ireland', 'Singapore', 'Portugal', 'Greece', 'Vietnam', 'Thailand'];
+    countries.forEach(c => {
+        geos.innerHTML += `<tr><td>${c}</td><td>${Math.floor(Math.random()*5000)}</td></tr>`;
+    });
+</script>
+</body>
+</html>

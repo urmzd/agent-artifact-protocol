@@ -1,0 +1,23 @@
+{
+  "protocol": "aap/0.1",
+  "id": "user-module",
+  "version": 2,
+  "name": "edit",
+  "operation": {
+    "direction": "output",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "crud"
+      },
+      "content": "def list_users(db: Session, skip: int = 0, limit: int = 100, role: Optional[str] = None, is_active: Optional[bool] = None):\n    query = db.query(User)\n    if role:\n        query = query.filter(User.role == role)\n    if is_active is not None:\n        query = query.filter(User.is_active == is_active)\n    return query.offset(skip).limit(limit).all()"
+    }
+  ]
+}

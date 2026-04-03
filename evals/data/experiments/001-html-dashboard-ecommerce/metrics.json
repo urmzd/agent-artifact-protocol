@@ -4,13 +4,19 @@
   "provider": "google",
   "seed": 42,
   "temperature": 0,
-  "timestamp": "2026-04-03T05:29:51.340305+00:00",
+  "timestamp": "2026-04-03T05:38:26.832052+00:00",
   "format": "text/html",
-  "shared": {
-    "creation_input_tokens": 163,
-    "creation_output_tokens": 1396,
-    "creation_latency_ms": 4817,
-    "artifact_bytes": 4396
+  "base_turn0": {
+    "input_tokens": 163,
+    "output_tokens": 1274,
+    "latency_ms": 6108,
+    "artifact_bytes": 3927
+  },
+  "aap_turn0": {
+    "input_tokens": 502,
+    "output_tokens": 1074,
+    "latency_ms": 5967,
+    "artifact_bytes": 3327
   },
   "default_flow": {
     "system_prompt_tokens": 163,
@@ -18,39 +24,39 @@
       {
         "turn": 1,
         "edit": "Update the Total Revenue stat card to show $215,430 with a +12.3% trend indicato",
-        "input_tokens": 1587,
-        "output_tokens": 1414,
-        "latency_ms": 5720,
-        "output_bytes": 4482
+        "input_tokens": 1465,
+        "output_tokens": 1352,
+        "latency_ms": 6573,
+        "output_bytes": 4136
       },
       {
         "turn": 2,
         "edit": "Add 15 new rows to the orders table with recent order data from March 2026",
-        "input_tokens": 3024,
-        "output_tokens": 1567,
-        "latency_ms": 6635,
-        "output_bytes": 4947
+        "input_tokens": 2840,
+        "output_tokens": 1481,
+        "latency_ms": 7236,
+        "output_bytes": 4482
       },
       {
         "turn": 3,
         "edit": "Change the primary accent color from blue to purple (#8b5cf6) across all element",
-        "input_tokens": 4612,
-        "output_tokens": 1620,
-        "latency_ms": 7015,
-        "output_bytes": 5157
+        "input_tokens": 4342,
+        "output_tokens": 1543,
+        "latency_ms": 7615,
+        "output_bytes": 4699
       },
       {
         "turn": 4,
         "edit": "Add a new 'Recent Activity' section after the stats cards showing the last 10 us",
-        "input_tokens": 6254,
-        "output_tokens": 1753,
-        "latency_ms": 15559,
-        "output_bytes": 5617
+        "input_tokens": 5907,
+        "output_tokens": 1774,
+        "latency_ms": 7115,
+        "output_bytes": 5548
       }
     ],
-    "total_input_tokens": 15477,
-    "total_output_tokens": 6354,
-    "total_latency_ms": 34929
+    "total_input_tokens": 14554,
+    "total_output_tokens": 6150,
+    "total_latency_ms": 28539
   },
   "aap_flow": {
     "system_prompt_tokens": 0,
@@ -58,34 +64,34 @@
       {
         "turn": 1,
         "edit": "Update the Total Revenue stat card to show $215,430 with a +12.3% trend indicato",
-        "input_tokens": 2592,
-        "output_tokens": 225,
-        "latency_ms": 1487,
-        "output_bytes": 423,
+        "input_tokens": 2270,
+        "output_tokens": 114,
+        "latency_ms": 1341,
+        "output_bytes": 3370,
         "envelope_parsed": true,
         "apply_succeeded": true,
-        "envelope_name": "synthesize"
+        "envelope_name": "edit"
       },
       {
         "turn": 2,
         "edit": "Add 15 new rows to the orders table with recent order data from March 2026",
-        "input_tokens": 0,
-        "output_tokens": 0,
-        "latency_ms": 4184,
-        "output_bytes": 423,
+        "input_tokens": 2281,
+        "output_tokens": 300,
+        "latency_ms": 2454,
+        "output_bytes": 3444,
         "envelope_parsed": true,
-        "apply_succeeded": false,
+        "apply_succeeded": true,
         "envelope_name": "edit"
       },
       {
         "turn": 3,
         "edit": "Change the primary accent color from blue to purple (#8b5cf6) across all element",
-        "input_tokens": 0,
-        "output_tokens": 0,
-        "latency_ms": 1244,
-        "output_bytes": 423,
+        "input_tokens": 2341,
+        "output_tokens": 587,
+        "latency_ms": 2950,
+        "output_bytes": 4302,
         "envelope_parsed": true,
-        "apply_succeeded": false,
+        "apply_succeeded": true,
         "envelope_name": "edit"
       },
       {
@@ -93,22 +99,22 @@
         "edit": "Add a new 'Recent Activity' section after the stats cards showing the last 10 us",
         "input_tokens": 0,
         "output_tokens": 0,
-        "latency_ms": 2150,
-        "output_bytes": 423,
+        "latency_ms": 1874,
+        "output_bytes": 4302,
         "envelope_parsed": true,
         "apply_succeeded": false,
         "envelope_name": "edit"
       }
     ],
-    "total_input_tokens": 2592,
-    "total_output_tokens": 225,
-    "total_latency_ms": 9065,
+    "total_input_tokens": 6892,
+    "total_output_tokens": 1001,
+    "total_latency_ms": 8619,
     "envelope_parse_rate": 1.0,
-    "apply_success_rate": 0.25
+    "apply_success_rate": 0.75
   },
   "comparison": {
-    "output_token_savings_pct": 96.5,
-    "input_token_savings_pct": 83.3,
-    "latency_savings_pct": 74.0
+    "output_token_savings_pct": 83.7,
+    "input_token_savings_pct": 52.6,
+    "latency_savings_pct": 69.8
   }
 }

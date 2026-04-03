@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sprint 24 Kanban Board</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f5f7; margin: 0; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: white; padding: 15px 25px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .avatars { display: flex; gap: -5px; }
+        .avatar { width: 32px; height: 32px; background: #ddd; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; font-size: 12px; margin-left: -8px; }
+        .board { display: flex; gap: 20px; overflow-x: auto; align-items: flex-start; height: calc(100vh - 100px); }
+        .column { background: #ebecf0; width: 300px; min-width: 300px; border-radius: 8px; display: flex; flex-direction: column; max-height: 100%; }
+        .col-header { padding: 15px; font-weight: bold; color: #444; display: flex; justify-content: space-between; }
+        .col-1 { border-top: 4px solid #6c757d; }
+        .col-2 { border-top: 4px solid #007bff; }
+        .col-3 { border-top: 4px solid #ffc107; }
+        .col-4 { border-top: 4px solid #28a745; }
+        .card-list { padding: 0 10px 10px 10px; overflow-y: auto; flex-grow: 1; }
+        .card { background: white; padding: 12px; margin-bottom: 10px; border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); cursor: grab; }
+        .card:active { cursor: grabbing; }
+        .card h4 { margin: 0 0 8px 0; font-size: 14px; }
+        .priority { font-size: 10px; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; font-weight: bold; }
+        .p-high { background: #f8d7da; color: #721c24; }
+        .p-medium { background: #fff3cd; color: #856404; }
+        .p-low { background: #d4edda; color: #155724; }
+        .meta { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 11px; color: #666; }
+        .tag { background: #e2e8f0; padding: 2px 5px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Sprint 24</h1>
+    <div class="avatars">
+        <div class="avatar" style="background:#8e44ad">JD</div>
+        <div class="avatar" style="background:#2980b9">MS</div>
+        <div class="avatar" style="background:#27ae60">AK</div>
+    </div>
+    <div>
+        <button>All Tasks</button>
+        <button>My Tasks</button>
+    </div>
+</div>
+
+<div class="board">
+    <!-- Backlog -->
+    <div class="column col-1">
+        <div class="col-header">Backlog <span>6</span></div>
+        <div class="card-list">
+            <div class="card"><h4>API Authentication Refactor</h4><span class="priority p-high">High</span><div class="meta"><span>Oct 24</span><span class="tag">Backend</span></div></div>
+            <div class="card"><h4>Mobile View Responsive Fix</h4><span class="priority p-medium">Medium</span><div class="meta"><span>Oct 26</span><span class="tag">UI</span></div></div>
+            <div class="card"><h4>Database Index Optimization</h4><span class="priority p-low">Low</span><div class="meta"><span>Oct 30</span><span class="tag">DB</span></div></div>
+            <div class="card"><h4>Implement Webhooks</h4><span class="priority p-high">High</span><div class="meta"><span>Nov 02</span><span class="tag">API</span></div></div>
+            <div class="card"><h4>Update Documentation</h4><span class="priority p-low">Low</span><div class="meta"><span>Nov 05</span><span class="tag">Docs</span></div></div>
+            <div class="card"><h4>Security Audit Cleanup</h4><span class="priority p-high">High</span><div class="meta"><span>Nov 07</span><span class="tag">Security</span></div></div>
+        </div>
+    </div>
+
+    <!-- In Progress -->
+    <div class="column col-2">
+        <div class="col-header">In Progress <span>4</span></div>
+        <div class="card-list">
+            <div class="card"><h4>User Dashboard Widgets</h4><span class="priority p-medium">Medium</span><div class="meta"><span>Oct 20</span><span class="tag">Frontend</span></div></div>
+            <div class="card"><h4>OAuth2 Provider Integration</h4><span class="priority p-high">High</span><div class="meta"><span>Oct 22</span><span class="tag">Auth</span></div></div>
+            <div class="card"><h4>Form Validation Logic</h4><span class="priority p-medium">Medium</span><div class="meta"><span>Oct 23</span><span class="tag">Frontend</span></div></div>
+            <div class="card"><h4>Redis Cache Layer</h4><span class="priority p-low">Low</span><div class="meta"><span>Oct 25</span><span class="tag">Infra</span></div></div>
+        </div>
+    </div>
+
+    <!-- In Review -->
+    <div class="column col-3">
+        <div class="col-header">In Review <span>3</span></div>
+        <div class="card-list">
+            <div class="card"><h4>Email Notification Service</h4><span class="priority p-high">High</span><div class="meta"><span>Oct 18</span><span class="tag">Backend</span></div></div>
+            <div class="card"><h4>Theme Customizer</h4><span class="priority p-medium">Medium</span><div class="meta"><span>Oct 19</span><span class="tag">Design</span></div></div>
+            <div class="card"><h4>Unit Tests Coverage</h4><span class="priority p-low">Low</span><div class="meta"><span>Oct 21</span><span class="tag">QA</span></div></div>
+        </div>
+    </div>
+
+    <!-- Done -->
+    <div class="column col-4">
+        <div class="col-header">Done <span>5</span></div>
+        <div class="card-list">
+            <div class="card"><h4>Initial Setup</h4><span class="priority p-low">Low</span><div class="meta"><span>Oct 10</span><span class="tag">DevOps</span></div></div>
+            <div class="card"><h4>Environment Config</h4><span class="priority p-low">Low</span><div class="meta"><span>Oct 12</span><span class="tag">DevOps</span></div></div>
+            <div class="card"><h4>Landing Page Draft</h4><span class="priority p-medium">Medium</span><div class="meta"><span>Oct 14</span><span class="tag">UI</span></div></div>
+            <div class="card"><h4>User Registration Flow</h4><span class="priority p-high">High</span><div class="meta"><span>Oct 15</span><span class="tag">Auth</span></div></div>
+            <div class="card"><h4>Bug: Session Timeout</h4><span class="priority p-high">High</span><div class="meta"><span>Oct 16</span><span class="tag">Fix</span></div></div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

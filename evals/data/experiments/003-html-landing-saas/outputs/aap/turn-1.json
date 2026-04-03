@@ -1,0 +1,31 @@
+{
+  "protocol": "aap/0.1",
+  "id": "artifact-id",
+  "version": 1,
+  "name": "edit",
+  "operation": {
+    "direction": "input",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "hero-headline"
+      },
+      "content": "Sync Everything. Everywhere."
+    },
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "hero-subheadline"
+      },
+      "content": "CloudSync connects your tools in real time."
+    }
+  ]
+}

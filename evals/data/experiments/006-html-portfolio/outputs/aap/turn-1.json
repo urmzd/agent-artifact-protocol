@@ -1,0 +1,31 @@
+{
+  "protocol": "aap/0.1",
+  "id": "portfolio-container",
+  "version": 1,
+  "name": "edit",
+  "operation": {
+    "direction": "input",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "name"
+      },
+      "content": "Jordan Rivera"
+    },
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "title"
+      },
+      "content": "Cloud Infrastructure Engineer"
+    }
+  ]
+}

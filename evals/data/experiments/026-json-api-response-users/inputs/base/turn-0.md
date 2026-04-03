@@ -6,4 +6,3 @@ Include:
 - pagination: page, per_page, total, total_pages, has_next, has_prev
 - Use realistic names, emails, and dates
 
-No section markers needed for JSON.

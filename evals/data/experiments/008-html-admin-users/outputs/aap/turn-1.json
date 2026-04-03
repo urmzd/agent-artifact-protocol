@@ -1,0 +1,31 @@
+{
+  "protocol": "aap/0.1",
+  "id": "user-management-page",
+  "version": 1,
+  "name": "edit",
+  "operation": {
+    "direction": "input",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "user-rows"
+      },
+      "content": "              <th style=\"padding: 12px;\">Role</th>\n              <th style=\"padding: 12px;\">Department</th>\n              <th style=\"padding: 12px;\">Status</th>"
+    },
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "user-rows"
+      },
+      "content": "                      <td style=\"padding: 12px;\">${i % 5 === 0 ? 'Admin' : 'Editor'}</td>\n                      <td style=\"padding: 12px;\">${['Engineering', 'Design', 'Marketing', 'Sales', 'HR'][i % 5]}</td>\n                      <td style=\"padding: 12px;\"><span style=\"padding: 2px 8px; border-radius: 10px; font-size: 12px; background: ${i % 3 === 0 ? '#e2e6ea' : '#d4edda'};\">Active</span></td>"
+    }
+  ]
+}

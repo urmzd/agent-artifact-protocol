@@ -1,0 +1,23 @@
+{
+  "protocol": "aap/0.1",
+  "id": "artifact-id",
+  "version": 2,
+  "name": "edit",
+  "operation": {
+    "direction": "input",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "comments-section"
+      },
+      "content": "    <section style=\"margin-top: 40px;\">\n      <h3>Comments</h3>\n      <div id=\"comment-list\">\n        <div style=\"margin-bottom: 20px; padding: 10px; border-bottom: 1px solid #eee;\">\n          <strong>Sarah Jenkins</strong> <small>2 hours ago</small>\n          <p>Great read! Using Axum has changed how I approach internal services. Any tips on handling shared state across axum handlers?</p>\n          <div style=\"margin-left: 30px; border-left: 2px solid #ccc; padding-left: 10px;\">\n            <strong>Alex Rivers</strong> <small>1 hour ago</small>\n            <p>Glad it helped! Using <code>Arc<State></code> is the standard way to inject shared resources.</p>\n          </div>\n        </div>\n        <div style=\"margin-bottom: 20px; padding: 10px; border-bottom: 1px solid #eee;\">\n          <strong>Mike Chen</strong> <small>5 hours ago</small>\n          <p>The sqlx compile-time checks are a total game changer. I haven't looked back at standard ORMs since.</p>\n          <div style=\"margin-left: 30px; border-left: 2px solid #ccc; padding-left: 10px;\">\n            <strong>Developer X</strong> <small>4 hours ago</small>\n            <p>Agreed! The compile-time safety is worth the slightly longer build times.</p>\n          </div>\n        </div>\n        <div style=\"margin-bottom: 20px; padding: 10px; border-bottom: 1px solid #eee;\">\n          <strong>Elena Rossi</strong> <small>1 day ago</small>\n          <p>Excellent overview. How would you suggest handling secret management in a K8s environment with Rust?</p>\n        </div>\n        <div style=\"margin-bottom: 20px; padding: 10px; border-bottom: 1px solid #eee;\">\n          <strong>Tom W.</strong> <small>2 days ago</small>\n          <p>Very clear code examples. Much appreciated!</p>\n        </div>\n        <div style=\"margin-bottom: 20px; padding: 10px; border-bottom: 1px solid #eee;\">\n          <strong>Jane Doe</strong> <small>3 days ago</small>\n          <p>What about benchmarking? Any tool recommendations for Rust services?</p>\n        </div>\n        <div style=\"margin-bottom: 20px; padding: 10px; border-bottom: 1px solid #eee;\">\n          <strong>Sam Smith</strong> <small>4 days ago</small>\n          <p>Rust makes handling async errors so much cleaner compared to other languages.</p>\n        </div>\n      </div>\n    </section>"
+    }
+  ]
+}

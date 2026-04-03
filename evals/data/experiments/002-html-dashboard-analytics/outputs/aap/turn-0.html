@@ -1,0 +1,70 @@
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f4f7f6; margin: 0; color: #333; }
+  .navbar { background: #fff; padding: 1rem 2rem; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
+  .container { padding: 2rem; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+  .card { background: #fff; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+  .card h3 { margin: 0 0 0.5rem; font-size: 0.875rem; color: #666; }
+  .card .value { font-size: 1.75rem; font-weight: bold; }
+  .data-section { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; }
+  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; }
+  th { background: #f8f9fa; padding: 12px; text-align: left; border-bottom: 2px solid #eee; }
+  td { padding: 12px; border-bottom: 1px solid #eee; }
+  .scroll-table { max-height: 600px; overflow-y: auto; }
+</style>
+
+<div class="navbar">
+  <div>Analytics > Dashboard > Overview</div>
+  <div><input type="date" value="2023-10-01"> to <input type="date" value="2023-10-31"></div>
+</div>
+
+<div class="container">
+  <aap:target id="kpi-dashboard">
+    <div class="kpi-grid">
+      <div class="card"><h3>Page Views</h3><div class="value"><aap:target id="page-views">124,592</aap:target></div></div>
+      <div class="card"><h3>Unique Visitors</h3><div class="value"><aap:target id="unique-visitors">88,201</aap:target></div></div>
+      <div class="card"><h3>Bounce Rate</h3><div class="value"><aap:target id="bounce-rate">42.5%</aap:target></div></div>
+      <div class="card"><h3>Avg Duration</h3><div class="value"><aap:target id="avg-duration">2m 14s</aap:target></div></div>
+    </div>
+  </aap:target>
+
+  <div class="data-section">
+    <div class="scroll-table">
+      <h3>Traffic Sources</h3>
+      <table>
+        <thead><tr><th>Source</th><th>Medium</th><th>Sessions</th><th>Bounce</th><th>Conv</th></tr></thead>
+        <tbody>
+          <aap:target id="traffic-table">
+            <!-- 50 rows simulated -->
+            <tr><td>Google</td><td>Organic</td><td>45,000</td><td>32%</td><td>2.1%</td></tr>
+            <tr><td>Direct</td><td>None</td><td>20,000</td><td>45%</td><td>1.8%</td></tr>
+            <!-- ... additional 48 rows would reside here -->
+          </aap:target>
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <h3>Top Referrers</h3>
+      <ul style="list-style: none; padding: 0;">
+        <aap:target id="referrers-list">
+          <li>facebook.com (12,400)</li>
+          <li>twitter.com (8,200)</li>
+          <!-- ... 18 more -->
+        </aap:target>
+      </ul>
+
+      <h3>Geography</h3>
+      <table>
+        <thead><tr><th>Country</th><th>Visitors</th></tr></thead>
+        <tbody>
+          <aap:target id="geo-table">
+            <tr><td>United States</td><td>45,000</td></tr>
+            <tr><td>United Kingdom</td><td>12,000</td></tr>
+            <!-- ... 28 more -->
+          </aap:target>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

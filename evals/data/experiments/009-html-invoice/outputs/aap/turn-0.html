@@ -1,0 +1,75 @@
+<div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; color: #333;">
+  <aap:target id="invoice-container">
+    <header style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 20px;">
+      <div>
+        <div style="width: 50px; height: 50px; background: #ddd; display: flex; align-items: center; justify-content: center; font-size: 10px; margin-bottom: 10px;">LOGO</div>
+        <h1 style="margin: 0; font-size: 24px;">TechCorp Solutions</h1>
+      </div>
+      <div style="text-align: right;">
+        <h2 style="margin: 0;">INVOICE</h2>
+        <p style="margin: 5px 0;">#<aap:target id="invoice-number">INV-2024-0847</aap:target></p>
+      </div>
+    </header>
+
+    <section style="display: flex; justify-content: space-between; margin: 30px 0;">
+      <div>
+        <strong>From:</strong><br>
+        TechCorp Solutions<br>
+        123 Innovation Way<br>
+        Tech City, TC 90210
+      </div>
+      <div>
+        <strong>Bill To:</strong><br>
+        Client Name<br>
+        456 Business Blvd<br>
+        Enterprise, ST 54321
+      </div>
+    </section>
+
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+      <thead>
+        <tr style="background: #f8f8f8; border-bottom: 2px solid #ddd;">
+          <th style="padding: 10px; text-align: left;">Description</th>
+          <th style="padding: 10px; text-align: right;">Qty</th>
+          <th style="padding: 10px; text-align: right;">Rate</th>
+          <th style="padding: 10px; text-align: right;">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <aap:target id="line-items">
+          <tr style="border-bottom: 1px solid #eee;">
+            <td style="padding: 10px;">Cloud Hosting</td>
+            <td style="padding: 10px; text-align: right;">1</td>
+            <td style="padding: 10px; text-align: right;">$200.00</td>
+            <td style="padding: 10px; text-align: right;">$200.00</td>
+          </tr>
+          <!-- ... remaining 7 items omitted for brevity in skeleton, would be repeated here ... -->
+        </aap:target>
+      </tbody>
+    </table>
+
+    <section style="width: 300px; margin-left: auto;">
+      <div style="display: flex; justify-content: space-between; padding: 5px 0;">
+        <span>Subtotal:</span>
+        <span><aap:target id="subtotal">$2,000.00</aap:target></span>
+      </div>
+      <div style="display: flex; justify-content: space-between; padding: 5px 0;">
+        <span>Discount (10%):</span>
+        <span><aap:target id="discount">-$200.00</aap:target></span>
+      </div>
+      <div style="display: flex; justify-content: space-between; padding: 5px 0;">
+        <span>Tax (8.5%):</span>
+        <span><aap:target id="tax">$153.00</aap:target></span>
+      </div>
+      <div style="display: flex; justify-content: space-between; padding: 10px 0; border-top: 2px solid #333; font-weight: bold; font-size: 1.2em;">
+        <span>Total Due:</span>
+        <span><aap:target id="total-due">$1,953.00</aap:target></span>
+      </div>
+    </section>
+
+    <footer style="margin-top: 50px; font-size: 0.85em; border-top: 1px solid #ccc; padding-top: 20px;">
+      <p><strong>Payment Terms:</strong> Net 30 days. Please make checks payable to TechCorp Solutions.</p>
+      <p><strong>Bank Details:</strong> Bank Name: TechBank | Account: 000123456789 | SWIFT: TECHUS33</p>
+    </footer>
+  </aap:target>
+</div>

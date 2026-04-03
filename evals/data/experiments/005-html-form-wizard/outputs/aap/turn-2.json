@@ -1,0 +1,47 @@
+{
+  "protocol": "aap/0.1",
+  "id": "wizard-container",
+  "version": 2,
+  "name": "edit",
+  "operation": {
+    "direction": "input",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "p1"
+      },
+      "content": "    .progress-step.active { background: #0d9488; }"
+    },
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "p1"
+      },
+      "content": "            <div class=\"progress-step active\" id=\"p1\"></div>\n            <div class=\"progress-step\" id=\"p2\"></div>\n            <div class=\"progress-step\" id=\"p3\"></div>\n            <div class=\"progress-step\" id=\"p4\"></div>\n            <div class=\"progress-step\" id=\"p5\"></div>"
+    },
+    {
+      "op": "insert_after",
+      "target": {
+        "type": "id",
+        "value": "step-4"
+      },
+      "content": "            <aap:target id=\"step-5\" class=\"step\">\n                <h3>Confirmation</h3>\n                <p>Thank you for your registration!</p>\n            </aap:target>"
+    },
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "p1"
+      },
+      "content": "    .progress-step { height: 10px; width: 18%; background: #ddd; border-radius: 5px; }"
+    }
+  ]
+}

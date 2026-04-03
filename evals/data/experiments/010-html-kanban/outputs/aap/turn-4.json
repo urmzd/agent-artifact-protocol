@@ -1,0 +1,23 @@
+{
+  "protocol": "aap/0.1",
+  "id": "board-12345",
+  "version": 1,
+  "name": "edit",
+  "operation": {
+    "direction": "input",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "board"
+      },
+      "content": "  @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }\n  .p-critical { background: #e3342f; animation: pulse 1.5s infinite; } .p-high { background: #f6993f; } .p-medium { background: #38c172; } .p-low { background: #6574cd; }"
+    }
+  ]
+}

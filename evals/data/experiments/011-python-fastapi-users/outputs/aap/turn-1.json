@@ -1,0 +1,31 @@
+{
+  "protocol": "aap/0.1",
+  "id": "user-module",
+  "version": 1,
+  "name": "edit",
+  "operation": {
+    "direction": "input",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "insert_before",
+      "target": {
+        "type": "id",
+        "value": "schemas"
+      },
+      "content": "from enum import Enum\n\nclass UserRole(str, Enum):\n    admin = \"admin\"\n    editor = \"editor\"\n    viewer = \"viewer\"\n"
+    },
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "schemas"
+      },
+      "content": "    role: UserRole = UserRole.viewer"
+    }
+  ]
+}

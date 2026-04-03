@@ -1,0 +1,23 @@
+{
+  "protocol": "aap/0.1",
+  "id": "dashboard-artifact",
+  "version": 2,
+  "name": "edit",
+  "operation": {
+    "direction": "input",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "referrers-list"
+      },
+      "content": "<li>github.com (15,200)</li>\n          <li>stackoverflow.com (14,100)</li>\n          <li>reddit.com/r/programming (13,900)</li>\n          <li>dev.to (12,800)</li>\n          <li>news.ycombinator.com (12,400)</li>\n          <li>hashnode.com (11,800)</li>\n          <li>medium.com/topic/programming (11,500)</li>\n          <li>discord.com/channels/developers (11,200)</li>\n          <li>freecodecamp.org (10,900)</li>\n          <li>codepen.io (10,600)</li>\n          <li>github.blog (10,300)</li>\n          <li>engineering.fb.com (10,000)</li>\n          <li>netflixtechblog.com (9,800)</li>\n          <li>blog.golang.org (9,500)</li>\n          <li>rust-lang.org (9,200)</li>"
+    }
+  ]
+}

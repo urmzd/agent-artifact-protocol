@@ -1,0 +1,23 @@
+{
+  "protocol": "aap/0.1",
+  "id": "board-artifact-001",
+  "version": 2,
+  "name": "edit",
+  "operation": {
+    "direction": "input",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "project-title"
+      },
+      "content": "<h1>Sprint 27 — Q2 Launch</h1>"
+    }
+  ]
+}

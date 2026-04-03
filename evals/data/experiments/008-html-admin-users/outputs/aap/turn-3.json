@@ -1,0 +1,31 @@
+{
+  "protocol": "aap/0.1",
+  "id": "user-table-artifact",
+  "version": 1,
+  "name": "edit",
+  "operation": {
+    "direction": "input",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "insert_before",
+      "target": {
+        "type": "id",
+        "value": "user-management-page"
+      },
+      "content": "<table style=\"width: 100%; border-collapse: collapse; margin-top: 20px; background: white;\">\n        <thead>\n          <tr style=\"background: #e9ecef; text-align: left;\">\n            <th style=\"padding: 12px; border-bottom: 2px solid #dee2e6;\">Name</th>\n            <th style=\"padding: 12px; border-bottom: 2px solid #dee2e6;\">Email</th>\n            <th style=\"padding: 12px; border-bottom: 2px solid #dee2e6;\">Role</th>\n          </tr>\n        </thead>\n        <tbody id=\"user-table-body\">\n          <tr><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Alice Smith</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">alice@example.com</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Editor</td></tr>\n          <tr><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Bob Johnson</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">bob@example.com</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Viewer</td></tr>\n          <tr><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Charlie Davis</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">charlie@example.com</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Viewer</td></tr>\n          <tr><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Diana Evans</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">diana@example.com</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Editor</td></tr>\n          <tr><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Edward Frank</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">edward@example.com</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Viewer</td></tr>\n          <tr><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Fiona Green</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">fiona@example.com</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Editor</td></tr>\n          <tr><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">George Hill</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">george@example.com</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Viewer</td></tr>\n          <tr><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Hannah Ivy</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">hannah@example.com</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Viewer</td></tr>\n          <tr><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Ian Jenson</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">ian@example.com</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Editor</td></tr>\n          <tr><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Jane King</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">jane@example.com</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Viewer</td></tr>\n          <tr><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Kevin Lee</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">kevin@example.com</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Editor</td></tr>\n          <tr><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Laura Miller</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">laura@example.com</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Viewer</td></tr>\n          <tr><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Mike Nelson</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">mike@example.com</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Viewer</td></tr>\n          <tr><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Nina O'Connor</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">nina@example.com</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Editor</td></tr>\n          <tr><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Oscar Peters</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">oscar@example.com</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Viewer</td></tr>\n          <tr><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Paul Quinn</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">paul@example.com</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Editor</td></tr>\n          <tr><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Quinn Ross</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">quinn@example.com</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Viewer</td></tr>\n          <tr><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Rachel Scott</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">rachel@example.com</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Viewer</td></tr>\n          <tr><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Sam Turner</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">sam@example.com</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Editor</td></tr>\n          <tr><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Tina Urban</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">tina@example.com</td><td style=\"padding: 12px; border-bottom: 1px solid #dee2e6;\">Viewer</td></tr>\n        </tbody>\n      </table>\",op:"
+    },
+    {
+      "op": "delete",
+      "target": {
+        "type": "id",
+        "value": "user-management-page"
+      },
+      "content": null
+    }
+  ]
+}

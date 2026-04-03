@@ -1,0 +1,39 @@
+{
+  "protocol": "aap/0.1",
+  "id": "wizard-container",
+  "version": 2,
+  "name": "edit",
+  "operation": {
+    "direction": "input",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "p4"
+      },
+      "content": "            <div class=\"progress-step\" id=\"p5\"></div>\n        </div>"
+    },
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "step-4"
+      },
+      "content": "            <aap:target id=\"step-4\" class=\"step\">\n                <h3>Review</h3>\n                <div id=\"summary\"></div>\n            </aap:target>\n\n            <aap:target id=\"step-5\" class=\"step\">\n                <h3>Preferences</h3>\n                <label><input type=\"checkbox\" id=\"newsletter\"> Subscribe to newsletter</label>\n                <select id=\"language\">\n                    <option value=\"en\">English</option>\n                    <option value=\"es\">Spanish</option>\n                    <option value=\"fr\">French</option>\n                </select>\n                <p>Preferred Contact Channel:</p>\n                <label><input type=\"radio\" name=\"channel\" value=\"email\" checked> Email</label>\n                <label><input type=\"radio\" name=\"channel\" value=\"sms\"> SMS</label>\n            </aap:target>\n"
+    },
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "step-4"
+      },
+      "content": "    const steps = document.querySelectorAll(\".step\");\n    const progress = document.querySelectorAll(\".progress-step\");\n\n    function changeStep(n) {\n        steps[currentStep].classList.remove(\"active\");\n        progress[currentStep].classList.remove(\"active\");\n        currentStep += n;\n        \n        if (currentStep >= steps.length) {\n            alert(\"Submitted!\");\n            return;\n        }\n\n        steps[currentStep].classList.add(\"active\");\n        progress[currentStep].classList.add(\"active\");\n        \n        document.getElementById(\"prevBtn\").disabled = (currentStep === 0);\n        document.getElementById(\"nextBtn\").innerText = (currentStep === steps.length - 1) ? \"Submit\" : \"Next\";\n\n        if (currentStep === 4) updateSummary();\n    }\n"
+    }
+  ]
+}

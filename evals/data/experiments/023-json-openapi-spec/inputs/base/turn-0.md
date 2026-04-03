@@ -8,4 +8,3 @@ Include:
 - Security scheme: Bearer JWT
 - At least 8 endpoints with full request/response schemas
 
-No section markers needed for JSON (use JSON Pointer addressing).

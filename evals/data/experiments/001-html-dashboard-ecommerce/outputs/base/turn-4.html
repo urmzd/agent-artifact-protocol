@@ -5,90 +5,95 @@
     <title>Admin Dashboard</title>
     <style>
         :root { --primary: #8b5cf6; --bg: #f3f4f6; --text: #1f2937; --white: #ffffff; }
-        body { font-family: sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; flex-direction: column; }
-        nav { background: var(--white); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; }
+        body { font-family: sans-serif; background: var(--bg); margin: 0; color: var(--text); }
+        nav { background: var(--white); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); }
         .logo { font-weight: bold; font-size: 1.5rem; color: var(--primary); }
-        .user-menu { display: flex; align-items: center; gap: 1rem; }
-        .avatar { width: 40px; height: 40px; background: #ddd; border-radius: 50%; }
-        main { padding: 2rem; }
-        .grid-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
-        .card { background: var(--white); padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .activity-list { margin-bottom: 2rem; }
+        .user-nav { display: flex; align-items: center; gap: 1rem; }
+        .container { padding: 2rem; max-width: 1200px; margin: auto; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
+        .card { background: var(--white); padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-top: 4px solid var(--primary); }
+        .activity-list { list-style: none; padding: 0; }
         .activity-item { padding: 0.75rem 0; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; }
-        table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: 8px; overflow: hidden; margin-bottom: 2rem; }
-        th { background: #f9fafb; text-align: left; padding: 1rem; border-bottom: 2px solid #e5e7eb; }
-        td { padding: 1rem; border-bottom: 1px solid #e5e7eb; }
-        .badge { padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.8rem; }
-        .status-active { background: #ede9fe; color: #5b21b6; }
-        .status-pending { background: #fef3c7; color: #92400e; }
+        table { width: 100%; border-collapse: collapse; background: var(--white); margin-bottom: 2rem; border-radius: 8px; overflow: hidden; }
+        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #e5e7eb; }
+        th { background: #f9fafb; color: var(--primary); }
+        .badge { padding: 0.25rem 0.5rem; border-radius: 999px; font-size: 0.75rem; font-weight: bold; }
+        .bg-green { background: #dcfce7; color: #166534; }
+        .bg-blue { background: #ede9fe; color: #5b21b6; }
         .form-group { margin-bottom: 1rem; }
-        input[type="text"], input[type="email"] { width: 100%; padding: 0.5rem; margin-top: 0.25rem; border: 1px solid #ddd; border-radius: 4px; }
+        input[type="text"], input[type="email"] { width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        input:focus { outline: 2px solid var(--primary); border-color: transparent; }
+        .btn { background: var(--primary); color: white; padding: 0.5rem 1rem; border: none; border-radius: 4px; cursor: pointer; transition: opacity 0.2s; }
+        .btn:hover { opacity: 0.9; }
     </style>
 </head>
 <body>
-    <nav>
-        <div class="logo">AdminPanel</div>
-        <div class="user-menu">
-            <span>John Doe</span>
-            <div class="avatar"></div>
-            <button style="padding: 0.5rem 1rem; cursor: pointer; background: var(--primary); color: white; border: none; border-radius: 4px;">Sign Out</button>
-        </div>
-    </nav>
 
-    <main>
-        <div class="grid-stats">
-            <div class="card"><h3>Total Revenue</h3><p style="font-size: 1.5rem; font-weight:bold">$215,430</p><span style="color: var(--primary); font-weight: bold;">+12.3%</span></div>
-            <div class="card"><h3>Orders</h3><p style="font-size: 1.5rem; font-weight:bold">1,205</p><span style="color: var(--primary);">+5%</span></div>
-            <div class="card"><h3>Customers</h3><p style="font-size: 1.5rem; font-weight:bold">842</p><span style="color: var(--primary);">+2%</span></div>
-            <div class="card"><h3>Conversion</h3><p style="font-size: 1.5rem; font-weight:bold">3.2%</p><span style="color: var(--primary);">+0.5%</span></div>
-        </div>
+<nav>
+    <div class="logo">AdminPanel</div>
+    <div class="user-nav">
+        <span>Admin User</span>
+        <button class="btn">Sign Out</button>
+    </div>
+</nav>
 
-        <div class="card activity-list">
-            <h2>Recent Activity</h2>
+<div class="container">
+    <div class="stats-grid">
+        <div class="card"><h3>Total Revenue</h3><p style="font-size: 1.5rem; font-weight: bold;">$215,430</p><small style="color:green; font-weight: bold;">+12.3%</small></div>
+        <div class="card"><h3>Orders</h3><p style="font-size: 1.5rem; font-weight: bold;">1,204</p><small style="color:green">↑ 5%</small></div>
+        <div class="card"><h3>Customers</h3><p style="font-size: 1.5rem; font-weight: bold;">892</p><small style="color:green">↑ 2%</small></div>
+        <div class="card"><h3>Conversion Rate</h3><p style="font-size: 1.5rem; font-weight: bold;">3.2%</p><small style="color:red">↓ 0.1%</small></div>
+    </div>
+
+    <div class="card" style="margin-bottom: 2rem;">
+        <h2>Recent Activity</h2>
+        <ul class="activity-list">
             <script>
-                const actions = ["Logged in", "Updated product pricing", "Approved order", "Added new user", "Edited site settings"];
-                for(let i=1; i<=10; i++) {
-                    document.write(`<div class="activity-item"><span>User ${i} ${actions[i%5]}</span><span>${i*2} minutes ago</span></div>`);
+                const actions = ["User logged in", "Product updated", "Order #5521 cancelled", "New customer signed up", "System update completed", "Refund processed", "Payment received", "Settings changed", "Inventory alert", "Backup created"];
+                actions.forEach(act => {
+                    document.write(`<li class="activity-item"><span>${act}</span><small style="color:#6b7280;">${Math.floor(Math.random()*60)} mins ago</small></li>`);
+                });
+            </script>
+        </ul>
+    </div>
+
+    <h2>Products</h2>
+    <table>
+        <thead><tr><th>Name</th><th>SKU</th><th>Price</th><th>Stock</th><th>Category</th><th>Status</th></tr></thead>
+        <tbody>
+            <script>
+                for(let i=1; i<=60; i++) {
+                    document.write(`<tr><td>Product ${i}</td><td>SKU-${1000+i}</td><td>$${(Math.random()*100+10).toFixed(2)}</td><td>${Math.floor(Math.random()*100)}</td><td>Category A</td><td><span class="badge bg-green">Active</span></td></tr>`);
                 }
             </script>
-        </div>
+        </tbody>
+    </table>
 
-        <h2>Products</h2>
-        <table>
-            <thead><tr><th>Name</th><th>SKU</th><th>Price</th><th>Stock</th><th>Status</th></tr></thead>
-            <tbody>
-                <script>
-                    for(let i=1; i<=60; i++) {
-                        document.write(`<tr><td>Product ${i}</td><td>SKU-${1000+i}</td><td>$${(Math.random()*100).toFixed(2)}</td><td>${Math.floor(Math.random()*500)}</td><td><span class="badge status-active">Active</span></td></tr>`);
-                    }
-                </script>
-            </tbody>
-        </table>
+    <h2>Recent Orders</h2>
+    <table>
+        <thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
+        <tbody>
+            <script>
+                for(let i=1; i<=40; i++) {
+                    document.write(`<tr><td>#ORD-${9000+i}</td><td>Customer ${i}</td><td>$${(Math.random()*500+20).toFixed(2)}</td><td>2023-10-${(i%28)+1}</td><td><span class="badge bg-green">Completed</span></td></tr>`);
+                }
+                for(let i=1; i<=15; i++) {
+                    document.write(`<tr><td>#MAR-${2026+i}</td><td>New Client ${i}</td><td>$${(Math.random()*200+50).toFixed(2)}</td><td>2026-03-${(i%15)+1}</td><td><span class="badge bg-blue">Pending</span></td></tr>`);
+                }
+            </script>
+        </tbody>
+    </table>
 
-        <h2>Recent Orders</h2>
-        <table>
-            <thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
-            <tbody>
-                <script>
-                    for(let i=1; i<=40; i++) {
-                        document.write(`<tr><td>#ORD-${9000+i}</td><td>User ${i}</td><td>$${(Math.random()*500).toFixed(2)}</td><td>2023-10-${(i%28)+1}</td><td><span class="badge status-active">Shipped</span></td></tr>`);
-                    }
-                    for(let i=1; i<=15; i++) {
-                        document.write(`<tr><td>#MAR-${202600+i}</td><td>March Client ${i}</td><td>$${(Math.random()*800).toFixed(2)}</td><td>2026-03-${(i < 10 ? '0'+i : i)}</td><td><span class="badge status-pending">Pending</span></td></tr>`);
-                    }
-                </script>
-            </tbody>
-        </table>
+    <div class="card">
+        <h2>Account Settings</h2>
+        <form>
+            <div class="form-group"><label>Display Name</label><input type="text" value="Admin User"></div>
+            <div class="form-group"><label>Email</label><input type="email" value="admin@example.com"></div>
+            <div class="form-group"><input type="checkbox" checked> Receive Email Notifications</div>
+            <button type="button" class="btn">Save Changes</button>
+        </form>
+    </div>
+</div>
 
-        <div class="card" style="max-width: 500px;">
-            <h2>Account Settings</h2>
-            <form>
-                <div class="form-group"><label>Name</label><input type="text" value="John Doe"></div>
-                <div class="form-group"><label>Email</label><input type="email" value="john@example.com"></div>
-                <div class="form-group"><label><input type="checkbox" checked style="accent-color: var(--primary);"> Enable Notifications</label></div>
-                <button type="button" style="background: var(--primary); color: white; padding: 0.5rem 1rem; border: none; border-radius: 4px; cursor: pointer;">Save Profile</button>
-            </form>
-        </div>
-    </main>
 </body>
 </html>

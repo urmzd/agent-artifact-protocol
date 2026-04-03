@@ -1,0 +1,23 @@
+{
+  "protocol": "aap/0.1",
+  "id": "artifact-id",
+  "version": 1,
+  "name": "edit",
+  "operation": {
+    "direction": "input",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "user-management-page"
+      },
+      "content": "<style>\n  .badge { padding: 4px 12px; border-radius: 20px; font-size: 0.8em; font-weight: bold; color: white; }\n  .badge-active { background: #28a745; }\n  .badge-suspended { background: #dc3545; }\n  .badge-inactive { background: #6c757d; }\n</style>\n<div style=\"font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #f4f7f6; padding: 20px; color: #333;\">\n  <aap:target id=\"user-management-page\"></aap:target>\n        </table>\n      </div>\n\n      <div style=\"padding: 20px; display: flex; justify-content: space-between; align-items: center;\">\n        <aap:target id=\"pagination-controls\">\n          <div>Showing 1-10 of 80 entries</div>\n          <div style=\"display: flex; gap: 5px;\">\n            <button>&laquo;</button>\n            <button style=\"background: #007bff; color: white; border: none; padding: 5px 10px;\">1</button>\n            <button>2</button>\n            <button>3</button>\n            <button>&raquo;</button>\n            <select style=\"margin-left: 10px;\"><option>10 per page</option><option>25 per page</option></select>\n          </div>\n        </aap:target>\n      </div>\n\n    </div>\n  </aap:target>\n</div>"
+    }
+  ]
+}

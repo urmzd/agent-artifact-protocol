@@ -1,0 +1,97 @@
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f4f7f6; margin: 0; color: #333; }
+  .navbar { background: #fff; padding: 1rem 2rem; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
+  .container { padding: 2rem; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+  .card { background: #fff; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+  .card h3 { margin: 0 0 0.5rem; font-size: 0.875rem; color: #666; }
+  .card .value { font-size: 1.75rem; font-weight: bold; }
+  .data-section { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; }
+  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; }
+  th { background: #f8f9fa; padding: 12px; text-align: left; border-bottom: 2px solid #eee; }
+  td { padding: 12px; border-bottom: 1px solid #eee; }
+  .scroll-table { max-height: 600px; overflow-y: auto; }
+</style>
+
+<div class="navbar">
+  <div>Analytics > Dashboard > Overview</div>
+  <div><input type="date" value="2023-10-01"> to <input type="date" value="2023-10-31"></div>
+</div>
+
+<div class="container">
+  <aap:target id="kpi-dashboard">
+    <div class="kpi-grid">
+      <div class="card"><h3>Page Views</h3><div class="value"><aap:target id="page-views">124,592</aap:target></div></div>
+      <div class="card"><h3>Unique Visitors</h3><div class="value"><aap:target id="unique-visitors">88,201</aap:target></div></div>
+      <div class="card"><h3>Bounce Rate</h3><div class="value"><aap:target id="bounce-rate">34.2% <small style="color: green; font-size: 0.9rem;">(-5.1%)</small></aap:target></div></div>
+      <div class="card"><h3>Avg Duration</h3><div class="value"><aap:target id="avg-duration">2m 14s</aap:target></div></div>
+    </div>
+  </aap:target>
+
+  <div class="data-section">
+    <div class="scroll-table">
+      <h3>Traffic Sources</h3>
+      <table>
+        <thead><tr><th>Source</th><th>Medium</th><th>Sessions</th><th>Bounce</th><th>Conv</th></tr></thead>
+        <tbody>
+          <aap:target id="traffic-table">            <tr><td>Google</td><td>Organic</td><td>45,000</td><td>32%</td><td>2.1%</td></tr>
+            <tr><td>Direct</td><td>None</td><td>20,000</td><td>45%</td><td>1.8%</td></tr>
+            <tr><td>Instagram</td><td>Social</td><td>15,200</td><td>38%</td><td>1.2%</td></tr>
+            <tr><td>LinkedIn</td><td>Social</td><td>14,800</td><td>30%</td><td>2.5%</td></tr>
+            <tr><td>TikTok</td><td>Social</td><td>14,500</td><td>42%</td><td>0.9%</td></tr>
+            <tr><td>YouTube</td><td>Social</td><td>14,100</td><td>35%</td><td>1.5%</td></tr>
+            <tr><td>Reddit</td><td>Social</td><td>13,900</td><td>36%</td><td>1.1%</td></tr>
+            <tr><td>X</td><td>Social</td><td>13,500</td><td>39%</td><td>1.0%</td></tr>
+            <tr><td>Pinterest</td><td>Social</td><td>13,200</td><td>40%</td><td>0.8%</td></tr>
+            <tr><td>Threads</td><td>Social</td><td>12,800</td><td>41%</td><td>0.7%</td></tr>
+            <tr><td>Facebook</td><td>Social</td><td>12,400</td><td>44%</td><td>0.6%</td></tr>
+            <tr><td>Discord</td><td>Social</td><td>12,100</td><td>37%</td><td>1.3%</td></tr>
+            <tr><td>Twitch</td><td>Social</td><td>11,800</td><td>43%</td><td>0.5%</td></tr>
+            <tr><td>WhatsApp</td><td>Social</td><td>11,500</td><td>33%</td><td>1.9%</td></tr>
+            <tr><td>Telegram</td><td>Social</td><td>11,200</td><td>34%</td><td>1.7%</td></tr>
+            <tr><td>Snapchat</td><td>Social</td><td>10,900</td><td>46%</td><td>0.4%</td></tr>
+            <tr><td>Medium</td><td>Social</td><td>10,600</td><td>28%</td><td>2.8%</td></tr>
+            <tr><td>Substack</td><td>Social</td><td>10,300</td><td>29%</td><td>2.6%</td></tr>
+            <tr><td>Tumblr</td><td>Social</td><td>10,000</td><td>48%</td><td>0.3%</td></tr>
+            <tr><td>Mastodon</td><td>Social</td><td>9,800</td><td>31%</td><td>2.0%</td></tr>
+            <tr><td>Quora</td><td>Social</td><td>9,500</td><td>35%</td><td>1.4%</td></tr>
+            <tr><td>Clubhouse</td><td>Social</td><td>9,200</td><td>47%</td><td>0.2%</td></tr>
+</aap:target>
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <h3>Top Referrers</h3>
+      <ul style="list-style: none; padding: 0;">
+        <aap:target id="referrers-list"><li>github.com (15,200)</li>
+          <li>stackoverflow.com (14,100)</li>
+          <li>reddit.com/r/programming (13,900)</li>
+          <li>dev.to (12,800)</li>
+          <li>news.ycombinator.com (12,400)</li>
+          <li>hashnode.com (11,800)</li>
+          <li>medium.com/topic/programming (11,500)</li>
+          <li>discord.com/channels/developers (11,200)</li>
+          <li>freecodecamp.org (10,900)</li>
+          <li>codepen.io (10,600)</li>
+          <li>github.blog (10,300)</li>
+          <li>engineering.fb.com (10,000)</li>
+          <li>netflixtechblog.com (9,800)</li>
+          <li>blog.golang.org (9,500)</li>
+          <li>rust-lang.org (9,200)</li></aap:target>
+      </ul>
+
+      <h3>Geography</h3>
+      <table>
+        <thead><tr><th>Country</th><th>Visitors</th></tr></thead>
+        <tbody>
+          <aap:target id="geo-table">
+            <tr><td>United States</td><td>45,000</td></tr>
+            <tr><td>United Kingdom</td><td>12,000</td></tr>
+            <!-- ... 28 more -->
+          </aap:target>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

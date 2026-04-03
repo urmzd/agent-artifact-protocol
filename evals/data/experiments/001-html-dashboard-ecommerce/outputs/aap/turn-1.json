@@ -1,10 +1,10 @@
 {
   "protocol": "aap/0.1",
-  "id": "admin-dashboard",
-  "version": 1,
-  "name": "synthesize",
+  "id": "dashboard-artifact-001",
+  "version": 2,
+  "name": "edit",
   "operation": {
-    "direction": "output",
+    "direction": "input",
     "format": "text/html",
     "tokens_used": null,
     "checksum": null,
@@ -12,7 +12,12 @@
   },
   "content": [
     {
-      "body": "{\n  \"protocol\": \"aap/0.1\",\n  \"id\": \"admin-dashboard\",\n  \"version\": 1,\n  \"name\": \"edit\",\n  \"operation\": {\"direction\": \"input\", \"format\": \"text/html\"},\n  \"content\": [\n    {\n      \"op\": \"replace\",\n      \"target\": {\"type\": \"id\", \"value\": \"total-revenue-value\"},\n      \"content\": \"$215,430\"\n    },\n    {\n      \"op\": \"replace\",\n      \"target\": {\"type\": \"id\", \"value\": \"total-revenue-trend\"},\n      \"content\": \"+12.3%\"\n    }\n  ]\n}"
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "revenue"
+      },
+      "content": "$215,430 <small style=\"color:green\">+12.3%</small>"
     }
   ]
 }

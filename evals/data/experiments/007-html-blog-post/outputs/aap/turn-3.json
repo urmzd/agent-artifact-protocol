@@ -1,0 +1,23 @@
+{
+  "protocol": "aap/0.1",
+  "id": "rust-scale-blog-post",
+  "version": 1,
+  "name": "edit",
+  "operation": {
+    "direction": "input",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "insert_after",
+      "target": {
+        "type": "id",
+        "value": "author-bio"
+      },
+      "content": "  <aap:target id=\"related-articles\">\n    <section style=\"margin-top: 40px;\">\n      <h3 style=\"margin-bottom: 20px;\">Related Articles</h3>\n      <div style=\"display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;\">\n        <div style=\"padding: 15px; border: 1px solid #eee; border-radius: 8px;\">\n          <h4 style=\"margin: 0 0 10px 0;\">Rust Async Patterns</h4>\n          <p style=\"font-size: 0.85rem; margin: 0; color: #666;\">Deep dive into task spawning and cancellation.</p>\n        </div>\n        <div style=\"padding: 15px; border: 1px solid #eee; border-radius: 8px;\">\n          <h4 style=\"margin: 0 0 10px 0;\">Mastering SQLx</h4>\n          <p style=\"font-size: 0.85rem; margin: 0; color: #666;\">Advanced query techniques and transaction handling.</p>\n        </div>\n        <div style=\"padding: 15px; border: 1px solid #eee; border-radius: 8px;\">\n          <h4 style=\"margin: 0 0 10px 0;\">Observability in K8s</h4>\n          <p style=\"font-size: 0.85rem; margin: 0; color: #666;\">Tracing distributed systems with Jaeger and Tonic.</p>\n        </div>\n      </div>\n    </section>\n  </aap:target>\n"
+    }
+  ]
+}

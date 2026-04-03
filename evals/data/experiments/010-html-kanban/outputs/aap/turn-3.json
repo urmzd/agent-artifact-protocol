@@ -1,0 +1,23 @@
+{
+  "protocol": "aap/0.1",
+  "id": "board-12345",
+  "version": 1,
+  "name": "edit",
+  "operation": {
+    "direction": "output",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "insert_after",
+      "target": {
+        "type": "id",
+        "value": "col-done"
+      },
+      "content": "    <aap:target id=\"col-cancelled\">\n      <div class=\"column\">\n        <div class=\"col-header\">CANCELLED (2)</div>\n        <div class=\"card-list\">\n          <div class=\"card\"><div class=\"tag p-low\">Low</div><div class=\"card-title\">Legacy API Cleanup</div><div class=\"meta\"><span>Cancelled: Oct 18</span></div></div>\n          <div class=\"card\"><div class=\"tag p-medium\">Medium</div><div class=\"card-title\">External Tool Migration</div><div class=\"meta\"><span>Cancelled: Oct 19</span></div></div>\n        </div>\n      </div>\n    </aap:target>\n"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "protocol": "aap/0.1",
+  "id": "...",
+  "version": 1,
+  "name": "edit",
+  "operation": {
+    "direction": "input",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "replace",
+      "target": {
+        "type": "pointer",
+        "value": "/content/1/content/0/content/0/content/0"
+      },
+      "content": "Building Scalable Microservices with Go and gRPC"
+    }
+  ]
+}

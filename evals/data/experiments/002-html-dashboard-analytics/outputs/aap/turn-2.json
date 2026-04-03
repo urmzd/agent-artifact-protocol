@@ -1,0 +1,23 @@
+{
+  "protocol": "aap/0.1",
+  "id": "analytics-dashboard-v1",
+  "version": 1,
+  "name": "edit",
+  "operation": {
+    "direction": "output",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "traffic-table"
+      },
+      "content": "            <tr><td>Google</td><td>Organic</td><td>45,000</td><td>32%</td><td>2.1%</td></tr>\n            <tr><td>Direct</td><td>None</td><td>20,000</td><td>45%</td><td>1.8%</td></tr>\n            <tr><td>Instagram</td><td>Social</td><td>15,200</td><td>38%</td><td>1.2%</td></tr>\n            <tr><td>LinkedIn</td><td>Social</td><td>14,800</td><td>30%</td><td>2.5%</td></tr>\n            <tr><td>TikTok</td><td>Social</td><td>14,500</td><td>42%</td><td>0.9%</td></tr>\n            <tr><td>YouTube</td><td>Social</td><td>14,100</td><td>35%</td><td>1.5%</td></tr>\n            <tr><td>Reddit</td><td>Social</td><td>13,900</td><td>36%</td><td>1.1%</td></tr>\n            <tr><td>X</td><td>Social</td><td>13,500</td><td>39%</td><td>1.0%</td></tr>\n            <tr><td>Pinterest</td><td>Social</td><td>13,200</td><td>40%</td><td>0.8%</td></tr>\n            <tr><td>Threads</td><td>Social</td><td>12,800</td><td>41%</td><td>0.7%</td></tr>\n            <tr><td>Facebook</td><td>Social</td><td>12,400</td><td>44%</td><td>0.6%</td></tr>\n            <tr><td>Discord</td><td>Social</td><td>12,100</td><td>37%</td><td>1.3%</td></tr>\n            <tr><td>Twitch</td><td>Social</td><td>11,800</td><td>43%</td><td>0.5%</td></tr>\n            <tr><td>WhatsApp</td><td>Social</td><td>11,500</td><td>33%</td><td>1.9%</td></tr>\n            <tr><td>Telegram</td><td>Social</td><td>11,200</td><td>34%</td><td>1.7%</td></tr>\n            <tr><td>Snapchat</td><td>Social</td><td>10,900</td><td>46%</td><td>0.4%</td></tr>\n            <tr><td>Medium</td><td>Social</td><td>10,600</td><td>28%</td><td>2.8%</td></tr>\n            <tr><td>Substack</td><td>Social</td><td>10,300</td><td>29%</td><td>2.6%</td></tr>\n            <tr><td>Tumblr</td><td>Social</td><td>10,000</td><td>48%</td><td>0.3%</td></tr>\n            <tr><td>Mastodon</td><td>Social</td><td>9,800</td><td>31%</td><td>2.0%</td></tr>\n            <tr><td>Quora</td><td>Social</td><td>9,500</td><td>35%</td><td>1.4%</td></tr>\n            <tr><td>Clubhouse</td><td>Social</td><td>9,200</td><td>47%</td><td>0.2%</td></tr>\n"
+    }
+  ]
+}

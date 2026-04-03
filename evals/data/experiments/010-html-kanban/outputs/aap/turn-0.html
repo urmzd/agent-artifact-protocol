@@ -1,0 +1,76 @@
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f4f5f7; margin: 0; padding: 20px; }
+  .board-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: #fff; padding: 15px 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  .board-columns { display: flex; gap: 20px; overflow-x: auto; align-items: flex-start; }
+  .column { background: #ebecf0; border-radius: 8px; width: 300px; min-width: 300px; display: flex; flex-direction: column; max-height: 90vh; }
+  .col-header { padding: 15px; font-weight: bold; color: #5e6c84; display: flex; justify-content: space-between; }
+  .card-list { padding: 0 10px 10px; overflow-y: auto; }
+  .card { background: #fff; border-radius: 4px; padding: 12px; margin-bottom: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); cursor: grab; }
+  .card:active { cursor: grabbing; }
+  .card-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  .tag { font-size: 10px; padding: 2px 6px; border-radius: 10px; color: white; display: inline-block; margin-bottom: 8px; }
+  .p-critical { background: #e3342f; } .p-high { background: #f6993f; } .p-medium { background: #38c172; } .p-low { background: #6574cd; }
+  .meta { display: flex; justify-content: space-between; font-size: 11px; color: #888; margin-top: 10px; }
+</style>
+
+<aap:target id="board">
+  <div class="board-header">
+    <aap:target id="project-title"><h1>Sprint 24</h1></aap:target>
+    <div class="filters">
+      <button>All</button>
+      <button>My Tasks</button>
+    </div>
+  </div>
+
+  <div class="board-columns">
+    <aap:target id="col-backlog">
+      <div class="column">
+        <div class="col-header">BACKLOG (6)</div>
+        <div class="card-list">
+          <div class="card"><div class="tag p-medium">Medium</div><div class="card-title">Setup CI/CD Pipeline</div><div class="meta"><span>Due: Oct 20</span><span>JS</span></div></div>
+          <div class="card"><div class="tag p-high">High</div><div class="card-title">Database Index Optimization</div><div class="meta"><span>Due: Oct 22</span><span>DB</span></div></div>
+          <div class="card"><div class="tag p-low">Low</div><div class="card-title">Update Readme Docs</div><div class="meta"><span>Due: Oct 25</span><span>DOC</span></div></div>
+          <div class="card"><div class="tag p-critical">Critical</div><div class="card-title">Fix Login Race Condition</div><div class="meta"><span>Due: Oct 18</span><span>AUTH</span></div></div>
+          <div class="card"><div class="tag p-medium">Medium</div><div class="card-title">Add User Export Feature</div><div class="meta"><span>Due: Oct 28</span><span>FE</span></div></div>
+          <div class="card"><div class="tag p-medium">Medium</div><div class="card-title">Refactor Auth Middleware</div><div class="meta"><span>Due: Oct 29</span><span>BE</span></div></div>
+        </div>
+      </div>
+    </aap:target>
+
+    <aap:target id="col-in-progress">
+      <div class="column">
+        <div class="col-header">IN PROGRESS (4)</div>
+        <div class="card-list">
+          <div class="card"><div class="tag p-critical">Critical</div><div class="card-title">API Gateway Timeout Fix</div><div class="meta"><span>Due: Oct 19</span><span>OPS</span></div></div>
+          <div class="card"><div class="tag p-high">High</div><div class="card-title">Implement Dark Mode</div><div class="meta"><span>Due: Oct 20</span><span>UI</span></div></div>
+          <div class="card"><div class="tag p-medium">Medium</div><div class="card-title">Unit Testing Coverage</div><div class="meta"><span>Due: Oct 21</span><span>QA</span></div></div>
+          <div class="card"><div class="tag p-medium">Medium</div><div class="card-title">Cache Layer Configuration</div><div class="meta"><span>Due: Oct 22</span><span>BE</span></div></div>
+        </div>
+      </div>
+    </aap:target>
+
+    <aap:target id="col-in-review">
+      <div class="column">
+        <div class="col-header">IN REVIEW (3)</div>
+        <div class="card-list">
+          <div class="card"><div class="tag p-high">High</div><div class="card-title">Frontend Component Library</div><div class="meta"><span>Due: Oct 19</span><span>FE</span></div></div>
+          <div class="card"><div class="tag p-medium">Medium</div><div class="card-title">User Profile Avatar Upload</div><div class="meta"><span>Due: Oct 20</span><span>FE</span></div></div>
+          <div class="card"><div class="tag p-medium">Medium</div><div class="card-title">Payment Gateway API V2</div><div class="meta"><span>Due: Oct 21</span><span>FIN</span></div></div>
+        </div>
+      </div>
+    </aap:target>
+
+    <aap:target id="col-done">
+      <div class="column">
+        <div class="col-header">DONE (5)</div>
+        <div class="card-list">
+          <div class="card"><div class="tag p-low">Low</div><div class="card-title">Initial Sprint Planning</div><div class="meta"><span>Done: Oct 15</span></div></div>
+          <div class="card"><div class="tag p-medium">Medium</div><div class="card-title">Project Kickoff Meeting</div><div class="meta"><span>Done: Oct 15</span></div></div>
+          <div class="card"><div class="tag p-medium">Medium</div><div class="card-title">Environment Setup</div><div class="meta"><span>Done: Oct 16</span></div></div>
+          <div class="card"><div class="tag p-high">High</div><div class="card-title">Security Audit Patch</div><div class="meta"><span>Done: Oct 17</span></div></div>
+          <div class="card"><div class="tag p-low">Low</div><div class="card-title">Team Feedback Survey</div><div class="meta"><span>Done: Oct 18</span></div></div>
+        </div>
+      </div>
+    </aap:target>
+  </div>
+</aap:target>

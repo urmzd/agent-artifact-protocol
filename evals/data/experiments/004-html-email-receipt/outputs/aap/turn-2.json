@@ -1,0 +1,23 @@
+{
+  "protocol": "aap/0.1",
+  "id": "order-confirmation-001",
+  "version": 1,
+  "name": "edit",
+  "operation": {
+    "direction": "output",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "insert_after",
+      "target": {
+        "type": "id",
+        "value": "items-list"
+      },
+      "content": "<tr><td>Wireless Charger</td><td>1</td><td>$34.99</td><td>$34.99</td></tr>\n                  <tr><td>USB-C Hub</td><td>1</td><td>$59.99</td><td>$59.99</td></tr>\n                  <tr><td>Monitor Stand</td><td>2</td><td>$89.99</td><td>$179.98</td></tr>"
+    }
+  ]
+}

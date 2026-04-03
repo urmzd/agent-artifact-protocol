@@ -1,19 +1,72 @@
-{
-  "protocol": "aap/0.1",
-  "id": "admin-dashboard",
-  "version": 1,
-  "name": "edit",
-  "operation": {"direction": "input", "format": "text/html"},
-  "content": [
-    {
-      "op": "replace",
-      "target": {"type": "id", "value": "total-revenue-value"},
-      "content": "$215,430"
-    },
-    {
-      "op": "replace",
-      "target": {"type": "id", "value": "total-revenue-trend"},
-      "content": "+12.3%"
-    }
-  ]
-}
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background: #f4f7f6; color: #333; }
+  .navbar { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 1rem 2rem; border-bottom: 1px solid #ddd; }
+  .dashboard { padding: 2rem; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
+  .card { background: #fff; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; }
+  th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #eee; }
+  .badge { padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; }
+  .status-active { background: #d4edda; color: #155724; }
+  .status-low { background: #fff3cd; color: #856404; }
+  .form-group { margin-bottom: 1rem; }
+  input { width: 100%; padding: 0.5rem; margin-top: 0.25rem; }
+</style>
+
+<aap:target id="dashboard">  <style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background: #f4f7f6; color: #333; }
+  .navbar { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 1rem 2rem; border-bottom: 2px solid #8b5cf6; }
+  .dashboard { padding: 2rem; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
+  .card { background: #fff; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-top: 4px solid #8b5cf6; }
+  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; }
+  th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #eee; }
+  .badge { padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; }
+  .status-active { background: #ede9fe; color: #8b5cf6; }
+  .status-low { background: #fef3c7; color: #b45309; }
+  .form-group { margin-bottom: 1rem; }
+  input { width: 100%; padding: 0.5rem; margin-top: 0.25rem; border: 1px solid #ccc; border-radius: 4px; }
+  button { background: #8b5cf6; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; }
+</style></aap:target></div>
+        <div class="card"><h3>Orders</h3><aap:target id="orders">1,204</aap:target></div>
+        <div class="card"><h3>Customers</h3><aap:target id="customers">842</aap:target></div>
+        <div class="card"><h3>Conversion</h3><aap:target id="conversion">3.2%</aap:target></div>
+      </div>
+    </aap:target>
+
+    <aap:target id="products-section">
+      <h2>Products</h2>
+      <table>
+        <thead><tr><th>Name</th><th>SKU</th><th>Price</th><th>Stock</th><th>Category</th><th>Status</th></tr></thead>
+        <tbody>
+          <!-- Generating 60 Rows -->
+          <script>
+            for(let i=1; i<=60; i++) {
+              document.write(`<tr><td>Product ${i}</td><td>SKU-${1000+i}</td><td>$${(Math.random()*100).toFixed(2)}</td><td>${Math.floor(Math.random()*100)}</td><td>Category A</td><td><span class="badge status-active">Active</span></td></tr>`);
+            }
+          </script>
+        </tbody>
+      </table>
+    </aap:target>
+
+    <aap:target id="orders-section">
+          <script>
+            for(let i=1; i<=40; i++) {
+              document.write(`<tr><td>#ORD-${5000+i}</td><td>Customer ${i}</td><td>$${(Math.random()*500).toFixed(2)}</td><td>2023-10-${i%28+1}</td><td><span class="badge status-low">Pending</span></td></tr>`);
+            }
+            for(let i=1; i<=15; i++) {
+              document.write(`<tr><td>#ORD-${9000+i}</td><td>Customer ${i+40}</td><td>$${(Math.random()*500).toFixed(2)}</td><td>2026-03-${i < 10 ? '0'+i : i}</td><td><span class="badge status-low">Pending</span></td></tr>`);
+            }
+          </script>
+</aap:target>
+
+    <aap:target id="settings-section">
+      <h2>Account Settings</h2>
+      <div class="card">
+        <div class="form-group"><label>Display Name</label><input type="text" value="Admin User"></div>
+        <div class="form-group"><label>Email Notifications</label><input type="checkbox" checked></div>
+        <button>Save Changes</button>
+      </div>
+    </aap:target>
+  </div>
+</aap:target>

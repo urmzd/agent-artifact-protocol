@@ -1,0 +1,23 @@
+{
+  "protocol": "aap/0.1",
+  "id": "invoice-artifact-id",
+  "version": 2,
+  "name": "edit",
+  "operation": {
+    "direction": "input",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "insert_after",
+      "target": {
+        "type": "id",
+        "value": "line-items"
+      },
+      "content": "          <tr style=\"border-bottom: 1px solid #eee;\">\n            <td style=\"padding: 10px;\">Cloud Hosting Setup</td>\n            <td style=\"padding: 10px; text-align: right;\">1</td>\n            <td style=\"padding: 10px; text-align: right;\">$2,400.00</td>\n            <td style=\"padding: 10px; text-align: right;\">$2,400.00</td>\n          </tr>\n          <tr style=\"border-bottom: 1px solid #eee;\">\n            <td style=\"padding: 10px;\">SSL Certificate</td>\n            <td style=\"padding: 10px; text-align: right;\">1</td>\n            <td style=\"padding: 10px; text-align: right;\">$199.00</td>\n            <td style=\"padding: 10px; text-align: right;\">$199.00</td>\n          </tr>\n          <tr style=\"border-bottom: 1px solid #eee;\">\n            <td style=\"padding: 10px;\">Data Migration</td>\n            <td style=\"padding: 10px; text-align: right;\">1</td>\n            <td style=\"padding: 10px; text-align: right;\">$3,500.00</td>\n            <td style=\"padding: 10px; text-align: right;\">$3,500.00</td>\n          </tr>\n          <tr style=\"border-bottom: 1px solid #eee;\">\n            <td style=\"padding: 10px;\">Training Session</td>\n            <td style=\"padding: 10px; text-align: right;\">1</td>\n            <td style=\"padding: 10px; text-align: right;\">$1,800.00</td>\n            <td style=\"padding: 10px; text-align: right;\">$1,800.00</td>\n          </tr>\n"
+    }
+  ]
+}

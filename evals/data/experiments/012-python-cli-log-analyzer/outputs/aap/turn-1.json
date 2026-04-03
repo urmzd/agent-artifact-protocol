@@ -1,0 +1,23 @@
+{
+  "protocol": "aap/0.1",
+  "id": "log-analyzer-script",
+  "version": 1,
+  "name": "edit",
+  "operation": {
+    "direction": "output",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "insert_after",
+      "target": {
+        "type": "id",
+        "value": "analysis-functions"
+      },
+      "content": "\ndef detect_anomalies(logs: List[Dict[str, Any]], threshold_percentile: float = 0.99) -> List[Dict[str, Any]]:\n    times = sorted([log.get('response_time', 0) for log in logs])\n    if not times:\n        return []\n    threshold = times[int(len(times) * threshold_percentile)]\n    return [log for log in logs if log.get('response_time', 0) > threshold]\n"
+    }
+  ]
+}

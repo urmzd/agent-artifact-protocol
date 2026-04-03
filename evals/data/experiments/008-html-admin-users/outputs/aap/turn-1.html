@@ -1,0 +1,57 @@
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #f4f7f6; padding: 20px; color: #333;">
+  <aap:target id="user-management-page">
+    <div style="max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+      
+      <div style="padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="margin: 0;">User Management</h2>
+        <div style="display: flex; gap: 10px;">
+          <input type="text" placeholder="Search users..." style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+          <select style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+            <option>Bulk Actions</option>
+            <option>Delete Selected</option>
+          </select>
+          <button style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Add User</button>
+        </div>
+      </div>
+
+      <div style="padding: 15px 20px; display: flex; gap: 15px; background: #fafafa;">
+        <select><option>All Roles</option><option>Admin</option><option>Editor</option></select>
+        <select><option>All Status</option><option>Active</option><option>Inactive</option></select>
+        <input type="date">
+      </div>
+
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+          <thead>
+            <tr style="border-bottom: 2px solid #eee; background: #f9f9f9;">
+              <th style="padding: 12px;">Name</th>
+              <th style="padding: 12px;">Email</th>
+              <th style="padding: 12px;">Role</th>
+              <th style="padding: 12px;">Status</th>
+              <th style="padding: 12px;">Last Login</th>
+              <th style="padding: 12px;">Actions</th>
+            </tr>
+          </thead>
+          <aap:target id="user-rows">                      <td style="padding: 12px;">${i % 5 === 0 ? 'Admin' : 'Editor'}</td>
+                      <td style="padding: 12px;">${['Engineering', 'Design', 'Marketing', 'Sales', 'HR'][i % 5]}</td>
+                      <td style="padding: 12px;"><span style="padding: 2px 8px; border-radius: 10px; font-size: 12px; background: ${i % 3 === 0 ? '#e2e6ea' : '#d4edda'};">Active</span></td></aap:target>
+        </table>
+      </div>
+
+      <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center;">
+        <aap:target id="pagination-controls">
+          <div>Showing 1-10 of 80 entries</div>
+          <div style="display: flex; gap: 5px;">
+            <button>&laquo;</button>
+            <button style="background: #007bff; color: white; border: none; padding: 5px 10px;">1</button>
+            <button>2</button>
+            <button>3</button>
+            <button>&raquo;</button>
+            <select style="margin-left: 10px;"><option>10 per page</option><option>25 per page</option></select>
+          </div>
+        </aap:target>
+      </div>
+
+    </div>
+  </aap:target>
+</div>

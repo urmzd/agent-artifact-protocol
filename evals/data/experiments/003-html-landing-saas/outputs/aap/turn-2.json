@@ -1,0 +1,18 @@
+{
+  "protocol": "aap/0.1",
+  "id": "pricing-tiers",
+  "version": 1,
+  "name": "synthesize",
+  "operation": {
+    "direction": "output",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "body": "{\n  \"protocol\": \"aap/0.1\",\n  \"id\": \"pricing-tiers\",\n  \"version\": 1,\n  \"name\": \"edit\",\n  \"operation\": {\"direction\": \"input\", \"format\": \"text/html\"},\n  \"content\": [\n    {\n      \"op\": \"replace\",\n      \"target\": {\"type\": \"id\", \"value\": \"pricing-tiers\"},\n      \"content\": \"<div style=\\\"max-width: 1100px; margin: auto; display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;\\\">\\n        <div style=\\\"flex: 1; min-width: 200px; background: white; padding: 30px; border-radius: 8px; border: 1px solid #ddd;\\\">\\n          <h3>Free</h3>\\n          <p style=\\\"font-size: 2rem; font-weight: bold;\\\"><aap:target id=\\\"price-free\\\">$0</aap:target></p>\\n          <p>For individuals.</p>\\n        </div>\\n        <div style=\\\"flex: 1; min-width: 200px; background: white; padding: 30px; border-radius: 8px; border: 1px solid #ddd;\\\">\\n          <h3>Starter</h3>\\n          <p style=\\\"font-size: 2rem; font-weight: bold;\\\"><aap:target id=\\\"price-starter\\\">$19</aap:target></p>\\n          <p>For professionals.</p>\\n        </div>\\n        <div style=\\\"flex: 1; min-width: 200px; background: #764ba2; color: white; padding: 30px; border-radius: 8px;\\\">\\n          <h3>Pro</h3>\\n          <p style=\\\"font-size: 2rem; font-weight: bold;\\\"><aap:target id=\\\"price-pro\\\">$49</aap:target></p>\\n          <p>For growing teams.</p>\\n        </div>\\n        <div style=\\\"flex: 1; min-width: 200px; background: white; padding: 30px; border-radius: 8px; border: 1px solid #ddd;\\\">\\n          <h3>Enterprise</h3>\\n          <p style=\\\"font-size: 2rem; font-weight: bold;\\\"><aap:target id=\\\"price-enterprise\\\">Custom</aap:target></p>\\n          <p>For large organizations.</p>\\n        </div>\\n      </div>\"\n    }\n  ]\n}"
+    }
+  ]
+}

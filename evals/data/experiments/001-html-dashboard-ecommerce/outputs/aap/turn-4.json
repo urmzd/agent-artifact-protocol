@@ -1,10 +1,10 @@
 {
   "protocol": "aap/0.1",
-  "id": "admin-dashboard",
-  "version": 2,
+  "id": "dashboard-artifact-001",
+  "version": 1,
   "name": "edit",
   "operation": {
-    "direction": "output",
+    "direction": "input",
     "format": "text/html",
     "tokens_used": null,
     "checksum": null,
@@ -15,9 +15,9 @@
       "op": "insert_after",
       "target": {
         "type": "id",
-        "value": "stats-container"
+        "value": "grid"
       },
-      "content": "<section id=\"recent-activity\">\n  <h2>Recent Activity</h2>\n  <ul id=\"activity-list\">\n    <aap:target id=\"activity-1\"><li>User A logged in</li></aap:target>\n    <aap:target id=\"activity-2\"><li>User B updated profile</li></aap:target>\n    <aap:target id=\"activity-3\"><li>User C posted a comment</li></aap:target>\n    <aap:target id=\"activity-4\"><li>User D created a project</li></aap:target>\n    <aap:target id=\"activity-5\"><li>User E changed password</li></aap:target>\n    <aap:target id=\"activity-6\"><li>User F logged out</li></aap:target>\n    <aap:target id=\"activity-7\"><li>User G uploaded a file</li></aap:target>\n    <aap:target id=\"activity-8\"><li>User H deleted a draft</li></aap:target>\n    <aap:target id=\"activity-9\"><li>User I modified settings</li></aap:target>\n    <aap:target id=\"activity-10\"><li>User J started a subscription</li></aap:target>\n  </ul>\n</section>"
+      "content": "      <aap:target id=\"recent-activity-section\">\n        <h2>Recent Activity</h2>\n        <div class=\"card\">\n          <ul>\n            <li>User A updated profile - 2 mins ago</li>\n            <li>User B placed an order - 15 mins ago</li>\n            <li>System backup completed - 1 hour ago</li>\n            <li>User C created an account - 3 hours ago</li>\n            <li>User D changed password - 5 hours ago</li>\n            <li>Inventory report generated - 6 hours ago</li>\n            <li>New product added - 8 hours ago</li>\n            <li>User E logged in - 10 hours ago</li>\n            <li>Price updated - 12 hours ago</li>\n            <li>Order #1234 cancelled - 15 hours ago</li>\n          </ul>\n        </div>\n      </aap:target>\n"
     }
   ]
 }
