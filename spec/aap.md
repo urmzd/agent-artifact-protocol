@@ -760,7 +760,7 @@ State is carried in the `meta.state` field.
 
 ### 8.2 Entity Metadata
 
-The optional `entity` object (carried in `content` for `name: "handle"` envelopes) holds ownership and organizational metadata:
+The optional `entity` object holds ownership and organizational metadata. Entity metadata is carried outside the handle envelope by the platform layer — the handle itself is kept minimal (see [Section 7.2](#72-handle-name-handle)).
 
 | Field | Type | Required | Description |
 |---|---|---|---|
@@ -769,7 +769,7 @@ The optional `entity` object (carried in `content` for `name: "handle"` envelope
 | `tags` | array of strings | no | Freeform classification tags |
 | `permissions` | object | no | Access control (see [Section 8.3](#83-permissions)) |
 | `collection` | string | no | Workspace or collection grouping identifier |
-| `ttl` | integer | no | Time-to-live in seconds from `metadata.updated_at` |
+| `ttl` | integer | no | Time-to-live in seconds from last update |
 | `expires_at` | string | no | ISO 8601 expiration timestamp (takes precedence over `ttl`) |
 | `relationships` | array | no | Links to other artifacts (see [Section 8.4](#84-relationships)) |
 
@@ -835,7 +835,7 @@ Advisory locks are hints only. The version mechanism remains the authoritative c
 
 ### 8.6 TTL and Expiration
 
-- When `ttl` is set, the artifact expires at `metadata.updated_at + ttl` seconds
+- When `ttl` is set, the artifact expires `ttl` seconds after its last update
 - When `expires_at` is set, it takes precedence over `ttl`
 - Expired artifacts SHOULD transition to `"archived"` state automatically
 - Consumers SHOULD check expiration on read and treat expired artifacts as archived
@@ -866,7 +866,7 @@ Implementations declare their conformance level. Each level is a superset of the
 - MUST support context offloading: init context for creation, maintain context for edits. The orchestrator MUST provide a mechanism (tool calls, API dispatch, subprocess invocation, or equivalent) for secondary contexts to operate on artifacts
 - MUST support the stateless dispatch memory model — no edit history accumulates in any secondary context
 - The maintain context MUST produce `edit` envelopes, not `synthesize`, on edits
-- MUST support `metadata.state` and enforce state machine transitions ([Section 8.1](#81-state-machine))
+- MUST support `meta.state` and enforce state machine transitions ([Section 8.1](#81-state-machine))
 - Orchestrators MUST use handles rather than full content for artifact interaction
 
 ---
@@ -874,7 +874,7 @@ Implementations declare their conformance level. Each level is a superset of the
 ## 10. Security Considerations
 
 - **Content injection**: consumers MUST sanitize artifact content before displaying in privileged contexts (e.g., web browsers). Content display and sandboxing are consumer responsibilities outside the protocol scope
-- **Checksum verification**: consumers SHOULD verify `metadata.checksum` when present to detect tampering or corruption
+- **Checksum verification**: consumers SHOULD verify `meta.checksum` when present to detect tampering or corruption
 - **Token budget enforcement**: producers MUST NOT exceed declared budgets; consumers SHOULD reject payloads that claim to use fewer tokens than they actually contain
 - **Entity permissions**: `permissions` in the entity object are metadata only — consumers MUST enforce access control at the platform level, not rely solely on envelope metadata
 
@@ -882,7 +882,7 @@ Implementations declare their conformance level. Each level is a superset of the
 
 ## 11. IANA Considerations
 
-This specification does not require any IANA registrations. The `metadata.format` field uses existing MIME types.
+This specification does not require any IANA registrations. The `meta.format` field uses existing MIME types.
 
 ---
 
@@ -892,7 +892,7 @@ Machine-validatable schemas for all protocol structures are provided in the `sch
 
 - [`artifact-envelope.json`](schemas/artifact-envelope.json) — Envelope schema (covers all 3 envelope types)
 - [`artifact.json`](schemas/artifact.json) — Artifact schema (standalone content object)
-- [`diff-operation.json`](schemas/diff-operation.json) — Edit operation schema (content items for `name: "edit"`)
+- [`edit-operation.json`](schemas/edit-operation.json) — Edit operation schema (content items for `name: "edit"`)
 - [`entity-metadata.json`](schemas/entity-metadata.json) — Entity metadata schema
 - [`relationship.json`](schemas/relationship.json) — Artifact relationship schema
 
@@ -907,4 +907,4 @@ Empirical measurements from the reference implementation using a 40KB HTML dashb
 | Update all CSS colors | ~10,000 | ~700 | 93.0% |
 | Rewrite one section | ~10,000 | ~1,000 | 90.0% |
 
-*Values are approximate; see `ag-aap-bench` for current measurements.*
+*Values are approximate; run `cargo bench --bench aap` for current apply engine measurements.*
