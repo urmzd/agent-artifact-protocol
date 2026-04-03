@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from pathlib import Path
 
 from pydantic import BaseModel, Field
@@ -33,7 +34,7 @@ class JudgeOutput(BaseModel):
     reasoning: str = Field(description="Brief explanation of the score")
 
 
-def judge_turn(
+async def judge_turn(
     model: Model,
     edit_instruction: str,
     artifact_text: str,
@@ -52,7 +53,7 @@ def judge_turn(
         f"## Resulting Artifact\n\n```\n{artifact_text}\n```"
     )
 
-    r = agent.run_sync(user_msg)
+    r = await agent.run(user_msg)
     out = r.output
 
     return JudgeScore(
@@ -63,12 +64,12 @@ def judge_turn(
     )
 
 
-def judge_experiment(
+async def judge_experiment(
     model: Model,
     exp_dir: Path,
     ext: str,
 ) -> list[TurnJudgeComparison]:
-    """Judge all turns for one experiment, scoring both flows."""
+    """Judge all turns for one experiment, scoring both flows concurrently."""
     base_input = exp_dir / "inputs" / "base"
     base_output = exp_dir / "outputs" / "base"
     aap_output = exp_dir / "outputs" / "aap"
@@ -96,8 +97,11 @@ def judge_experiment(
         base_text = base_file.read_text()
         aap_text = strip_aap_markers(aap_file.read_text())
 
-        base_score = judge_turn(model, edit_instruction, base_text, "base", turn_num)
-        aap_score = judge_turn(model, edit_instruction, aap_text, "aap", turn_num)
+        # Judge base and AAP concurrently
+        base_score, aap_score = await asyncio.gather(
+            judge_turn(model, edit_instruction, base_text, "base", turn_num),
+            judge_turn(model, edit_instruction, aap_text, "aap", turn_num),
+        )
 
         comparisons.append(TurnJudgeComparison(
             turn=turn_num,

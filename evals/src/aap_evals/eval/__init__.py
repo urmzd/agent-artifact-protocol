@@ -10,7 +10,7 @@ from ..models import ExperimentQuality
 from .metrics import score_experiment
 
 
-def run_eval(
+async def run_eval(
     exp_dir: Path,
     ext: str,
     use_ragas: bool = False,
@@ -28,7 +28,7 @@ def run_eval(
     if model is not None:
         from .judge import judge_experiment
 
-        comparisons = judge_experiment(model, exp_dir, ext)
+        comparisons = await judge_experiment(model, exp_dir, ext)
         quality.judge_comparisons = comparisons
 
         if comparisons:
