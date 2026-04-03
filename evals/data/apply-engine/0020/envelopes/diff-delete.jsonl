@@ -1,0 +1,2 @@
+{"protocol":"aap/0.1","id":"artifact-0020","version":10,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"        <div class=\"stat-card stat-pipeline\" style=\"border-left-color: #ffc107;\">"}}]}
+{"protocol":"aap/0.1","id":"artifact-0020","version":11,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"                    <div class=\"deal-item\">"}}]}
