@@ -14,6 +14,9 @@ class TurnResult(BaseModel):
     output_tokens: int = 0
     latency_ms: int = 0
     output_bytes: int = 0
+    ttft_ms: int | None = None
+    ttlt_ms: int | None = None
+    median_itl_ms: float | None = None
     failed: bool = False
     failure_reason: str = ""
 
