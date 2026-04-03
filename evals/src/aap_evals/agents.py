@@ -54,10 +54,13 @@ def _build_model(provider: str, model_name: str, host: str) -> Model:
             provider=GitHubProvider(api_key=api_key),
         )
     elif provider == "groq":
-        from pydantic_ai.providers.groq import GroqProvider
+        api_key = os.environ.get("GROQ_API_KEY")
         return OpenAIChatModel(
             model_name=model_name or PROVIDER_DEFAULTS["groq"],
-            provider=GroqProvider(),
+            provider=OpenAIProvider(
+                base_url="https://api.groq.com/openai/v1",
+                api_key=api_key,
+            ),
         )
     elif provider == "ollama":
         api_key = os.environ.get("OLLAMA_API_KEY")
