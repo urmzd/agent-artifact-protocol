@@ -22,7 +22,7 @@ from pydantic_ai.providers.openai import OpenAIProvider
 # ── Provider defaults ─────────────────────────────────────────────────────
 
 PROVIDER_DEFAULTS: dict[str, str] = {
-    "google": "gemini-3.1-flash-lite-preview",
+    "google": "gemini-2.5-flash",
     "openai": "gpt-4o-mini",
     "ollama": "gemma4",
     "github": "openai/gpt-4o-mini",

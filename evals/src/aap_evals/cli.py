@@ -16,7 +16,8 @@ app = typer.Typer(name="aap-evals", help="AAP benchmarks and evaluations.")
 console = Console()
 
 DATA_DIR = Path(__file__).resolve().parent.parent.parent / "data"
-AAP_SPEC = (DATA_DIR / "aap-spec.md").read_text().strip()
+AAP_INIT_SPEC = (DATA_DIR / "aap-spec-init.md").read_text().strip()
+AAP_MAINTAIN_SPEC = (DATA_DIR / "aap-spec-maintain.md").read_text().strip()
 
 FORMAT_TO_EXT: dict[str, str] = {
     "text/html": ".html",
@@ -158,8 +159,8 @@ async def _run_single_experiment(
         aap_output.mkdir(parents=True, exist_ok=True)
 
         base_system = (base_input / "system.md").read_text().strip()
-        init_system = base_system + "\n\n" + AAP_SPEC
-        maintain_system = base_system + "\n\n" + AAP_SPEC
+        init_system = base_system + "\n\n" + AAP_INIT_SPEC
+        maintain_system = base_system + "\n\n" + AAP_MAINTAIN_SPEC
         turn_files = _find_turn_files(base_input)
 
         if not turn_files:
