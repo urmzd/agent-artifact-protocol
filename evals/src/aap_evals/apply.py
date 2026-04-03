@@ -1,74 +1,55 @@
-"""AAP envelope application — resolves diff and section operations.
+"""AAP envelope application — delegates to Rust apply engine via PyO3 FFI.
 
-Tries the Rust engine via PyO3 FFI first, falls back to pure Python.
+The Rust engine (src/apply.rs) is the single source of truth for envelope
+resolution. This module serialises typed Python envelopes to JSON, calls
+the FFI, and deserialises the result.
 """
 
 from __future__ import annotations
 
-import re
+import json
 
-from .markers import markers_for
+from .schema import DiffEnvelope, FullEnvelope, SectionEnvelope, TemplateEnvelope
 
-# Try Rust FFI, fall back to pure Python
 try:
-    from aap_evals._engine import resolve as _rust_resolve  # type: ignore[import-not-found]
-    HAS_ENGINE = True
-except ImportError:
-    HAS_ENGINE = False
+    from aap_evals.aap import resolve_envelope as _rust_resolve  # type: ignore[import-not-found]
+except ImportError as exc:
+    raise ImportError(
+        "Rust apply engine not available — build with `maturin develop`"
+    ) from exc
 
 
-def apply_envelope(content: str, name: str, items: list[dict], fmt: str) -> str:
-    """Resolve an AAP envelope against artifact content."""
-    if name == "diff":
-        return _apply_diff(content, items)
-    elif name == "section":
-        return _apply_section_update(content, items, fmt)
+type AnyEnvelope = FullEnvelope | DiffEnvelope | SectionEnvelope | TemplateEnvelope
+
+
+def apply_envelope(artifact: str, envelope: AnyEnvelope, fmt: str) -> str:
+    """Resolve a typed AAP envelope against artifact content via Rust FFI.
+
+    Args:
+        artifact: Current artifact body (raw text).
+        envelope: Typed envelope from the maintain context.
+        fmt: MIME type (e.g. "text/html").
+
+    Returns:
+        New artifact body after applying the operation.
+    """
+    operation_json = envelope.model_dump_json(exclude_none=True)
+
+    # The Rust engine expects the base artifact as a name:"full" envelope JSON.
+    artifact_envelope = json.dumps({
+        "protocol": "aap/0.1",
+        "id": envelope.id,
+        "version": envelope.version - 1,
+        "name": "full",
+        "operation": {"direction": "output", "format": fmt},
+        "content": [{"body": artifact}],
+    })
+
+    # For full envelopes, no base artifact is needed.
+    if isinstance(envelope, FullEnvelope):
+        result_json = _rust_resolve(operation_json, None)
     else:
-        raise ValueError(f"unsupported operation name: {name}")
+        result_json = _rust_resolve(operation_json, artifact_envelope)
 
-
-def _apply_diff(content: str, items: list[dict]) -> str:
-    result = content
-    for item in items:
-        op = item.get("op", "")
-        search = item.get("target", {}).get("search", "")
-        replacement = item.get("content", "")
-
-        if not search:
-            raise ValueError("diff op missing search target")
-        if search not in result:
-            raise ValueError(f"search target not found: {search[:80]!r}")
-
-        if op == "replace":
-            result = result.replace(search, replacement, 1)
-        elif op == "delete":
-            result = result.replace(search, "", 1)
-        elif op == "insert_before":
-            idx = result.index(search)
-            result = result[:idx] + replacement + result[idx:]
-        elif op == "insert_after":
-            idx = result.index(search) + len(search)
-            result = result[:idx] + replacement + result[idx:]
-        else:
-            raise ValueError(f"unknown diff op: {op}")
-    return result
-
-
-def _apply_section_update(content: str, items: list[dict], fmt: str) -> str:
-    result = content
-    for item in items:
-        section_id = item.get("id", "")
-        new_content = item.get("content", "")
-        pair = markers_for(section_id, fmt)
-        if not pair:
-            raise ValueError(f"no markers for format {fmt!r}")
-        start, end = pair
-
-        pattern = re.escape(start) + r"[\s\S]*?" + re.escape(end)
-        replacement = f"{start}\n{new_content}\n{end}"
-        new_result = re.sub(pattern, replacement, result, count=1)
-
-        if new_result == result:
-            raise ValueError(f"section {section_id!r} not found in content")
-        result = new_result
-    return result
+    result = json.loads(result_json)
+    return result["content"][0]["body"]

@@ -360,15 +360,13 @@ def run_experiments(
                 ms = int((time.perf_counter() - t0) * 1000)
                 usage = r.usage()
 
-                envelope: Envelope = r.output
+                envelope = r.output
                 parsed = True
                 parse_successes += 1
                 env_name = envelope.name
                 envelope_json = envelope.model_dump_json(indent=2)
 
-                new_artifact = apply_envelope(
-                    aap_artifact, envelope.name, envelope.content, fmt,
-                )
+                new_artifact = apply_envelope(aap_artifact, envelope, fmt)
                 succeeded = True
                 apply_successes += 1
                 aap_artifact = new_artifact
