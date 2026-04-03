@@ -80,7 +80,7 @@
       "then": {
         "properties": {
           "content": {
-            "items": { "$ref": "diff-operation.json" }
+            "items": { "$ref": "edit-operation.json" }
           }
         }
       }
