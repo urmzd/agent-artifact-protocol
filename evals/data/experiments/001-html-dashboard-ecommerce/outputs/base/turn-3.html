@@ -1,97 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Admin Dashboard</title>
-<style>
-:root { --primary: #8b5cf6; --bg: #f8fafc; --text: #1e293b; --border: #e2e8f0; }
-body { font-family: system-ui, -apple-system, sans-serif; margin: 0; background: var(--bg); color: var(--text); }
-nav { background: #fff; padding: 1rem 2rem; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
-.nav-links a { margin-left: 20px; text-decoration: none; color: var(--text); font-weight: 500; }
-.nav-links a:hover { color: var(--primary); }
-.avatar { width: 32px; height: 32px; background: #cbd5e1; border-radius: 50%; display: inline-block; vertical-align: middle; margin-right: 10px; }
-.container { padding: 2rem; max-width: 1200px; margin: auto; }
-.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
-.card { background: #fff; padding: 1.5rem; border: 1px solid var(--border); border-radius: 8px; }
-table { width: 100%; border-collapse: collapse; background: #fff; margin-top: 1rem; }
-th { text-align: left; padding: 12px; border-bottom: 2px solid var(--border); background: #f1f5f9; }
-td { padding: 12px; border-bottom: 1px solid var(--border); }
-.badge { padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
-.status-active { background: #ede9fe; color: #5b21b6; }
-.status-low { background: #fee2e2; color: #991b1b; }
-.form-group { margin-bottom: 1rem; }
-input { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid var(--border); border-radius: 4px; }
-input:focus { outline: 2px solid var(--primary); border-color: transparent; }
-button { cursor: pointer; }
-</style>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <style>
+        :root { --primary: #8b5cf6; --bg: #f3f4f6; --text: #1f2937; --white: #ffffff; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; flex-direction: column; }
+        nav { background: var(--white); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; }
+        .logo { font-weight: bold; font-size: 1.5rem; color: var(--primary); }
+        .user-menu { display: flex; align-items: center; gap: 1rem; }
+        .avatar { width: 40px; height: 40px; background: #ddd; border-radius: 50%; }
+        main { padding: 2rem; }
+        .grid-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
+        .card { background: var(--white); padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: 8px; overflow: hidden; margin-bottom: 2rem; }
+        th { background: #f9fafb; text-align: left; padding: 1rem; border-bottom: 2px solid #e5e7eb; }
+        td { padding: 1rem; border-bottom: 1px solid #e5e7eb; }
+        .badge { padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.8rem; }
+        .status-active { background: #ede9fe; color: #5b21b6; }
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .form-group { margin-bottom: 1rem; }
+        input[type="text"], input[type="email"] { width: 100%; padding: 0.5rem; margin-top: 0.25rem; border: 1px solid #ddd; border-radius: 4px; }
+        input[type="text"]:focus, input[type="email"]:focus { outline: 2px solid var(--primary); border-color: transparent; }
+    </style>
 </head>
 <body>
+    <nav>
+        <div class="logo">AdminPanel</div>
+        <div class="user-menu">
+            <span>John Doe</span>
+            <div class="avatar"></div>
+            <button style="padding: 0.5rem 1rem; cursor: pointer; background: var(--primary); color: white; border: none; border-radius: 4px;">Sign Out</button>
+        </div>
+    </nav>
 
-<nav id="nav">
-    <div style="font-weight: bold; font-size: 1.2rem; color: var(--primary);">ADMIN DASHBOARD</div>
-    <div class="nav-links">
-        <a href="#stats">Dashboard</a>
-        <a href="#products-table">Products</a>
-        <a href="#orders-table">Orders</a>
-        <a href="#settings">Settings</a>
-        <span class="avatar"></span><span>Admin User</span>
-        <button style="margin-left: 20px; background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 4px;">Sign Out</button>
-    </div>
-</nav>
+    <main>
+        <div class="grid-stats">
+            <div class="card">
+                <h3>Total Revenue</h3>
+                <p style="font-size: 1.5rem; font-weight:bold">$215,430</p>
+                <span style="color: var(--primary); font-weight: bold;">+12.3%</span>
+            </div>
+            <div class="card"><h3>Orders</h3><p style="font-size: 1.5rem; font-weight:bold">1,205</p><span style="color: var(--primary);">+5%</span></div>
+            <div class="card"><h3>Customers</h3><p style="font-size: 1.5rem; font-weight:bold">842</p><span style="color: var(--primary);">+2%</span></div>
+            <div class="card"><h3>Conversion</h3><p style="font-size: 1.5rem; font-weight:bold">3.2%</p><span style="color: var(--primary);">+0.5%</span></div>
+        </div>
 
-<div class="container">
+        <h2>Products</h2>
+        <table>
+            <thead><tr><th>Name</th><th>SKU</th><th>Price</th><th>Stock</th><th>Status</th></tr></thead>
+            <tbody>
+                <script>
+                    for(let i=1; i<=60; i++) {
+                        document.write(`<tr><td>Product ${i}</td><td>SKU-${1000+i}</td><td>$${(Math.random()*100).toFixed(2)}</td><td>${Math.floor(Math.random()*500)}</td><td><span class="badge status-active">Active</span></td></tr>`);
+                    }
+                </script>
+            </tbody>
+        </table>
 
-<aap:section id="stats">
-    <div class="stats-grid">
-        <div class="card"><h3>Total Revenue</h3><p style="font-size: 1.5rem; color: var(--primary); font-weight: bold;">$215,430</p><small style="color: green;">+12.3%</small></div>
-        <div class="card"><h3>Orders</h3><p style="font-size: 1.5rem; font-weight: bold;">1,205</p><small style="color: green;">↑ 8%</small></div>
-        <div class="card"><h3>Customers</h3><p style="font-size: 1.5rem; font-weight: bold;">892</p><small style="color: green;">↑ 2%</small></div>
-        <div class="card"><h3>Conversion</h3><p style="font-size: 1.5rem; font-weight: bold;">3.2%</p><small style="color: red;">↓ 1%</small></div>
-    </div>
-</aap:section>
+        <h2>Recent Orders</h2>
+        <table>
+            <thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody>
+                <script>
+                    for(let i=1; i<=40; i++) {
+                        document.write(`<tr><td>#ORD-${9000+i}</td><td>User ${i}</td><td>$${(Math.random()*500).toFixed(2)}</td><td>2023-10-${(i%28)+1}</td><td><span class="badge status-active">Shipped</span></td></tr>`);
+                    }
+                    for(let i=1; i<=15; i++) {
+                        document.write(`<tr><td>#MAR-${202600+i}</td><td>March Client ${i}</td><td>$${(Math.random()*800).toFixed(2)}</td><td>2026-03-${(i < 10 ? '0'+i : i)}</td><td><span class="badge status-pending">Pending</span></td></tr>`);
+                    }
+                </script>
+            </tbody>
+        </table>
 
-<aap:section id="products-table">
-    <h2>Products</h2>
-    <table>
-        <thead><tr><th>Name</th><th>SKU</th><th>Price</th><th>Stock</th><th>Category</th><th>Status</th></tr></thead>
-        <tbody>
-            <script>
-                for(let i=1; i<=60; i++) {
-                    document.write(`<tr><td>Product ${i}</td><td>SKU-${1000+i}</td><td>$${(Math.random()*100).toFixed(2)}</td><td>${Math.floor(Math.random()*100)}</td><td>Category ${Math.floor(i/10)}</td><td><span class="badge ${i%5===0?'status-low':'status-active'}">${i%5===0?'Out':'In Stock'}</span></td></tr>`);
-                }
-            </script>
-        </tbody>
-    </table>
-</aap:section>
-
-<aap:section id="orders-table">
-    <h2>Orders</h2>
-    <table>
-        <thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
-        <tbody>
-            <script>
-                for(let i=1; i<=40; i++) {
-                    document.write(`<tr><td>ORD-${5000+i}</td><td>Customer Name ${i}</td><td>$${(Math.random()*500).toFixed(2)}</td><td>2023-10-${Math.floor(i/2)+1}</td><td><span class="badge status-active">Completed</span></td></tr>`);
-                }
-                for(let i=1; i<=15; i++) {
-                    document.write(`<tr><td>ORD-900${i}</td><td>New Client ${i}</td><td>$${(Math.random()*200+50).toFixed(2)}</td><td>2026-03-${i.toString().padStart(2, '0')}</td><td><span class="badge status-active">Processing</span></td></tr>`);
-                }
-            </script>
-        </tbody>
-    </table>
-</aap:section>
-
-<aap:section id="settings">
-    <h2>Account Settings</h2>
-    <div class="card">
-        <div class="form-group"><label>Display Name</label><input type="text" value="Admin User"></div>
-        <div class="form-group"><label>Email Address</label><input type="email" value="admin@example.com"></div>
-        <div class="form-group"><label><input type="checkbox" checked> Enable email notifications</label></div>
-        <div class="form-group"><label><input type="checkbox"> Enable two-factor authentication</label></div>
-        <button style="background: var(--primary); color: white; padding: 10px 20px; border: none; border-radius: 4px;">Save Changes</button>
-    </div>
-</aap:section>
-
-</div>
+        <div class="card" style="max-width: 500px;">
+            <h2>Account Settings</h2>
+            <form>
+                <div class="form-group"><label>Name</label><input type="text" value="John Doe"></div>
+                <div class="form-group"><label>Email</label><input type="email" value="john@example.com"></div>
+                <div class="form-group"><label><input type="checkbox" checked style="accent-color: var(--primary);"> Enable Notifications</label></div>
+                <button type="button" style="background: var(--primary); color: white; padding: 0.5rem 1rem; border: none; border-radius: 4px; cursor: pointer;">Save Profile</button>
+            </form>
+        </div>
+    </main>
 </body>
 </html>
