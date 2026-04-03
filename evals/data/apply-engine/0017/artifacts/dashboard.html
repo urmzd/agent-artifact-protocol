@@ -3,281 +3,302 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient Health Dashboard</title>
+    <title>Stock Portfolio Dashboard</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
             background-color: #f4f7f9;
             color: #333;
+            margin: 0;
+            padding: 0;
         }
         .dashboard-container {
-            max-width: 1400px;
-            margin: 20px auto;
-            padding: 20px;
-        }
-        header {
-            background-color: #007bff;
-            color: white;
-            padding: 20px 0;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .dashboard-container {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: 200px 1fr;
             gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
         }
         /* Navigation Styling */
-        #nav {
-            background-color: #ffffff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        nav {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            height: fit-content;
         }
-        #nav a {
+        nav h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8em;
+            color: #1abc9c;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+        nav li a {
+            display: block;
+            padding: 12px 20px;
             text-decoration: none;
-            color: #007bff;
-            margin-right: 20px;
-            font-weight: 600;
-            padding: 5px 10px;
-            border-radius: 5px;
-            transition: background-color 0.3s;
+            color: #ecf0f1;
+            transition: background-color 0.3s, color 0.3s;
+            border-left: 3px solid transparent;
         }
-        #nav a:hover {
-            background-color: #e9ecef;
-            color: #0056b3;
+        nav li a:hover {
+            background-color: #34495e;
+            color: white;
+            border-left: 3px solid #1abc9c;
         }
-        /* Statistics Cards */
-        #stats {
+        /* Main Content Area */
+        .main-content {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-rows: auto 1fr auto;
             gap: 20px;
+        }
+        .stats {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        .stats h1 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .stat-grid {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            margin-top: 20px;
         }
         .stat-card {
-            background-color: white;
-            padding: 25px;
+            flex: 1;
+            padding: 15px;
+            margin: 0 10px;
+            background-color: #e8f5e9;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-            border-left: 5px solid;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
         .stat-card h3 {
-            margin-top: 0;
-            color: #555;
-            font-size: 1.1em;
-        }
-        .stat-value {
-            font-size: 2.2em;
-            font-weight: bold;
-            color: #007bff;
-            margin: 10px 0;
-        }
-        .stat-card.vitals { border-left-color: #28a745; }
-        .stat-card.labs { border-left-color: #ffc107; }
-        .stat-card.meds { border-left-color: #dc3545; }
-
-        /* Main Content Area */
-        #content {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-        }
-        .data-panel {
-            background-color: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-        }
-        h2 {
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
-            margin-top: 0;
-            color: #333;
-        }
-        /* Vital Signs Display Specifics */
-        .vitals-list p {
-            margin: 10px 0;
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px dotted #eee;
-        }
-        .vitals-list span {
+            margin: 0 0 5px;
+            color: #2980b9;
             font-weight: 500;
         }
+        .stat-card p {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 0;
+        }
+        .positive { color: #27ae60; }
+        .negative { color: #e74c3c; }
 
-        /* History Table */
-        .history-table {
+        /* Portfolio Details */
+        .portfolio-details {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        .portfolio-details h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        .stock-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
+            margin-top: 20px;
         }
-        .history-table th, .history-table td {
-            padding: 12px;
+        .stock-table th, .stock-table td {
+            padding: 12px 15px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
-        .history-table th {
-            background-color: #f8f9fa;
-            color: #666;
-        }
-        .history-table tr:hover {
-            background-color: #eef;
-        }
-
-        /* Footer */
-        #footer {
-            background-color: #343a40;
+        .stock-table th {
+            background-color: #34495e;
             color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+        .stock-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        /* Footer */
+        footer {
+            background-color: #2c3e50;
+            color: #bdc3c7;
             text-align: center;
             padding: 15px 0;
-            margin-top: 30px;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+        /* Utility for visual separation */
+        .chart-placeholder {
+            height: 250px;
+            background-color: #ecf0f1;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-style: italic;
+            color: #7f8c8d;
+            border: 1px dashed #ccc;
+        }
+
+        @media (max-width: 1000px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            nav {
+                grid-row: 1;
+                box-shadow: none;
+                padding: 10px 0;
+            }
+            nav ul {
+                display: flex;
+                justify-content: space-around;
+            }
+            nav li a {
+                padding: 10px 10px;
+                border-left: none;
+                border-right: 1px solid rgba(255, 255, 255, 0.1);
+            }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Central Health Dashboard</h1>
-        <p id="patient-name">Patient: Eleanor Vance | MRN: 783921</p>
-    </header>
-
     <div class="dashboard-container">
-        
+
         <aap:section id="nav">
-            <nav>
-                <a href="#vitals">Vitals Monitoring</a>
-                <a href="#labs">Lab Results</a>
-                <a href="#meds">Medications</a>
-                <a href="#encounter">Encounter Notes</a>
-            </nav>
+            <h2>Portfolio</h2>
+            <ul>
+                <li><a href="#" style="background-color: #2980b9;">Dashboard</a></li>
+                <li><a href="#">Watchlist</a></li>
+                <li><a href="#">Transaction History</a></li>
+                <li><a href="#">Settings</a></li>
+            </ul>
         </aap:section>
 
-        <aap:section id="stats">
-            <div class="stat-card vitals">
-                <h3>Heart Rate (BPM)</h3>
-                <div class="stat-value">72</div>
-                <p style="color: #28a745; font-size: 0.9em;">Normal Range</p>
-            </div>
-            <div class="stat-card vitals">
-                <h3>Blood Pressure</h3>
-                <div class="stat-value">128/78</div>
-                <p style="color: #28a745; font-size: 0.9em;">Stable</p>
-            </div>
-            <div class="stat-card labs">
-                <h3>Oxygen Saturation</h3>
-                <div class="stat-value">97%</div>
-                <p style="color: #ffc107; font-size: 0.9em;">Good</p>
-            </div>
-            <div class="stat-card meds">
-                <h3>Allergies</h3>
-                <div class="stat-value">Penicillin</div>
-                <p style="color: #dc3545; font-size: 0.9em;">Rash (Mild)</p>
-            </div>
-        </aap:section>
+        <div class="main-content">
 
-        <aap:section id="content">
-            
-            <!-- Left Column: Vitals and History -->
-            <div class="data-panel" id="vitals">
-                <h2>Vital Signs Monitoring</h2>
-                <div class="vitals-list">
-                    <p><span>Temperature:</span> <span>98.8°F</span></p>
-                    <p><span>Respiratory Rate:</span> <span>16 breaths/min</span></p>
-                    <p><span>Pain Level (0-10):</span> <span>3</span></p>
-                    <p><span>Last Checked:</span> <span>2024-07-21 09:30 AM</span></p>
+            <aap:section id="stats">
+                <h1>Dashboard Overview</h1>
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <h3>Total Value</h3>
+                        <p>$1,245,320.55</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Today's Gain</h3>
+                        <p class="positive">+$12,890.12</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Overall Change</h3>
+                        <p class="positive">+$4.52%</p>
+                    </div>
                 </div>
+            </aap:section>
 
-                <h3 style="margin-top: 25px;">Recent Vitals Trend</h3>
-                <table class="history-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>HR</th>
-                            <th>BP</th>
-                            <th>SPO2</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>2024-07-20</td><td>75</td><td>120/76</td><td>98%</td></tr>
-                        <tr><td>2024-07-21</td><td>72</td><td>128/78</td><td>97%</td></tr>
-                        <tr><td>2024-07-22</td><td>70</td><td>122/77</td><td>99%</td></tr>
-                    </tbody>
-                </table>
-            </div>
+            <aap:section id="content">
+                <div class="portfolio-details">
+                    <h2>Portfolio Performance Chart (YTD)</h2>
+                    <div class="chart-placeholder">
+                        [Interactive Line Graph Placeholder: Visualization of Value Over Time]
+                    </div>
 
-            <!-- Right Column: Labs and Medications -->
-            <div class="data-panel" id="labs">
-                <h2>Latest Lab Results (Blood Panel)</h2>
-                <p><strong>Date Collected:</strong> 2024-07-21</p>
-                <table class="history-table">
-                    <thead>
-                        <tr>
-                            <th>Test</th>
-                            <th>Result</th>
-                            <th>Unit</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>Hemoglobin</td><td>11.5</td><td>g/dL</td><td style="color: green;">Normal</td></tr>
-                        <tr><td>Glucose</td><td>95</td><td>mg/dL</td><td style="color: green;">Normal</td></tr>
-                        <tr><td>Creatinine</td><td>1.1</td><td>mg/dL</td><td style="color: green;">Normal</td></tr>
-                        <tr><td>Potassium</td><td>4.2</td><td>mmol/L</td><td style="color: green;">Normal</td></tr>
-                    </tbody>
-                </table>
-                <button style="margin-top: 20px; background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer;">View Full Report</button>
-            </div>
-        </aap:section>
+                    <h2>Holdings Breakdown</h2>
+                    <table class="stock-table">
+                        <thead>
+                            <tr>
+                                <th>Ticker</th>
+                                <th>Company Name</th>
+                                <th>Shares Owned</th>
+                                <th>Current Price</th>
+                                <th>Market Value</th>
+                                <th>Day Change</th>
+                                <th>P/L (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>AAPL</td>
+                                <td>Apple Inc.</td>
+                                <td>520</td>
+                                <td>$188.50</td>
+                                <td>$97,970.00</td>
+                                <td class="positive">+$1.12</td>
+                                <td class="positive">+6.12%</td>
+                            </tr>
+                            <tr>
+                                <td>MSFT</td>
+                                <td>Microsoft Corp.</td>
+                                <td>310</td>
+                                <td>$430.22</td>
+                                <td>$133,368.20</td>
+                                <td class="negative">-$0.88</td>
+                                <td class="positive">+15.50%</td>
+                            </tr>
+                            <tr>
+                                <td>GOOGL</td>
+                                <td>Alphabet Inc.</td>
+                                <td>150</td>
+                                <td>$175.10</td>
+                                <td>$26,265.00</td>
+                                <td class="positive">+$0.45</td>
+                                <td class="positive">+12.90%</td>
+                            </tr>
+                            <tr>
+                                <td>AMZN</td>
+                                <td>Amazon.com, Inc.</td>
+                                <td>400</td>
+                                <td>$152.90</td>
+                                <td>$61,160.00</td>
+                                <td class="positive">+$0.95</td>
+                                <td class="positive">+8.72%</td>
+                            </tr>
+                            <tr>
+                                <td>TSLA</td>
+                                <td>Tesla Inc.</td>
+                                <td>120</td>
+                                <td>$195.45</td>
+                                <td>$23,454.00</td>
+                                <td class="negative">-$2.55</td>
+                                <td class="negative">-3.10%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </aap:section>
 
-        <div style="display: flex; gap: 20px;">
-            <!-- Third Column/Wide Area: Medications -->
-            <div class="data-panel" id="meds" style="flex: 1 1 30%;">
-                <h2>Active Medications</h2>
-                <ul style="list-style-type: none; padding: 0;">
-                    <li style="padding: 10px; border: 1px solid #eee; margin-bottom: 10px; border-radius: 4px;">
-                        <strong>Lisinopril</strong> <span style="float: right; color: #007bff;">10mg</span>
-                        <p style="font-size: 0.9em; margin: 5px 0 0;">Take 1 tablet daily in the morning.</p>
-                    </li>
-                    <li style="padding: 10px; border: 1px solid #eee; margin-bottom: 10px; border-radius: 4px;">
-                        <strong>Metformin</strong> <span style="float: right; color: #007bff;">500mg</span>
-                        <p style="font-size: 0.9em; margin: 5px 0 0;">Take 2 tablets twice daily with meals.</p>
-                    </li>
-                    <li style="padding: 10px; border: 1px solid #eee; margin-bottom: 10px; border-radius: 4px; background-color: #fff3cd;">
-                        <strong>Vitamin D</strong> <span style="float: right; color: #007bff;">1000 IU</span>
-                        <p style="font-size: 0.9em; margin: 5px 0 0;">Take 1 capsule daily.</p>
-                    </li>
-                </ul>
-                <p style="margin-top: 20px;"><a href="#" style="color: #dc3545;">[Review Medication List]</a></p>
-            </div>
+            <aap:section id="activity-stream">
+                <div class="portfolio-details">
+                    <h2>Recent Market News & Alerts</h2>
+                    <ul style="list-style: none; padding-left: 0;">
+                        <li style="margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dotted #ccc;">
+                            <strong>[ALERT]</strong> NVDA surged 4.1% pre-market due to AI chip demand rumors. (Source: TechFeed)
+                        </li>
+                        <li style="margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dotted #ccc;">
+                            Analyst upgrades target price for MSFT to $480. Expect solid Q3 results. (Source: GlobalInvest)
+                        </li>
+                        <li style="margin-bottom: 15px; padding-bottom: 10px;">
+                            Market sentiment remains cautiously optimistic as inflation data clears headwinds. (Source: EconDigest)
+                        </li>
+                    </ul>
+                </div>
+            </aap:section>
 
-            <!-- Fourth Column/Wide Area: Encounter Notes -->
-            <div class="data-panel" id="encounter" style="flex: 1 1 40%;">
-                <h2>Latest Physician Notes</h2>
-                <p><strong>Provider:</strong> Dr. Angela Ramirez, MD</p>
-                <p><strong>Date:</strong> 2024-07-21</p>
-                <h4 style="margin-top: 15px;">Summary:</h4>
-                <p style="font-size: 0.95em; line-height: 1.6;">
-                    Patient stable in the telemetry unit following minor GI upset. Vitals remain within acceptable parameters. 
-                    Continue current regimen of antihypertensives and continue cardiac monitoring per protocol. 
-                    Follow-up required with Cardiology in two weeks. Diet consultation recommended.
-                </p>
-                <h4 style="margin-top: 20px;">Plan:</h4>
-                <ol style="padding-left: 20px;">
-                    <li>Continue current medications.</li>
-                    <li>Monitor electrolytes closely.</li>
-                    <li>Physical therapy scheduled for tomorrow morning.</li>
-                </ol>
-            </div>
         </div>
-        
     </div>
 
     <aap:section id="footer">
-        <div id="footer">
-            <small>&copy; 2024 HealthConnect Dashboard. For informational purposes only. Data accurate as of today's session.</small>
-        </div>
+        &copy; 2024 WealthGuard Analytics. All rights reserved. Data provided by simulated feed. Privacy Policy | Terms of Service.
     </aap:section>
 
 </body>

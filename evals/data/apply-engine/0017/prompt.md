@@ -1,4 +1,4 @@
-# Case 0017: html-dashboard — dashboard for healthcare patient
+# Case 0017: html-dashboard — dashboard for stock portfolio
 
 **Model:** `gemma4` | **Format:** `text/html`
 
@@ -14,7 +14,7 @@ You are a code generator. Output only raw code/content. No markdown fences, no e
 ## User Prompt
 
 ```
-Create a self-contained HTML dashboard with inline CSS dashboard for healthcare patient.
+Create a self-contained HTML dashboard with inline CSS dashboard for stock portfolio.
 
 Requirements:
 - Self-contained, realistic, production-quality code/content
