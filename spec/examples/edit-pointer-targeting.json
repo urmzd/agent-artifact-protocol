@@ -2,25 +2,24 @@
   "protocol": "aap/0.1",
   "id": "config-001",
   "version": 2,
-  "name": "diff",
-  "operation": {
-    "direction": "output",
+  "name": "edit",
+  "meta": {
     "format": "application/json"
   },
   "content": [
     {
       "op": "replace",
-      "target": {"pointer": "/database/host"},
+      "target": {"type": "pointer", "value": "/database/host"},
       "content": "\"prod-db.example.com\""
     },
     {
       "op": "replace",
-      "target": {"pointer": "/features/dark_mode"},
+      "target": {"type": "pointer", "value": "/features/dark_mode"},
       "content": "true"
     },
     {
       "op": "delete",
-      "target": {"pointer": "/deprecated_field"}
+      "target": {"type": "pointer", "value": "/deprecated_field"}
     }
   ]
 }

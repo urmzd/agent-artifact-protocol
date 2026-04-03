@@ -1,122 +1,53 @@
 {
-  "_comment": "Full edit delegation cycle using envelope format for every message",
+  "_comment": "Edit delegation cycle showing orchestrator -> maintain context -> apply engine -> handle",
 
   "step_1_handle": {
-    "_description": "Orchestrator holds this envelope after artifact creation",
+    "_description": "Orchestrator holds this handle after artifact creation via init context",
     "protocol": "aap/0.1",
     "id": "dashboard-001",
     "version": 3,
     "name": "handle",
-    "operation": {"direction": "output", "format": "text/html", "updated_at": "2026-03-29T14:00:00Z", "state": "published"},
+    "meta": {"format": "text/html", "state": "published"},
     "content": [
-      {"sections": ["nav", "stats", "users", "orders"], "token_count": 10240}
+      {"id": "dashboard-001", "version": 3, "token_count": 10240}
     ]
   },
 
-  "step_2_projection": {
-    "_description": "Orchestrator requests and receives a structure projection — an envelope",
-    "protocol": "aap/0.1",
-    "id": "dashboard-001",
-    "version": 3,
-    "name": "projection",
-    "operation": {"direction": "output", "format": "text/html", "created_at": "2026-03-29T14:01:00Z"},
-    "content": [
-      {
-        "projection_type": "structure",
-        "token_count": 10240,
-        "outline": "HTML dashboard with 4 main sections",
-        "sections": [
-          {"id": "nav", "label": "Navigation", "token_count": 820, "summary": "Top nav bar with logo, search, and user menu"},
-          {"id": "stats", "label": "Statistics Cards", "token_count": 1200, "summary": "4 stat cards: users (1,247), revenue ($12,340), orders (312), uptime (99.7%)"},
-          {"id": "users", "label": "Users Table", "token_count": 5100, "summary": "Sortable table with 50 user rows"},
-          {"id": "orders", "label": "Orders Table", "token_count": 3120, "summary": "Sortable table with 30 order rows"}
-        ]
-      }
-    ]
-  },
+  "step_2_maintain_context": {
+    "_description": "Maintain context receives artifact + message, produces edit envelope (not visible to orchestrator)",
 
-  "step_3_edit_intent": {
-    "_description": "Orchestrator sends edit intent — an input envelope with parallel intents",
-    "protocol": "aap/0.1",
-    "id": "dashboard-001",
-    "version": 3,
-    "name": "intent",
-    "operation": {"direction": "input", "format": "text/html"},
-    "content": [
-      {
-        "intent": "Update the revenue stat card to show $15,720 and the orders count to 384",
-        "target_sections": ["stats"],
-        "constraints": {"preserve_structure": true, "mode_hint": "diff"}
-      }
-    ]
-  },
-
-  "step_3_internal_dispatch": {
-    "_description": "What happens inside the edit operation (not visible to orchestrator)",
-
-    "maintain_agent_context": {
-      "system_prompt": "You are a maintain-agent. Produce AAP diff envelopes to apply the requested change.",
+    "maintain_context_input": {
+      "system_prompt": "You are an AAP maintain context. Given an artifact and an edit instruction, produce a name: \"edit\" envelope.",
       "artifact_injected": "(full HTML content of dashboard-001 v3 — ~10,240 tokens)",
-      "intent": "Update the revenue stat card to show $15,720 and the orders count to 384"
+      "message": "Update the revenue stat card to show $15,720 and the orders count to 384"
     },
 
-    "maintain_agent_output": {
+    "maintain_context_output": {
       "protocol": "aap/0.1",
       "id": "dashboard-001",
       "version": 4,
-      "name": "diff",
-      "operation": {"direction": "output", "format": "text/html", "tokens_used": 65},
+      "name": "edit",
+      "meta": {"format": "text/html", "tokens_used": 65},
       "content": [
-        {"op": "replace", "target": {"search": "$12,340"}, "content": "$15,720"},
-        {"op": "replace", "target": {"search": "<span class=\"stat-value\">312</span>"}, "content": "<span class=\"stat-value\">384</span>"}
+        {"op": "replace", "target": {"type": "id", "value": "revenue-value"}, "content": "$15,720"},
+        {"op": "replace", "target": {"type": "id", "value": "orders-count"}, "content": "384"}
       ]
-    },
-
-    "apply_engine": "Resolves diff operations against stored v3 content → produces v4 (CPU, 0 tokens, ~2μs)"
+    }
   },
 
-  "step_4_edit_result": {
-    "_description": "Orchestrator receives result envelope — summary of changes + updated handle",
+  "step_3_apply_engine": {
+    "_description": "Apply engine resolves edit operations against stored v3 content -> produces v4 artifact + handle (CPU, 0 tokens, ~2us)"
+  },
+
+  "step_4_handle_returned": {
+    "_description": "Orchestrator receives updated handle — never sees the artifact content",
     "protocol": "aap/0.1",
     "id": "dashboard-001",
     "version": 4,
-    "name": "result",
-    "operation": {"direction": "output", "format": "text/html", "tokens_used": 65, "checksum": "sha256:b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3"},
+    "name": "handle",
+    "meta": {"format": "text/html", "state": "published"},
     "content": [
-      {
-        "status": "applied",
-        "mode_used": "diff",
-        "changes": [
-          {"section_id": "stats", "description": "Updated revenue from $12,340 to $15,720 and orders from 312 to 384"}
-        ]
-      }
-    ]
-  },
-
-  "step_5_audit": {
-    "_description": "Audit entry — also an envelope",
-    "protocol": "aap/0.1",
-    "id": "dashboard-001",
-    "version": 4,
-    "name": "audit",
-    "operation": {"direction": "output"},
-    "content": [
-      {
-        "entry_id": "audit-dash001-004",
-        "operation": "edit",
-        "actor": "agent:orchestrator",
-        "timestamp": "2026-03-29T14:02:00Z",
-        "version_before": 3,
-        "version_after": 4,
-        "status": "success",
-        "tokens_used": 65,
-        "detail": {
-          "intent": "Update the revenue stat card to show $15,720 and the orders count to 384",
-          "target_sections": ["stats"],
-          "mode_used": "diff",
-          "changes": [{"section_id": "stats", "description": "Updated revenue from $12,340 to $15,720 and orders from 312 to 384"}]
-        }
-      }
+      {"id": "dashboard-001", "version": 4, "token_count": 10240}
     ]
   }
 }

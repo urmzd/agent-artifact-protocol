@@ -2,22 +2,20 @@
   "protocol": "aap/0.1",
   "id": "dashboard-001",
   "version": 2,
-  "name": "diff",
-  "operation": {
-    "direction": "output",
+  "name": "edit",
+  "meta": {
     "format": "text/html",
-    "updated_at": "2026-03-29T10:05:00Z",
     "tokens_used": 42
   },
   "content": [
     {
       "op": "replace",
-      "target": {"search": "<span class=\"stat-value\">$12,340</span>"},
+      "target": {"type": "id", "value": "revenue-value"},
       "content": "<span class=\"stat-value\">$15,720</span>"
     },
     {
       "op": "replace",
-      "target": {"search": "<span class=\"stat-value\">1,205</span>"},
+      "target": {"type": "id", "value": "user-count"},
       "content": "<span class=\"stat-value\">1,342</span>"
     }
   ]

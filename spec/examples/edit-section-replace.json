@@ -2,16 +2,15 @@
   "protocol": "aap/0.1",
   "id": "dashboard-001",
   "version": 3,
-  "name": "section",
-  "operation": {
-    "direction": "output",
+  "name": "edit",
+  "meta": {
     "format": "text/html",
-    "updated_at": "2026-03-29T10:10:00Z",
     "tokens_used": 95
   },
   "content": [
     {
-      "id": "users-table",
+      "op": "replace",
+      "target": {"type": "id", "value": "users-table"},
       "content": "<table>\n  <tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th></tr>\n  <tr><td>Alice</td><td>alice@example.com</td><td>Admin</td><td>Active</td></tr>\n  <tr><td>Bob</td><td>bob@example.com</td><td>User</td><td>Active</td></tr>\n  <tr><td>Charlie</td><td>charlie@example.com</td><td>User</td><td>Inactive</td></tr>\n  <tr><td>Dana</td><td>dana@example.com</td><td>Editor</td><td>Active</td></tr>\n</table>"
     }
   ]
