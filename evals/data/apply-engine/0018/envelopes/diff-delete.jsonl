@@ -1,2 +1,2 @@
-{"protocol":"aap/0.1","id":"artifact-0018","version":10,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"                <div class=\"stat-card\">"}}]}
-{"protocol":"aap/0.1","id":"artifact-0018","version":11,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"                                <p>$3.00</p>"}}]}
+{"protocol":"aap/0.1","id":"artifact-0018","version":10,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"                <span class=\"stat-value\">78%</span>"}}]}
+{"protocol":"aap/0.1","id":"artifact-0018","version":11,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"                        <td style=\"padding: 15px; border-right: 1px solid #eee;\">TikTok</td>"}}]}

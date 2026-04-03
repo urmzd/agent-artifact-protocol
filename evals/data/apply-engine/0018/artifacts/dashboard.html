@@ -3,303 +3,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restaurant POS Dashboard</title>
+    <title>Social Media Analytics Dashboard</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
             background-color: #f4f7f9;
             color: #333;
+            margin: 0;
+            padding: 0;
         }
         .dashboard-container {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-radius: 10px;
         }
         header {
-            background-color: #a03d3d;
+            background-color: #1e3c72;
             color: white;
-            padding: 15px 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        header h1 {
-            margin: 0;
-            font-size: 1.8em;
-        }
-        nav {
-            background-color: #3b5998;
-            color: white;
-            padding: 10px 20px;
-            display: flex;
-            gap: 20px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-        nav button {
-            background: none;
-            border: none;
-            color: #c5dade;
-            padding: 10px 15px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: color 0.2s;
-        }
-        nav button:hover {
-            color: white;
-        }
-        .main-content {
-            display: flex;
-            flex: 1;
             padding: 20px;
-            gap: 20px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+            margin-bottom: 20px;
         }
-        #stats {
-            flex-basis: 30%;
+        h1 {
+            margin: 0;
+            font-size: 2.2em;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid #4a90e2;
+        }
+        .stat-grid {
             display: flex;
-            flex-direction: column;
+            flex-wrap: wrap;
             gap: 20px;
         }
         .stat-card {
-            background-color: white;
+            flex: 1 1 200px;
+            background-color: #eaf4fe;
+            border-radius: 8px;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-            border-left: 5px solid #a03d3d;
+            text-align: center;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
         }
-        .stat-card h3 {
-            margin-top: 0;
-            color: #555;
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #1e3c72;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .stat-title {
             font-size: 1em;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
+            color: #666;
+            text-transform: uppercase;
         }
-        .stat-card p {
-            font-size: 2.2em;
-            font-weight: bold;
-            margin: 5px 0 0;
+        h2 {
+            color: #1e3c72;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 30px;
         }
-        #content {
-            flex-basis: 70%;
-        }
-        .pos-panel {
-            background-color: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        /* Navigation Styling */
+        .nav-menu {
+            display: flex;
             gap: 15px;
-            margin-bottom: 20px;
         }
-        .menu-item {
+        .nav-btn {
+            padding: 10px 20px;
+            border: none;
+            background-color: #4a90e2;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .nav-btn:hover {
+            background-color: #357ebd;
+        }
+
+        /* Chart Simulation */
+        .chart-container {
+            height: 300px;
             background-color: #f9f9f9;
             border: 1px solid #ddd;
-            padding: 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.1s, transform 0.1s;
-        }
-        .menu-item:hover {
-            background-color: #eef;
-            transform: translateY(-2px);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-        }
-        .menu-item h4 {
-            margin: 0 0 5px 0;
-            font-size: 1.1em;
-            color: #333;
-        }
-        .menu-item p {
-            margin: 0;
-            font-size: 0.9em;
-            color: #777;
-        }
-        /* Order Summary/Cart */
-        #orderSummary {
-            background-color: #fefefe;
-            border: 1px solid #ccc;
-            padding: 15px;
-            border-radius: 6px;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-        #orderSummary table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        #orderSummary th, #orderSummary td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-        #orderSummary thead th {
-            background-color: #f0f0f0;
-            font-weight: 600;
-        }
-        .checkout-btn {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.2em;
             border-radius: 5px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 10px;
+            gap: 5px;
+        }
+        .bar {
+            width: 10%;
+            background-color: #4a90e2;
+            border-radius: 3px 3px 0 0;
+            transition: height 0.5s ease-out;
+            position: relative;
+            align-self: flex-end;
+        }
+        .bar:hover {
+            opacity: 0.8;
             cursor: pointer;
-            margin-top: 15px;
-            float: right;
-            transition: background-color 0.2s;
         }
-        .checkout-btn:hover {
-            background-color: #218838;
-        }
-        footer {
-            background-color: #333;
-            color: white;
+        .bar span {
+            display: block;
             text-align: center;
-            padding: 15px;
+            margin-top: 5px;
             font-size: 0.9em;
-            margin-top: auto; /* Pushes footer to bottom */
+            color: #555;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            border-top: 1px solid #ddd;
+            color: #777;
+            font-size: 0.9em;
         }
     </style>
 </head>
 <body>
 
+<div class="dashboard-container">
     <header>
-        <h1>The Bistro POS System</h1>
-        <div>Dashboard | Cashier: Alex Martinez</div>
+        <h1>Marketing Analytics Dashboard</h1>
+        <p>Performance Overview for Last 30 Days</p>
     </header>
 
-    <nav>
-        <button onclick="showView('pos')">Point of Sale</button>
-        <button onclick="showView('reports')">Reports</button>
-        <button onclick="showView('inventory')">Inventory</button>
-        <button style="background-color: #dc3545;">Logout</button>
-    </nav>
-
-    <div class="dashboard-container">
-
-        <div class="main-content">
-
-            <div id="stats"><aap:section id="stats">
-                <div class="stat-card">
-                    <h3>Daily Sales</h3>
-                    <p>$4,520.50</p>
-                    <small>Today's Total Revenue</small>
-                </div>
-                <div class="stat-card">
-                    <h3>Average Ticket</h3>
-                    <p>$38.45</p>
-                    <small>vs. $35.00 Last Week</small>
-                </div>
-                <div class="stat-card">
-                    <h3>Open Tables</h3>
-                    <p>12 / 30</p>
-                    <small class="stat-small" style="font-size: 0.9em;">4 seating open</small>
-                </div>
-            </div></aap:section>
-
-            <div id="content">
-                <aap:section id="content">
-                    <div class="pos-panel">
-                        <h2>Order Ticket: Table 12 (Booth Seating)</h2>
-                        
-                        <div class="menu-grid">
-                            <div class="menu-item" data-category="Appetizers">
-                                <h4>Garlic Bread</h4>
-                                <p>$7.99</p>
-                            </div>
-                            <div class="menu-item" data-category="Appetizers">
-                                <h4>Bruschetta Mix</h4>
-                                <p>$10.50</p>
-                            </div>
-                            <div class="menu-item" data-category="Entrees">
-                                <h4>Grilled Salmon</h4>
-                                <p>$24.00</p>
-                            </div>
-                            <div class="menu-item" data-category="Entrees">
-                                <h4>Ribeye Steak</h4>
-                                <p>$32.50</p>
-                            </div>
-                            <div class="menu-item" data-category="Sides">
-                                <h4>Fries (Large)</h4>
-                                <p>$5.50</p>
-                            </div>
-                            <div class="menu-item" data-category="Drinks">
-                                <h4>Soda (Coca)</h4>
-                                <p>$3.00</p>
-                            </div>
-                        </div>
-
-                        <h3 style="margin-top: 25px;">Ticket Items</h3>
-                        <div id="orderHistory">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Item</th>
-                                        <th>Qty</th>
-                                        <th>Price</th>
-                                        <th>Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="cartItemsList">
-                                    <tr>
-                                        <td>Grilled Salmon</td>
-                                        <td>1</td>
-                                        <td>$24.00</td>
-                                        <td>$24.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Fries (Large)</td>
-                                        <td>2</td>
-                                        <td>$5.50</td>
-                                        <td>$11.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Soda (Coca)</td>
-                                        <td>1</td>
-                                        <td>$3.00</td>
-                                        <td>$3.00</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div id="orderSummary">
-                            <p style="float: right; margin-top: 20px;">Subtotal: <strong id="subtotal">$38.00</strong></p>
-                            <p style="float: right; margin-top: 5px;">Tax (8%): <strong id="tax">$3.04</strong></p>
-                            <hr style="border: none; border-top: 1px solid #eee;">
-                            <p style="float: right; margin-top: 5px;">TOTAL: <strong id="total">$41.04</strong></p>
-                            <div style="clear: both;"></div>
-                            <button class="checkout-btn" onclick="processPayment()">Process Payment</button>
-                        </div>
-                    </div>
-                </aap:section>
-
-            </div>
-
-        </div>
-
-        <aap:section id="footer">
-            <footer>
-                &copy; 2024 The Bistro POS. System v3.1 Beta. Powered by efficient transaction management.
-            </footer>
-        </aap:section>
+    <div class="nav-menu">
+        <button class="nav-btn" onclick="document.getElementById('stats').scrollIntoView({ behavior: 'smooth' });">Overview</button>
+        <button class="nav-btn" onclick="document.getElementById('content').scrollIntoView({ behavior: 'smooth' });">Engagement</button>
+        <button class="nav-btn" onclick="document.getElementById('stats').scrollIntoView({ behavior: 'smooth' });">Audience</button>
     </div>
 
-    <script>
-        // Placeholder JavaScript for interactivity to make it feel complete
-        function showView(viewName) {
-            alert("Switched to " + viewName + " view. (Functionality simulated)");
-        }
+    <section id="nav">
+        <!-- Navigation and overall structure container -->
+    </section>
 
-        function processPayment() {
-            const total = document.getElementById('total').innerText.replace('$', '');
-            alert("Processing payment of $" + total + " for Table 12. Transaction complete!");
-        }
-    </script>
+    <section id="stats">
+        <div class="stat-grid stat-card">
+            <div>
+                <span class="stat-value">12.4K</span>
+                <div class="stat-title">Total Reach</div>
+            </div>
+        </div>
+        <div class="stat-grid stat-card">
+            <div>
+                <span class="stat-value">$1,200</span>
+                <div class="stat-title">Revenue Generated</div>
+            </div>
+        </div>
+        <div class="stat-grid stat-card">
+            <div>
+                <span class="stat-value">78%</span>
+                <div class="stat-title">Avg. CTR Change</div>
+            </div>
+        </div>
+        <div class="stat-grid stat-card">
+            <div>
+                <span class="stat-value">5,120</span>
+                <div class="stat-title">New Followers</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="content">
+        <h2>Platform Performance Trend (Last 7 Days)</h2>
+        <div class="card">
+            <p style="font-size: 1.1em; color: #555;">Visualizing performance changes across key platforms to identify growth areas.</p>
+            <div class="chart-container">
+                <div class="bar" style="height: 80%;"><span>FB</span></div>
+                <div class="bar" style="height: 95%;"><span>IG</span></div>
+                <div class="bar" style="height: 60%;"><span>X</span></div>
+                <div class="bar" style="height: 100%;"><span>TikTok</span></div>
+                <div class="bar" style="height: 75%;"><span>LinkedIn</span></div>
+            </div>
+        </div>
+
+        <h2>Content Breakdown: Top Performing Posts</h2>
+        <div class="card">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background-color: #f0f0f0;">
+                        <th style="padding: 12px 15px; text-align: left; color: #333;">Platform</th>
+                        <th style="padding: 12px 15px; text-align: right; color: #333;">Engagements</th>
+                        <th style="padding: 12px 15px; text-align: right; color: #333;">Impressions</th>
+                        <th style="padding: 12px 15px; text-align: left; color: #333;">Topic</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 15px; border-right: 1px solid #eee;">Instagram</td>
+                        <td style="padding: 15px; border-right: 1px solid #eee; text-align: right;">2,100</td>
+                        <td style="padding: 15px; border-right: 1px solid #eee; text-align: right;">45,000</td>
+                        <td style="padding: 15px;">Behind The Scenes Tour</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 15px; border-right: 1px solid #eee;">TikTok</td>
+                        <td style="padding: 15px; border-right: 1px solid #eee; text-align: right;">1,850</td>
+                        <td style="padding: 15px; border-right: 1px solid #eee; text-align: right;">62,100</td>
+                        <td style="padding: 15px;">Product Demonstration</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 15px; border-right: 1px solid #eee;">LinkedIn</td>
+                        <td style="padding: 15px; border-right: 1px solid #eee; text-align: right;">980</td>
+                        <td style="padding: 15px; border-right: 1px solid #eee; text-align: right;">31,500</td>
+                        <td style="padding: 15px;">Industry Thought Leadership</td>
+                    </tr>
+                    <tr style="background-color: #f9f9f9;">
+                        <td style="padding: 15px; border-right: 1px solid #eee;">Facebook</td>
+                        <td style="padding: 15px; border-right: 1px solid #eee; text-align: right;">1,520</td>
+                        <td style="padding: 15px; border-right: 1px solid #eee; text-align: right;">55,000</td>
+                        <td style="padding: 15px;">Customer Success Story</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section id="audience">
+        <h2>Audience Demographics Analysis</h2>
+        <div class="stat-grid stat-card" style="background-color: #e6f7ff; border-left-color: #2c71b5;">
+            <div>
+                <span class="stat-value">38%</span>
+                <div class="stat-title">Primary Age Group (25-34)</div>
+            </div>
+        </div>
+        <div class="stat-grid stat-card" style="background-color: #e6f7ff; border-left-color: #2c71b5;">
+            <div>
+                <span class="stat-value">65%</span>
+                <div class="stat-title">Female Dominance</div>
+            </div>
+        </div>
+        <div class="stat-grid stat-card" style="background-color: #e6f7ff; border-left-color: #2c71b5;">
+            <div>
+                <span class="stat-value">3 Continents</span>
+                <div class="stat-title">Active Geographies</div>
+            </div>
+        </div>
+        <div class="stat-grid stat-card" style="background-color: #e6f7ff; border-left-color: #2c71b5;">
+            <div>
+                <span class="stat-value">2.2 PM EST</span>
+                <div class="stat-title">Peak Activity Time</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="footer">
+        <footer>
+            &copy; 2024 Nebula Analytics. Data provided by Meta/Google APIs. For internal review only. Dashboard version 3.1.
+        </footer>
+    </section>
+</div>
 
 </body>
 </html>

@@ -1,9 +1,9 @@
-# Case 0018: html-dashboard — dashboard for restaurant POS
+# Case 0018: html-dashboard — dashboard for social media analytics
 
 **Model:** `gemma4` | **Format:** `text/html`
 
 **Sections expected:** `nav`, `stats`, `content`, `footer`
-**Sections found:** `stats`, `content`, `footer`
+**Sections found:** none
 
 ## System Prompt
 
@@ -14,7 +14,7 @@ You are a code generator. Output only raw code/content. No markdown fences, no e
 ## User Prompt
 
 ```
-Create a self-contained HTML dashboard with inline CSS dashboard for restaurant POS.
+Create a self-contained HTML dashboard with inline CSS dashboard for social media analytics.
 
 Requirements:
 - Self-contained, realistic, production-quality code/content
