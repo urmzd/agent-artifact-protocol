@@ -63,9 +63,15 @@ def _build_token_table(metrics: dict) -> dict:
         "base_input": bt0.get("input_tokens", 0),
         "base_output": bt0.get("output_tokens", 0),
         "base_latency_ms": bt0.get("latency_ms", 0),
+        "base_ttft_ms": bt0.get("ttft_ms"),
+        "base_ttlt_ms": bt0.get("ttlt_ms"),
+        "base_median_itl_ms": bt0.get("median_itl_ms"),
         "aap_input": at0.get("input_tokens", 0),
         "aap_output": at0.get("output_tokens", 0),
         "aap_latency_ms": at0.get("latency_ms", 0),
+        "aap_ttft_ms": at0.get("ttft_ms"),
+        "aap_ttlt_ms": at0.get("ttlt_ms"),
+        "aap_median_itl_ms": at0.get("median_itl_ms"),
     })
 
     # Edit turns — zip base and AAP per_turn lists
@@ -77,9 +83,15 @@ def _build_token_table(metrics: dict) -> dict:
             "base_input": bt.get("input_tokens", 0),
             "base_output": bt.get("output_tokens", 0),
             "base_latency_ms": bt.get("latency_ms", 0),
+            "base_ttft_ms": bt.get("ttft_ms"),
+            "base_ttlt_ms": bt.get("ttlt_ms"),
+            "base_median_itl_ms": bt.get("median_itl_ms"),
             "aap_input": at.get("input_tokens", 0),
             "aap_output": at.get("output_tokens", 0),
             "aap_latency_ms": at.get("latency_ms", 0),
+            "aap_ttft_ms": at.get("ttft_ms"),
+            "aap_ttlt_ms": at.get("ttlt_ms"),
+            "aap_median_itl_ms": at.get("median_itl_ms"),
             "envelope_name": at.get("envelope_name", ""),
             "apply_ok": at.get("apply_succeeded", False),
         })
@@ -194,12 +206,14 @@ def run_experiments(
             if flow in ("base", "both"):
                 base_art, history, bt0 = run_base_turn0(llm, base_system, turn_0_prompt, base_output, ext)
                 metrics["base_turn0"] = bt0
-                console.print(f"  base turn-0: {bt0['output_tokens']} out, {bt0['latency_ms']}ms")
+                ttft = f", ttft={bt0['ttft_ms']}ms" if bt0.get('ttft_ms') is not None else ""
+                console.print(f"  base turn-0: {bt0['output_tokens']} out, {bt0['latency_ms']}ms{ttft}")
 
             if flow in ("aap", "both"):
                 aap_art, at0 = run_aap_turn0(llm, init_system, turn_0_prompt, aap_output, ext)
                 metrics["aap_turn0"] = at0
-                console.print(f"  aap  turn-0: {at0['output_tokens']} out, {at0['latency_ms']}ms")
+                ttft = f", ttft={at0['ttft_ms']}ms" if at0.get('ttft_ms') is not None else ""
+                console.print(f"  aap  turn-0: {at0['output_tokens']} out, {at0['latency_ms']}ms{ttft}")
 
             # ── Base flow ─────────────────────────────────────────────
             if flow in ("base", "both") and edit_prompts:
@@ -216,7 +230,8 @@ def run_experiments(
                 }
 
                 for r in base_results:
-                    console.print(f"  base turn-{r.turn}: {r.output_tokens} out, {r.input_tokens} in, {r.latency_ms}ms")
+                    ttft = f", ttft={r.ttft_ms}ms" if r.ttft_ms is not None else ""
+                    console.print(f"  base turn-{r.turn}: {r.output_tokens} out, {r.input_tokens} in, {r.latency_ms}ms{ttft}")
 
             # ── AAP flow ──────────────────────────────────────────────
             if flow in ("aap", "both") and edit_prompts:
@@ -239,9 +254,10 @@ def run_experiments(
 
                 for r in aap_results:
                     status = "[green]ok[/green]" if r.apply_succeeded else "[red]fail[/red]"
+                    ttft = f", ttft={r.ttft_ms}ms" if r.ttft_ms is not None else ""
                     console.print(
                         f"  aap  turn-{r.turn}: {r.output_tokens} out, {r.input_tokens} in, "
-                        f"{r.latency_ms}ms, {r.envelope_name} {status}"
+                        f"{r.latency_ms}ms{ttft}, {r.envelope_name} {status}"
                     )
 
             # ── Comparison + token table ──────────────────────────────
