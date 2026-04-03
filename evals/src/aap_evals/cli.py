@@ -266,32 +266,46 @@ def run_experiments(
             "format": fmt,
         }
 
-        # ── Shared Turn 0 ────────────────────────────────────────────
+        # ── Turn 0: Base ──────────────────────────────────────────────
         base_agent: Agent[None, str] = Agent(llm, system_prompt=base_system)
 
         t0 = time.perf_counter()
         r = base_agent.run_sync(turn_0_prompt)
         turn0_ms = int((time.perf_counter() - t0) * 1000)
         turn0_usage = r.usage()
-        shared_artifact = clean_artifact(r.output)
+        base_artifact_0 = clean_artifact(r.output)
+        (base_output / f"turn-0{ext}").write_text(base_artifact_0)
 
-        # Save shared turn 0
-        (base_output / f"turn-0{ext}").write_text(shared_artifact)
-        (aap_output / f"turn-0{ext}").write_text(shared_artifact)
+        # ── Turn 0: AAP (with target markers) ────────────────────────
+        init_agent: Agent[None, str] = Agent(llm, system_prompt=init_system)
 
-        metrics["shared"] = {
-            "creation_input_tokens": turn0_usage.input_tokens,
-            "creation_output_tokens": turn0_usage.output_tokens,
-            "creation_latency_ms": turn0_ms,
-            "artifact_bytes": len(shared_artifact.encode()),
+        t0_aap = time.perf_counter()
+        r_aap = init_agent.run_sync(turn_0_prompt)
+        turn0_aap_ms = int((time.perf_counter() - t0_aap) * 1000)
+        turn0_aap_usage = r_aap.usage()
+        aap_artifact_0 = clean_artifact(r_aap.output)
+        (aap_output / f"turn-0{ext}").write_text(aap_artifact_0)
+
+        metrics["base_turn0"] = {
+            "input_tokens": turn0_usage.input_tokens,
+            "output_tokens": turn0_usage.output_tokens,
+            "latency_ms": turn0_ms,
+            "artifact_bytes": len(base_artifact_0.encode()),
+        }
+        metrics["aap_turn0"] = {
+            "input_tokens": turn0_aap_usage.input_tokens,
+            "output_tokens": turn0_aap_usage.output_tokens,
+            "latency_ms": turn0_aap_ms,
+            "artifact_bytes": len(aap_artifact_0.encode()),
         }
 
-        console.print(f"  turn-0: {turn0_usage.output_tokens} out tokens, {turn0_ms}ms")
+        console.print(f"  base turn-0: {turn0_usage.output_tokens} out tokens, {turn0_ms}ms")
+        console.print(f"  aap  turn-0: {turn0_aap_usage.output_tokens} out tokens, {turn0_aap_ms}ms")
 
         # ── Base Flow (growing conversation) ──────────────────────────
         base_turns = []
         history = r.all_messages()
-        base_artifact = shared_artifact
+        base_artifact = base_artifact_0
 
         for turn_name, edit_prompt in edit_prompts:
             t0 = time.perf_counter()
@@ -338,7 +352,7 @@ def run_experiments(
         )
 
         aap_turns = []
-        aap_artifact = shared_artifact
+        aap_artifact = aap_artifact_0
         version = 1
         parse_successes = 0
         apply_successes = 0
