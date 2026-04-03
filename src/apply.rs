@@ -19,6 +19,7 @@ pub trait Resolve {
     type Content: Clone;
 
     fn find_by_id(&self, content: &Self::Content, id: &str) -> Result<(usize, usize)>;
+    fn find_by_id_inclusive(&self, content: &Self::Content, id: &str) -> Result<(usize, usize)>;
     fn find_by_pointer(&self, content: &Self::Content, pointer: &str) -> Result<(usize, usize)>;
     fn replace(&self, content: &mut Self::Content, start: usize, end: usize, replacement: &str);
     fn insert(&self, content: &mut Self::Content, pos: usize, text: &str);
@@ -39,6 +40,10 @@ impl Resolve for TextResolver {
 
     fn find_by_id(&self, content: &String, id: &str) -> Result<(usize, usize)> {
         crate::markers::find_target_range(content, id, &self.format)
+    }
+
+    fn find_by_id_inclusive(&self, content: &String, id: &str) -> Result<(usize, usize)> {
+        crate::markers::find_target_range_inclusive(content, id, &self.format)
     }
 
     fn find_by_pointer(&self, content: &String, pointer: &str) -> Result<(usize, usize)> {
@@ -184,24 +189,32 @@ pub fn apply_edit<R: Resolve<Content = String>>(
     let mut content = resolver.from_string(base);
 
     for (i, op) in operations.iter().enumerate() {
-        let (start, end) = resolve_target(resolver, &content, &op.target)
-            .with_context(|| format!("operation {i}: target not found"))?;
-
         match op.op {
-            OpType::Replace => {
-                let replacement = op.content.as_deref().unwrap_or("");
-                resolver.replace(&mut content, start, end, replacement);
-            }
             OpType::Delete => {
+                // Delete removes markers and content (inclusive range).
+                let (start, end) = resolve_target_inclusive(resolver, &content, &op.target)
+                    .with_context(|| format!("operation {i}: target not found"))?;
                 resolver.delete(&mut content, start, end);
             }
-            OpType::InsertBefore => {
-                let text = op.content.as_deref().unwrap_or("");
-                resolver.insert(&mut content, start, text);
-            }
-            OpType::InsertAfter => {
-                let text = op.content.as_deref().unwrap_or("");
-                resolver.insert(&mut content, end, text);
+            _ => {
+                // All other ops target content between markers (exclusive range).
+                let (start, end) = resolve_target(resolver, &content, &op.target)
+                    .with_context(|| format!("operation {i}: target not found"))?;
+                match op.op {
+                    OpType::Replace => {
+                        let replacement = op.content.as_deref().unwrap_or("");
+                        resolver.replace(&mut content, start, end, replacement);
+                    }
+                    OpType::InsertBefore => {
+                        let text = op.content.as_deref().unwrap_or("");
+                        resolver.insert(&mut content, start, text);
+                    }
+                    OpType::InsertAfter => {
+                        let text = op.content.as_deref().unwrap_or("");
+                        resolver.insert(&mut content, end, text);
+                    }
+                    _ => unreachable!(),
+                }
             }
         }
     }
@@ -216,6 +229,17 @@ fn resolve_target<R: Resolve<Content = String>>(
 ) -> Result<(usize, usize)> {
     match target {
         Target::Id(id) => resolver.find_by_id(content, id),
+        Target::Pointer(pointer) => resolver.find_by_pointer(content, pointer),
+    }
+}
+
+fn resolve_target_inclusive<R: Resolve<Content = String>>(
+    resolver: &R,
+    content: &String,
+    target: &Target,
+) -> Result<(usize, usize)> {
+    match target {
+        Target::Id(id) => resolver.find_by_id_inclusive(content, id),
         Target::Pointer(pointer) => resolver.find_by_pointer(content, pointer),
     }
 }
@@ -366,7 +390,7 @@ mod tests {
             op: OpType::Delete, target: id_target("tmp"), content: None,
         }]);
         let (art2, _) = apply(Some(&art), &edit).unwrap();
-        assert_eq!(art2.body, r#"before<aap:target id="tmp"></aap:target>after"#);
+        assert_eq!(art2.body, "beforeafter");
     }
 
     #[test]
