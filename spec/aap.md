@@ -296,12 +296,12 @@ Producers SHOULD emit `<aap:target>` markers on the **initial synthesize**. This
 
 > **Structural hints:** Producers SHOULD annotate structurally constrained targets with the `accepts` field — for example, table targets that expect `<tr>` children, list targets that expect `<li>` items, or code block targets that expect specific syntax. This reduces silent structural corruption when the maintain context produces replacement content. See [Section 7.2](#72-handle-name-handle) for the target info schema.
 
-**Output cost model** (N = number of future updates, S = artifact size in output tokens):
-- Without targets: N full regenerations = N x S output tokens
-- With targets: 1 synthesize (with markers) + N targeted edits = S x 1.02 + N x edit_tokens output tokens
-- Break-even: 1 update (edit_tokens is typically 1-10% of S)
+**Output cost model** ($N$ = number of future updates, $S$ = artifact size in output tokens):
+- Without targets: $N$ full regenerations = $N \times S$ output tokens
+- With targets: 1 synthesize (with markers) + $N$ targeted edits = $S \times 1.02 + N \times \text{edit\_tokens}$ output tokens
+- Break-even: 1 update ($\text{edit\_tokens}$ is typically 1–10% of $S$)
 
-> **Note:** Input costs are roughly equal in both cases — the maintain context reads the full artifact regardless of operation type. The savings concentrate on the output side, where tokens are 3-5x more expensive. See [Section 7.1](#71-memory-model) for the full cost derivation.
+> **Note:** Input costs are roughly equal in both cases — the maintain context reads the full artifact regardless of operation type. The savings concentrate on the output side, where tokens are 3–5x more expensive. See [Section 7.1](#71-memory-model) for the full cost derivation.
 
 ### 5.2 Strategy Selection Guide
 
@@ -427,13 +427,13 @@ The cost of artifact operations depends on three LLM-specific variables that var
 
 | Variable | Definition | Typical range |
 |---|---|---|
-| S_k | Artifact size in tokens at version k (tokenizer-dependent) | 500-10,000 |
-| d_k | Edit envelope size in output tokens for edit k | 30-500 |
-| I | System prompt + instructions in tokens | 200-1,000 |
-| p_in | Price per input token | varies by model |
-| p_out | Price per output token | varies by model |
-| r | Output/input price ratio (p_out / p_in) | 1-5x |
-| N | Number of edits over the artifact's lifetime | 1-inf |
+| $S_k$ | Artifact size in tokens at version $k$ (tokenizer-dependent) | 500–10,000 |
+| $d_k$ | Edit envelope size in output tokens for edit $k$ | 30–500 |
+| $I$ | System prompt + instructions in tokens | 200–1,000 |
+| $p_{\text{in}}$ | Price per input token | varies by model |
+| $p_{\text{out}}$ | Price per output token | varies by model |
+| $r$ | Output/input price ratio ($p_{\text{out}} / p_{\text{in}}$) | 1–5x |
+| $N$ | Number of edits over the artifact's lifetime | $1$–$\infty$ |
 
 > **Why these variables matter:** A given 8 KB HTML artifact might tokenize to ~2,000 tokens on GPT-4's tokenizer but ~2,400 on Claude's. The output/input price ratio ranges from 1x (some open-source providers) to 5x (frontier models). These differences change the absolute savings but not the structural advantage — AAP always reduces output tokens, and output tokens are always >= input token price.
 
