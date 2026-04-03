@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.5.0 (2026-04-03)
+
+### Features
+
+- **cli**: add provider/fallback options to LLM commands ([72954ae](https://github.com/urmzd/agent-artifact-protocol/commit/72954ae51beb8fb59618e7b7de4592e81905bf6d))
+- **agents**: add fallback LLM model support ([b9f7776](https://github.com/urmzd/agent-artifact-protocol/commit/b9f7776bc66fb793357b0f94dd373d2e73392d13))
+
+### Miscellaneous
+
+- **evals**: add HTML dashboard ecommerce evaluation output ([125bf00](https://github.com/urmzd/agent-artifact-protocol/commit/125bf005b97993286bee141faa4474537a74c986))
+
+[Full Changelog](https://github.com/urmzd/agent-artifact-protocol/compare/v0.4.1...v0.5.0)
+
+
 ## 0.4.1 (2026-04-03)
 
 ### Documentation
