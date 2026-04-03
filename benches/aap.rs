@@ -16,9 +16,9 @@ use aap::apply::{apply_edit, TextResolver};
 struct Fixture {
     case: String,
     artifact: String,
-    diff_replace_ops: Vec<Vec<EditOp>>,
-    diff_multi_ops: Vec<Vec<EditOp>>,
-    diff_delete_ops: Vec<Vec<EditOp>>,
+    edit_replace_ops: Vec<Vec<EditOp>>,
+    edit_multi_ops: Vec<Vec<EditOp>>,
+    edit_delete_ops: Vec<Vec<EditOp>>,
 }
 
 fn fixtures_dir() -> PathBuf {
@@ -41,7 +41,7 @@ fn load_fixture(case_dir: &str) -> Fixture {
             .collect()
     };
 
-    let parse_diff_ops = |envs: Vec<Envelope>| -> Vec<Vec<EditOp>> {
+    let parse_edit_ops = |envs: Vec<Envelope>| -> Vec<Vec<EditOp>> {
         envs.into_iter()
             .map(|env| {
                 env.content
@@ -55,9 +55,9 @@ fn load_fixture(case_dir: &str) -> Fixture {
     Fixture {
         case: case_dir.into(),
         artifact,
-        diff_replace_ops: parse_diff_ops(parse_envelopes("edit-replace.jsonl")),
-        diff_multi_ops: parse_diff_ops(parse_envelopes("edit-multi.jsonl")),
-        diff_delete_ops: parse_diff_ops(parse_envelopes("edit-delete.jsonl")),
+        edit_replace_ops: parse_edit_ops(parse_envelopes("edit-replace.jsonl")),
+        edit_multi_ops: parse_edit_ops(parse_envelopes("edit-multi.jsonl")),
+        edit_delete_ops: parse_edit_ops(parse_envelopes("edit-delete.jsonl")),
     }
 }
 
@@ -109,17 +109,17 @@ fn bench_payload_sizes(c: &mut Criterion) {
     for f in &fixtures {
         let art_bytes = f.artifact.len();
         eprintln!("  Case {}: artifact = {} bytes", f.case, art_bytes);
-        for ops in &f.diff_replace_ops {
+        for ops in &f.edit_replace_ops {
             let sz: usize = ops.iter().map(|o| {
                 o.content.as_ref().map_or(0, |s| s.len())
             }).sum();
-            eprintln!("    diff-replace:    {:>6}B ({:.1}%)", sz, sz as f64 / art_bytes as f64 * 100.0);
+            eprintln!("    edit-replace:    {:>6}B ({:.1}%)", sz, sz as f64 / art_bytes as f64 * 100.0);
         }
-        for ops in &f.diff_multi_ops {
+        for ops in &f.edit_multi_ops {
             let sz: usize = ops.iter().map(|o| {
                 o.content.as_ref().map_or(0, |s| s.len())
             }).sum();
-            eprintln!("    diff-multi:      {:>6}B ({:.1}%)", sz, sz as f64 / art_bytes as f64 * 100.0);
+            eprintln!("    edit-multi:      {:>6}B ({:.1}%)", sz, sz as f64 / art_bytes as f64 * 100.0);
         }
     }
     eprintln!("────────────────────────────────────────────────────────────");
@@ -151,17 +151,17 @@ fn bench_full_copy(c: &mut Criterion) {
     group.finish();
 }
 
-fn bench_diff_replace(c: &mut Criterion) {
+fn bench_edit_replace(c: &mut Criterion) {
     let fixtures = all_fixtures();
     let scales: &[usize] = &[1, 2, 3, 4];
     let resolver = TextResolver { format: "text/html".to_string() };
 
-    let mut group = c.benchmark_group("diff_replace");
+    let mut group = c.benchmark_group("edit_replace");
     group.sample_size(500);
     group.measurement_time(std::time::Duration::from_secs(10));
 
     for f in &fixtures {
-        for (i, ops) in f.diff_replace_ops.iter().enumerate() {
+        for (i, ops) in f.edit_replace_ops.iter().enumerate() {
             for &scale in scales {
                 let scaled = scale_artifact(&f.artifact, scale);
                 let label = format!("case_{}/env_{}/{}x_{}B", f.case, i, scale, scaled.len());
@@ -174,17 +174,17 @@ fn bench_diff_replace(c: &mut Criterion) {
     group.finish();
 }
 
-fn bench_diff_multi(c: &mut Criterion) {
+fn bench_edit_multi(c: &mut Criterion) {
     let fixtures = all_fixtures();
     let scales: &[usize] = &[1, 2, 3, 4];
     let resolver = TextResolver { format: "text/html".to_string() };
 
-    let mut group = c.benchmark_group("diff_multi");
+    let mut group = c.benchmark_group("edit_multi");
     group.sample_size(500);
     group.measurement_time(std::time::Duration::from_secs(10));
 
     for f in &fixtures {
-        for (i, ops) in f.diff_multi_ops.iter().enumerate() {
+        for (i, ops) in f.edit_multi_ops.iter().enumerate() {
             for &scale in scales {
                 let scaled = scale_artifact(&f.artifact, scale);
                 let label = format!("case_{}/env_{}/{}x_{}B", f.case, i, scale, scaled.len());
@@ -197,17 +197,17 @@ fn bench_diff_multi(c: &mut Criterion) {
     group.finish();
 }
 
-fn bench_diff_delete(c: &mut Criterion) {
+fn bench_edit_delete(c: &mut Criterion) {
     let fixtures = all_fixtures();
     let scales: &[usize] = &[1, 2, 3, 4];
     let resolver = TextResolver { format: "text/html".to_string() };
 
-    let mut group = c.benchmark_group("diff_delete");
+    let mut group = c.benchmark_group("edit_delete");
     group.sample_size(500);
     group.measurement_time(std::time::Duration::from_secs(10));
 
     for f in &fixtures {
-        for (i, ops) in f.diff_delete_ops.iter().enumerate() {
+        for (i, ops) in f.edit_delete_ops.iter().enumerate() {
             for &scale in scales {
                 let scaled = scale_artifact(&f.artifact, scale);
                 let label = format!("case_{}/env_{}/{}x_{}B", f.case, i, scale, scaled.len());
@@ -224,8 +224,8 @@ criterion_group!(
     benches,
     bench_payload_sizes,
     bench_full_copy,
-    bench_diff_replace,
-    bench_diff_multi,
-    bench_diff_delete,
+    bench_edit_replace,
+    bench_edit_multi,
+    bench_edit_delete,
 );
 criterion_main!(benches);
