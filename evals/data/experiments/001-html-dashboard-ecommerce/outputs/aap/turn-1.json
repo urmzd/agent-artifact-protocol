@@ -1,10 +1,9 @@
 {
   "protocol": "aap/0.1",
-  "id": "dashboard-artifact-001",
-  "version": 2,
-  "name": "edit",
-  "operation": {
-    "direction": "input",
+  "id": "artifact-id-edit-1",
+  "version": 1,
+  "name": "synthesize",
+  "meta": {
     "format": "text/html",
     "tokens_used": null,
     "checksum": null,
@@ -12,12 +11,7 @@
   },
   "content": [
     {
-      "op": "replace",
-      "target": {
-        "type": "id",
-        "value": "revenue"
-      },
-      "content": "$215,430 <small style=\"color:green\">+12.3%</small>"
+      "body": "{\n  \"protocol\": \"aap/0.1\",\n  \"id\": \"artifact-id\",\n  \"version\": 2,\n  \"name\": \"edit\",\n  \"content\": [\n    {\n      \"op\": \"replace\",\n      \"target\": {\"type\": \"id\", \"value\": \"revenue\"},\n      \"content\": \"$215,430 <span style=\\\"color: green; font-size: 0.8rem;\\\">(+12.3%)</span>\"\n    }\n  ]\n}"
     }
   ]
 }

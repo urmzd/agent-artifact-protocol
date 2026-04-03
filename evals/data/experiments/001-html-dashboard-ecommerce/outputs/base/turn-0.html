@@ -4,76 +4,74 @@
     <meta charset="UTF-8">
     <title>Admin Dashboard</title>
     <style>
-        :root { --primary: #4f46e5; --bg: #f3f4f6; --text: #1f2937; --white: #ffffff; }
-        body { font-family: sans-serif; background: var(--bg); margin: 0; color: var(--text); }
-        nav { background: var(--white); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; }
-        .logo { font-weight: bold; font-size: 1.5rem; color: var(--primary); }
-        .user-nav { display: flex; align-items: center; gap: 1rem; }
+        :root { --primary: #4f46e5; --bg: #f3f4f6; --text: #1f2937; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); margin: 0; }
+        nav { background: #fff; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; }
         .container { padding: 2rem; max-width: 1200px; margin: auto; }
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
-        .card { background: var(--white); padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        table { width: 100%; border-collapse: collapse; background: var(--white); margin-bottom: 2rem; border-radius: 8px; overflow: hidden; }
-        th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #e5e7eb; }
-        th { background: #f9fafb; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+        .card { background: #fff; padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; margin-top: 1rem; }
+        th { background: #f9fafb; text-align: left; padding: 1rem; border-bottom: 2px solid #e5e7eb; }
+        td { padding: 1rem; border-bottom: 1px solid #e5e7eb; }
         .badge { padding: 0.25rem 0.5rem; border-radius: 999px; font-size: 0.75rem; font-weight: bold; }
-        .bg-green { background: #dcfce7; color: #166534; }
-        .form-group { margin-bottom: 1rem; }
-        input[type="text"], input[type="email"] { width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        .btn { background: var(--primary); color: white; padding: 0.5rem 1rem; border: none; border-radius: 4px; cursor: pointer; }
+        .badge-active { background: #d1fae5; color: #065f46; }
+        .badge-pending { background: #fef3c7; color: #92400e; }
+        input, select { width: 100%; padding: 0.5rem; margin: 0.5rem 0; border: 1px solid #d1d5db; border-radius: 4px; }
+        .btn { padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; border: none; background: var(--primary); color: white; }
     </style>
 </head>
 <body>
+    <nav>
+        <div style="font-weight: bold; font-size: 1.5rem; color: var(--primary);">ADMIN.IO</div>
+        <div>Dashboard | Reports | Settings</div>
+        <div><img src="data:image/svg+xml;utf8,<svg width='32' height='32' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='%234f46e5'/></svg>" width="32"> User <button class="btn" style="background:#ef4444">Sign Out</button></div>
+    </nav>
 
-<nav>
-    <div class="logo">AdminPanel</div>
-    <div class="user-nav">
-        <span>Admin User</span>
-        <button class="btn">Sign Out</button>
+    <div class="container">
+        <div class="stats-grid">
+            <div class="card"><h3>Total Revenue</h3><p style="font-size: 1.5rem">$54,230</p><small style="color: green">↑ 12%</small></div>
+            <div class="card"><h3>Orders</h3><p style="font-size: 1.5rem">1,204</p><small style="color: green">↑ 5%</small></div>
+            <div class="card"><h3>Customers</h3><p style="font-size: 1.5rem">842</p><small style="color: green">↑ 2%</small></div>
+            <div class="card"><h3>Conversion</h3><p style="font-size: 1.5rem">3.2%</p><small style="color: red">↓ 0.5%</small></div>
+        </div>
+
+        <section class="card" style="margin-bottom: 2rem">
+            <h2>Products Inventory</h2>
+            <table id="productsTable">
+                <thead><tr><th>Name</th><th>SKU</th><th>Price</th><th>Stock</th><th>Status</th></tr></thead>
+                <tbody>
+                    <script>
+                        for(let i=1; i<=60; i++) {
+                            document.write(`<tr><td>Product ${i}</td><td>SKU-${1000+i}</td><td>$${(Math.random()*100).toFixed(2)}</td><td>${Math.floor(Math.random()*500)}</td><td><span class="badge badge-active">Active</span></td></tr>`);
+                        }
+                    </script>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="card" style="margin-bottom: 2rem">
+            <h2>Recent Orders</h2>
+            <table>
+                <thead><tr><th>ID</th><th>Customer</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
+                <tbody>
+                    <script>
+                        for(let i=1; i<=40; i++) {
+                            document.write(`<tr><td>#ORD-${5000+i}</td><td>User ${i}</td><td>$${(Math.random()*500).toFixed(2)}</td><td>2023-10-${(i%28)+1}</td><td><span class="badge badge-pending">Pending</span></td></tr>`);
+                        }
+                    </script>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="card">
+            <h2>Account Settings</h2>
+            <form>
+                <label>Full Name</label><input type="text" value="John Doe">
+                <label>Email</label><input type="email" value="john@example.com">
+                <label><input type="checkbox" checked> Receive Email Notifications</label>
+                <button class="btn" type="button" style="margin-top: 1rem">Save Changes</button>
+            </form>
+        </section>
     </div>
-</nav>
-
-<div class="container">
-    <div class="stats-grid">
-        <div class="card"><h3>Total Revenue</h3><p>$54,230</p><small style="color:green">↑ 12%</small></div>
-        <div class="card"><h3>Orders</h3><p>1,204</p><small style="color:green">↑ 5%</small></div>
-        <div class="card"><h3>Customers</h3><p>892</p><small style="color:green">↑ 2%</small></div>
-        <div class="card"><h3>Conversion</h3><p>3.2%</p><small style="color:red">↓ 0.1%</small></div>
-    </div>
-
-    <h2>Products</h2>
-    <table>
-        <thead><tr><th>Name</th><th>SKU</th><th>Price</th><th>Stock</th><th>Category</th><th>Status</th></tr></thead>
-        <tbody>
-            <script>
-                for(let i=1; i<=60; i++) {
-                    document.write(`<tr><td>Product ${i}</td><td>SKU-${1000+i}</td><td>$${(Math.random()*100).toFixed(2)}</td><td>${Math.floor(Math.random()*100)}</td><td>Category A</td><td><span class="badge bg-green">Active</span></td></tr>`);
-                }
-            </script>
-        </tbody>
-    </table>
-
-    <h2>Recent Orders</h2>
-    <table>
-        <thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
-        <tbody>
-            <script>
-                for(let i=1; i<=40; i++) {
-                    document.write(`<tr><td>#ORD-${9000+i}</td><td>Customer ${i}</td><td>$${(Math.random()*500).toFixed(2)}</td><td>2023-10-${(i%28)+1}</td><td><span class="badge bg-green">Completed</span></td></tr>`);
-                }
-            </script>
-        </tbody>
-    </table>
-
-    <div class="card">
-        <h2>Account Settings</h2>
-        <form>
-            <div class="form-group"><label>Display Name</label><input type="text" value="Admin User"></div>
-            <div class="form-group"><label>Email</label><input type="email" value="admin@example.com"></div>
-            <div class="form-group"><input type="checkbox" checked> Receive Email Notifications</div>
-            <button type="button" class="btn">Save Changes</button>
-        </form>
-    </div>
-</div>
-
 </body>
 </html>

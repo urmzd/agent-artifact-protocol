@@ -1,10 +1,9 @@
 {
   "protocol": "aap/0.1",
-  "id": "dashboard-id-001",
-  "version": 2,
+  "id": "artifact-id",
+  "version": 3,
   "name": "edit",
-  "operation": {
-    "direction": "input",
+  "meta": {
     "format": "text/html",
     "tokens_used": null,
     "checksum": null,
@@ -12,12 +11,12 @@
   },
   "content": [
     {
-      "op": "replace",
+      "op": "insert_after",
       "target": {
         "type": "id",
-        "value": "orders-section"
+        "value": "order-table-header"
       },
-      "content": "\n          <script>\n            for(let i=1; i<=40; i++) {\n              document.write(`<tr><td>#ORD-${5000+i}</td><td>Customer ${i}</td><td>$${(Math.random()*500).toFixed(2)}</td><td>2023-10-${i%28+1}</td><td><span class=\"badge status-low\">Pending</span></td></tr>`);\n            }\n            for(let i=1; i<=15; i++) {\n              document.write(`<tr><td>#ORD-${9000+i}</td><td>Customer ${i+40}</td><td>$${(Math.random()*500).toFixed(2)}</td><td>2026-03-${i < 10 ? '0'+i : i}</td><td><span class=\"badge status-low\">Pending</span></td></tr>`);\n            }\n          </script>\n"
+      "content": "<tr><td>ORD-2026-0301</td><td>Alice Johnson</td><td>$145.00</td><td>Completed</td></tr>\n<tr><td>ORD-2026-0302</td><td>Bob Smith</td><td>$89.50</td><td>Processing</td></tr>\n<tr><td>ORD-2026-0303</td><td>Charlie Brown</td><td>$210.00</td><td>Shipped</td></tr>\n<tr><td>ORD-2026-0304</td><td>Diana Prince</td><td>$34.99</td><td>Completed</td></tr>\n<tr><td>ORD-2026-0305</td><td>Edward Norton</td><td>$1200.00</td><td>Processing</td></tr>\n<tr><td>ORD-2026-0306</td><td>Fiona Gallagher</td><td>$56.20</td><td>Shipped</td></tr>\n<tr><td>ORD-2026-0307</td><td>George Miller</td><td>$430.75</td><td>Completed</td></tr>\n<tr><td>ORD-2026-0308</td><td>Hannah Abbott</td><td>$12.50</td><td>Pending</td></tr>\n<tr><td>ORD-2026-0309</td><td>Ian Wright</td><td>$99.99</td><td>Shipped</td></tr>\n<tr><td>ORD-2026-0310</td><td>Jane Doe</td><td>$275.00</td><td>Completed</td></tr>\n<tr><td>ORD-2026-0311</td><td>Kevin Hart</td><td>$150.00</td><td>Processing</td></tr>\n<tr><td>ORD-2026-0312</td><td>Laura Palmer</td><td>$88.00</td><td>Shipped</td></tr>\n<tr><td>ORD-2026-0313</td><td>Mike Wazowski</td><td>$45.00</td><td>Completed</td></tr>\n<tr><td>ORD-2026-0314</td><td>Nina Simone</td><td>$310.25</td><td>Processing</td></tr>\n<tr><td>ORD-2026-0315</td><td>Oscar Isaac</td><td>$125.50</td><td>Shipped</td></tr>"
     }
   ]
 }

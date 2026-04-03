@@ -1,73 +1,75 @@
 <style>
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 0; background: #f4f7f6; color: #333; }
-  .navbar { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 1rem 2rem; border-bottom: 1px solid #ddd; }
-  .dashboard { padding: 2rem; }
-  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
-  .card { background: #fff; padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-  table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; }
-  th, td { padding: 1rem; text-align: left; border-bottom: 1px solid #eee; }
-  .badge { padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; }
-  .status-active { background: #d4edda; color: #155724; }
-  .status-low { background: #fff3cd; color: #856404; }
-  .form-group { margin-bottom: 1rem; }
-  input { width: 100%; padding: 0.5rem; margin-top: 0.25rem; }
+  :root { --primary: #4f46e5; --bg: #f3f4f6; --text: #1f2937; }
+  body { font-family: sans-serif; background: var(--bg); color: var(--text); margin: 0; }
+  .navbar { background: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e5e7eb; }
+  .container { padding: 2rem; max-width: 1200px; margin: auto; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+  .card { background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid #e5e7eb; }
+  .table-container { background: white; padding: 1.5rem; border-radius: 8px; border: 1px solid #e5e7eb; margin-bottom: 2rem; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+  th, td { text-align: left; padding: 0.75rem; border-bottom: 1px solid #e5e7eb; }
+  .badge { padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+  .bg-green { background: #dcfce7; color: #166534; }
+  .bg-yellow { background: #fef9c3; color: #854d0e; }
 </style>
 
-<aap:target id="dashboard">
-  <div class="navbar">
-    <div class="logo"><strong>AdminPanel</strong></div>
-    <div>
-      <span>User Admin</span>
-      <button>Sign Out</button>
-    </div>
+<div class="navbar">
+  <div style="font-weight: bold; font-size: 1.5rem;">AdminPanel</div>
+  <div>
+    <span style="margin-right: 1rem;">Admin User</span>
+    <button>Sign Out</button>
   </div>
+</div>
 
-  <div class="dashboard">
-    <aap:target id="stats-container">
-      <div class="grid">
-        <div class="card"><h3>Revenue</h3><aap:target id="revenue">$54,230</aap:target></div>
-        <div class="card"><h3>Orders</h3><aap:target id="orders">1,204</aap:target></div>
-        <div class="card"><h3>Customers</h3><aap:target id="customers">842</aap:target></div>
-        <div class="card"><h3>Conversion</h3><aap:target id="conversion">3.2%</aap:target></div>
-      </div>
-    </aap:target>
+<div class="container">
+  <aap:target id="stats-dashboard">
+    <div class="grid-4">
+      <div class="card"><h3>Total Revenue</h3><aap:target id="revenue">$54,230</aap:target></div>
+      <div class="card"><h3>Orders</h3><aap:target id="orders">1,240</aap:target></div>
+      <div class="card"><h3>Customers</h3><aap:target id="customers">852</aap:target></div>
+      <div class="card"><h3>Conversion</h3><aap:target id="conversion">3.2%</aap:target></div>
+    </div>
+  </aap:target>
 
-    <aap:target id="products-section">
+  <aap:target id="products-section">
+    <div class="table-container">
       <h2>Products</h2>
       <table>
-        <thead><tr><th>Name</th><th>SKU</th><th>Price</th><th>Stock</th><th>Category</th><th>Status</th></tr></thead>
+        <thead><tr><th>Name</th><th>SKU</th><th>Price</th><th>Stock</th><th>Status</th></tr></thead>
         <tbody>
-          <!-- Generating 60 Rows -->
           <script>
             for(let i=1; i<=60; i++) {
-              document.write(`<tr><td>Product ${i}</td><td>SKU-${1000+i}</td><td>$${(Math.random()*100).toFixed(2)}</td><td>${Math.floor(Math.random()*100)}</td><td>Category A</td><td><span class="badge status-active">Active</span></td></tr>`);
+              document.write(`<tr><td>Product ${i}</td><td>SKU-${1000+i}</td><td>$${(Math.random()*100).toFixed(2)}</td><td>${Math.floor(Math.random()*100)}</td><td><span class="badge bg-green">Active</span></td></tr>`);
             }
           </script>
         </tbody>
       </table>
-    </aap:target>
+    </div>
+  </aap:target>
 
-    <aap:target id="orders-section">
+  <aap:target id="orders-section">
+    <div class="table-container">
       <h2>Recent Orders</h2>
       <table>
-        <thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
+        <thead><tr><th>ID</th><th>Customer</th><th>Amount</th><th>Status</th></tr></thead>
         <tbody>
           <script>
             for(let i=1; i<=40; i++) {
-              document.write(`<tr><td>#ORD-${5000+i}</td><td>Customer ${i}</td><td>$${(Math.random()*500).toFixed(2)}</td><td>2023-10-${i%28+1}</td><td><span class="badge status-low">Pending</span></td></tr>`);
+              document.write(`<tr><td>ORD-${5000+i}</td><td>User ${i}</td><td>$${(Math.random()*500).toFixed(2)}</td><td><span class="badge bg-yellow">Pending</span></td></tr>`);
             }
           </script>
         </tbody>
       </table>
-    </aap:target>
+    </div>
+  </aap:target>
 
-    <aap:target id="settings-section">
+  <aap:target id="account-settings">
+    <div class="card">
       <h2>Account Settings</h2>
-      <div class="card">
-        <div class="form-group"><label>Display Name</label><input type="text" value="Admin User"></div>
-        <div class="form-group"><label>Email Notifications</label><input type="checkbox" checked></div>
-        <button>Save Changes</button>
-      </div>
-    </aap:target>
-  </div>
-</aap:target>
+      <form>
+        <label>Name</label><br><input type="text" value="Admin"><br><br>
+        <label>Email Notifications</label><br><input type="checkbox" checked> Enable Updates
+      </form>
+    </div>
+  </aap:target>
+</div>

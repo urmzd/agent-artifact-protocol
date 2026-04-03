@@ -1,10 +1,9 @@
 {
   "protocol": "aap/0.1",
-  "id": "dashboard-artifact-001",
+  "id": "dashboard-artifact",
   "version": 1,
-  "name": "edit",
-  "operation": {
-    "direction": "input",
+  "name": "synthesize",
+  "meta": {
     "format": "text/html",
     "tokens_used": null,
     "checksum": null,
@@ -12,12 +11,7 @@
   },
   "content": [
     {
-      "op": "insert_after",
-      "target": {
-        "type": "id",
-        "value": "grid"
-      },
-      "content": "      <aap:target id=\"recent-activity-section\">\n        <h2>Recent Activity</h2>\n        <div class=\"card\">\n          <ul>\n            <li>User A updated profile - 2 mins ago</li>\n            <li>User B placed an order - 15 mins ago</li>\n            <li>System backup completed - 1 hour ago</li>\n            <li>User C created an account - 3 hours ago</li>\n            <li>User D changed password - 5 hours ago</li>\n            <li>Inventory report generated - 6 hours ago</li>\n            <li>New product added - 8 hours ago</li>\n            <li>User E logged in - 10 hours ago</li>\n            <li>Price updated - 12 hours ago</li>\n            <li>Order #1234 cancelled - 15 hours ago</li>\n          </ul>\n        </div>\n      </aap:target>\n"
+      "body": "<aap:target id=\"dashboard\">\n  <div class=\"stats-container\">\n    <aap:target id=\"stats-revenue\">\n      <div class=\"card\">\n        <h3>Revenue</h3>\n        <span id=\"revenue\">$215,430 <span style=\"color: green; font-size: 0.8rem;\">(+12.3%)</span></span>\n      </div>\n    </aap:target>\n  </div>\n  <aap:target id=\"recent-activity-section\">\n    <div class=\"activity-container\">\n      <h2>Recent Activity</h2>\n      <ul id=\"activity-list\">\n        <li>User A logged in</li>\n        <li>User B updated profile</li>\n        <li>User C made a purchase</li>\n        <li>User D sent a message</li>\n        <li>User E viewed dashboard</li>\n        <li>User F changed settings</li>\n        <li>User G invited a friend</li>\n        <li>User H liked a post</li>\n        <li>User I commented</li>\n        <li>User J logged out</li>\n      </ul>\n    </div>\n  </aap:target>\n</aap:target>"
     }
   ]
 }
