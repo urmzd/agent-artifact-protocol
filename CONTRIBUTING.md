@@ -39,13 +39,11 @@ aap/
 
 1. Fork the repo and create a branch from `main`.
 2. Make your changes and ensure `just test` passes.
-3. For Python changes, run `just bench` to confirm benchmarks still execute.
-4. Open a pull request with a clear description of what changed and why.
+3. Open a pull request with a clear description of what changed and why.
 
 ## Code style
 
 - Rust: `cargo fmt` before committing.
-- Python: keep scripts self-contained and runnable via `uv run --project tools`.
 
 ## License
 
