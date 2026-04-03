@@ -1,10 +1,9 @@
 {
   "protocol": "aap/0.1",
-  "id": "order-model-artifact",
-  "version": 2,
-  "name": "edit",
-  "operation": {
-    "direction": "output",
+  "id": "order-model-edit",
+  "version": 1,
+  "name": "synthesize",
+  "meta": {
     "format": "text/html",
     "tokens_used": null,
     "checksum": null,
@@ -12,20 +11,7 @@
   },
   "content": [
     {
-      "op": "insert_after",
-      "target": {
-        "type": "id",
-        "value": "associations"
-      },
-      "content": "  has_many :refunds, dependent: :destroy\n"
-    },
-    {
-      "op": "insert_after",
-      "target": {
-        "type": "id",
-        "value": "instance-methods"
-      },
-      "content": "  def refund!\n    refunds.create!\n    update!(status: 'refunded')\n  end\n"
+      "body": "{\n  \"protocol\": \"aap/0.1\",\n  \"id\": \"order-model-edit\",\n  \"version\": 1,\n  \"name\": \"edit\",\n  \"meta\": {\n    \"format\": \"text/html\"\n  },\n  \"content\": [\n    {\n      \"op\": \"insert_after\",\n      \"target\": {\n        \"type\": \"id\",\n        \"value\": \"associations\"\n      },\n      \"content\": \"  has_many :refunds, dependent: :destroy\\n\"\n    },\n    {\n      \"op\": \"replace\",\n      \"target\": {\n        \"type\": \"id\",\n        \"value\": \"constants\"\n      },\n      \"content\": \"  STATUSES = %w[pending confirmed shipped delivered cancelled refunded].freeze\\n  TAX_RATE = 0.08\\n\"\n    },\n    {\n      \"op\": \"insert_after\",\n      \"target\": {\n        \"type\": \"id\",\n        \"value\": \"state-transitions\"\n      },\n      \"content\": \"  def refund!\\n    transaction do\\n      refunds.create!\\n      update!(status: 'refunded')\\n    end\\n  end\\n\"\n    }\n  ]\n}"
     }
   ]
 }
