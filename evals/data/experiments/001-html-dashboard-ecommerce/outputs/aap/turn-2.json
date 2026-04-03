@@ -1,37 +1,23 @@
 {
   "protocol": "aap/0.1",
-  "id": "update-orders-count",
-  "version": 1,
-  "name": "diff",
+  "id": "admin-dashboard",
+  "version": 2,
+  "name": "edit",
   "operation": {
     "direction": "output",
     "format": "text/html",
     "tokens_used": null,
-    "created_at": null,
-    "updated_at": null
+    "checksum": null,
+    "state": null
   },
   "content": [
     {
-      "op": "replace",
+      "op": "insert_after",
       "target": {
-        "search": "for(let i=1; i<=40; i++) {\n                    document.write(`<tr><td>ORD-${5000+i}</td><td>Customer Name ${i}</td><td>$${(Math.random()*500).toFixed(2)}</td><td>2023-10-${Math.floor(i/2)+1}</td><td><span class=\"badge status-active\">Completed</span></td></tr>`);\n                }",
-        "section": null,
-        "lines": null,
-        "offsets": null,
-        "pointer": null
+        "type": "id",
+        "value": "order-table-body-header"
       },
-      "content": null
-    },
-    {
-      "op": "replace",
-      "target": {
-        "search": "for(let i=1; i<=40; i++) {\n                    document.write(`<tr><td>ORD-${5000+i}</td><td>Customer Name ${i}</td><td>$${(Math.random()*500).toFixed(2)}</td><td>2023-10-${Math.floor(i/2)+1}</td><td><span class=\"badge status-active\">Completed</span></td></tr>`);\n                }",
-        "section": null,
-        "lines": null,
-        "offsets": null,
-        "pointer": null
-      },
-      "content": "for(let i=1; i<=55; i++) {\n                    let date = i <= 40 ? `2023-10-${Math.floor(i/2)+1}` : `2026-03-${(i-40)+10}`;\n                    document.write(`<tr><td>ORD-${5000+i}</td><td>Customer Name ${i}</td><td>$${(Math.random()*500).toFixed(2)}</td><td>${date}</td><td><span class=\"badge status-active\">Completed</span></td></tr>`);\n                }"
+      "content": "<tr><td>#ORD-2026-0315</td><td>March 31, 2026</td><td>Sarah Connor</td><td>$145.00</td><td><span class=\"badge\">Shipped</span></td></tr>\n<tr><td>#ORD-2026-0314</td><td>March 31, 2026</td><td>Kyle Reese</td><td>$89.50</td><td><span class=\"badge\">Processing</span></td></tr>\n<tr><td>#ORD-2026-0313</td><td>March 30, 2026</td><td>John Doe</td><td>$210.25</td><td><span class=\"badge\">Delivered</span></td></tr>\n<tr><td>#ORD-2026-0312</td><td>March 30, 2026</td><td>Jane Smith</td><td>$45.00</td><td><span class=\"badge\">Shipped</span></td></tr>\n<tr><td>#ORD-2026-0311</td><td>March 29, 2026</td><td>Alice Johnson</td><td>$320.00</td><td><span class=\"badge\">Delivered</span></td></tr>\n<tr><td>#ORD-2026-0310</td><td>March 29, 2026</td><td>Bob Brown</td><td>$112.75</td><td><span class=\"badge\">Cancelled</span></td></tr>\n<tr><td>#ORD-2026-0309</td><td>March 28, 2026</td><td>Charlie Davis</td><td>$55.40</td><td><span class=\"badge\">Shipped</span></td></tr>\n<tr><td>#ORD-2026-0308</td><td>March 28, 2026</td><td>Diana Prince</td><td>$199.99</td><td><span class=\"badge\">Delivered</span></td></tr>\n<tr><td>#ORD-2026-0307</td><td>March 27, 2026</td><td>Bruce Wayne</td><td>$5,000.00</td><td><span class=\"badge\">Processing</span></td></tr>\n<tr><td>#ORD-2026-0306</td><td>March 27, 2026</td><td>Clark Kent</td><td>$12.50</td><td><span class=\"badge\">Shipped</span></td></tr>\n<tr><td>#ORD-2026-0305</td><td>March 26, 2026</td><td>Peter Parker</td><td>$75.00</td><td><span class=\"badge\">Delivered</span></td></tr>\n<tr><td>#ORD-2026-0304</td><td>March 26, 2026</td><td>Miles Morales</td><td>$60.00</td><td><span class=\"badge\">Shipped</span></td></tr>\n<tr><td>#ORD-2026-0303</td><td>March 25, 2026</td><td>Gwen Stacy</td><td>$95.20</td><td><span class=\"badge\">Delivered</span></td></tr>\n<tr><td>#ORD-2026-0302</td><td>March 25, 2026</td><td>Tony Stark</td><td>$1,200.00</td><td><span class=\"badge\">Processing</span></td></tr>\n<tr><td>#ORD-2026-0301</td><td>March 24, 2026</td><td>Steve Rogers</td><td>$450.00</td><td><span class=\"badge\">Shipped</span></td></tr>\n"
     }
   ]
 }

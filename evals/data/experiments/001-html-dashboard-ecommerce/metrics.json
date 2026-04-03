@@ -4,53 +4,53 @@
   "provider": "google",
   "seed": 42,
   "temperature": 0,
-  "timestamp": "2026-04-03T04:07:08.864611+00:00",
+  "timestamp": "2026-04-03T05:29:51.340305+00:00",
   "format": "text/html",
   "shared": {
-    "creation_input_tokens": 229,
-    "creation_output_tokens": 1534,
-    "creation_latency_ms": 7191,
-    "artifact_bytes": 4618
+    "creation_input_tokens": 163,
+    "creation_output_tokens": 1396,
+    "creation_latency_ms": 4817,
+    "artifact_bytes": 4396
   },
   "default_flow": {
-    "system_prompt_tokens": 229,
+    "system_prompt_tokens": 163,
     "per_turn": [
       {
         "turn": 1,
         "edit": "Update the Total Revenue stat card to show $215,430 with a +12.3% trend indicato",
-        "input_tokens": 1791,
-        "output_tokens": 1535,
-        "latency_ms": 6625,
-        "output_bytes": 4617
+        "input_tokens": 1587,
+        "output_tokens": 1414,
+        "latency_ms": 5720,
+        "output_bytes": 4482
       },
       {
         "turn": 2,
         "edit": "Add 15 new rows to the orders table with recent order data from March 2026",
-        "input_tokens": 3349,
-        "output_tokens": 1635,
-        "latency_ms": 5090,
-        "output_bytes": 4926
+        "input_tokens": 3024,
+        "output_tokens": 1567,
+        "latency_ms": 6635,
+        "output_bytes": 4947
       },
       {
         "turn": 3,
         "edit": "Change the primary accent color from blue to purple (#8b5cf6) across all element",
-        "input_tokens": 5005,
-        "output_tokens": 1748,
-        "latency_ms": 7480,
-        "output_bytes": 5295
+        "input_tokens": 4612,
+        "output_tokens": 1620,
+        "latency_ms": 7015,
+        "output_bytes": 5157
       },
       {
         "turn": 4,
         "edit": "Add a new 'Recent Activity' section after the stats cards showing the last 10 us",
-        "input_tokens": 6775,
-        "output_tokens": 2004,
-        "latency_ms": 7718,
-        "output_bytes": 6215
+        "input_tokens": 6254,
+        "output_tokens": 1753,
+        "latency_ms": 15559,
+        "output_bytes": 5617
       }
     ],
-    "total_input_tokens": 16920,
-    "total_output_tokens": 6922,
-    "total_latency_ms": 26913
+    "total_input_tokens": 15477,
+    "total_output_tokens": 6354,
+    "total_latency_ms": 34929
   },
   "aap_flow": {
     "system_prompt_tokens": 0,
@@ -58,57 +58,57 @@
       {
         "turn": 1,
         "edit": "Update the Total Revenue stat card to show $215,430 with a +12.3% trend indicato",
-        "input_tokens": 0,
-        "output_tokens": 0,
-        "latency_ms": 2788,
-        "output_bytes": 4618,
+        "input_tokens": 2592,
+        "output_tokens": 225,
+        "latency_ms": 1487,
+        "output_bytes": 423,
         "envelope_parsed": true,
-        "apply_succeeded": false,
-        "envelope_name": "diff"
+        "apply_succeeded": true,
+        "envelope_name": "synthesize"
       },
       {
         "turn": 2,
         "edit": "Add 15 new rows to the orders table with recent order data from March 2026",
         "input_tokens": 0,
         "output_tokens": 0,
-        "latency_ms": 2546,
-        "output_bytes": 4618,
+        "latency_ms": 4184,
+        "output_bytes": 423,
         "envelope_parsed": true,
         "apply_succeeded": false,
-        "envelope_name": "diff"
+        "envelope_name": "edit"
       },
       {
         "turn": 3,
         "edit": "Change the primary accent color from blue to purple (#8b5cf6) across all element",
-        "input_tokens": 3222,
-        "output_tokens": 154,
-        "latency_ms": 1407,
-        "output_bytes": 4618,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "latency_ms": 1244,
+        "output_bytes": 423,
         "envelope_parsed": true,
-        "apply_succeeded": true,
-        "envelope_name": "diff"
+        "apply_succeeded": false,
+        "envelope_name": "edit"
       },
       {
         "turn": 4,
         "edit": "Add a new 'Recent Activity' section after the stats cards showing the last 10 us",
-        "input_tokens": 3223,
-        "output_tokens": 219,
-        "latency_ms": 1567,
-        "output_bytes": 5202,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "latency_ms": 2150,
+        "output_bytes": 423,
         "envelope_parsed": true,
-        "apply_succeeded": true,
-        "envelope_name": "diff"
+        "apply_succeeded": false,
+        "envelope_name": "edit"
       }
     ],
-    "total_input_tokens": 6445,
-    "total_output_tokens": 373,
-    "total_latency_ms": 8308,
+    "total_input_tokens": 2592,
+    "total_output_tokens": 225,
+    "total_latency_ms": 9065,
     "envelope_parse_rate": 1.0,
-    "apply_success_rate": 0.5
+    "apply_success_rate": 0.25
   },
   "comparison": {
-    "output_token_savings_pct": 94.6,
-    "input_token_savings_pct": 61.9,
-    "latency_savings_pct": 69.1
+    "output_token_savings_pct": 96.5,
+    "input_token_savings_pct": 83.3,
+    "latency_savings_pct": 74.0
   }
 }

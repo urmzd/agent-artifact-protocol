@@ -1,26 +1,23 @@
 {
   "protocol": "aap/0.1",
-  "id": "1",
-  "version": 1,
-  "name": "diff",
+  "id": "admin-dashboard",
+  "version": 2,
+  "name": "edit",
   "operation": {
     "direction": "output",
     "format": "text/html",
     "tokens_used": null,
-    "created_at": null,
-    "updated_at": null
+    "checksum": null,
+    "state": null
   },
   "content": [
     {
       "op": "replace",
       "target": {
-        "search": ":root { --primary: #2563eb; --bg: #f8fafc; --text: #1e293b; --border: #e2e8f0; }",
-        "section": null,
-        "lines": null,
-        "offsets": null,
-        "pointer": null
+        "type": "id",
+        "value": "styles"
       },
-      "content": ":root { --primary: #8b5cf6; --bg: #f8fafc; --text: #1e293b; --border: #e2e8f0; }"
+      "content": "<style>\n  :root { --accent-color: #8b5cf6; }\n  .btn-primary { background-color: var(--accent-color); }\n  .text-accent { color: var(--accent-color); }\n</style>"
     }
   ]
 }

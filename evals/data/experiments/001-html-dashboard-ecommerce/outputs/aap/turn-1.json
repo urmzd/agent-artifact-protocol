@@ -1,37 +1,18 @@
 {
   "protocol": "aap/0.1",
-  "id": "1",
+  "id": "admin-dashboard",
   "version": 1,
-  "name": "diff",
+  "name": "synthesize",
   "operation": {
     "direction": "output",
     "format": "text/html",
     "tokens_used": null,
-    "created_at": null,
-    "updated_at": null
+    "checksum": null,
+    "state": null
   },
   "content": [
     {
-      "op": "replace",
-      "target": {
-        "search": "<h3>Total Revenue</h3><p style=\"font-size: 1.5rem;\">$124,500</p><small style=\"color: green;\">↑ 12%</small>",
-        "section": null,
-        "lines": null,
-        "offsets": null,
-        "pointer": null
-      },
-      "content": null
-    },
-    {
-      "op": "insert_after",
-      "target": {
-        "search": "<h3>Total Revenue</h3>",
-        "section": null,
-        "lines": null,
-        "offsets": null,
-        "pointer": null
-      },
-      "content": null
+      "body": "{\n  \"protocol\": \"aap/0.1\",\n  \"id\": \"admin-dashboard\",\n  \"version\": 1,\n  \"name\": \"edit\",\n  \"operation\": {\"direction\": \"input\", \"format\": \"text/html\"},\n  \"content\": [\n    {\n      \"op\": \"replace\",\n      \"target\": {\"type\": \"id\", \"value\": \"total-revenue-value\"},\n      \"content\": \"$215,430\"\n    },\n    {\n      \"op\": \"replace\",\n      \"target\": {\"type\": \"id\", \"value\": \"total-revenue-trend\"},\n      \"content\": \"+12.3%\"\n    }\n  ]\n}"
     }
   ]
 }

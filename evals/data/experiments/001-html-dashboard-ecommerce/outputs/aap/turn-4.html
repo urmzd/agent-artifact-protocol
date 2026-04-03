@@ -1,105 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Admin Dashboard</title>
-<style>
-:root { --primary: #8b5cf6; --bg: #f8fafc; --text: #1e293b; --border: #e2e8f0; }
-body { font-family: system-ui, -apple-system, sans-serif; margin: 0; background: var(--bg); color: var(--text); }
-nav { background: #fff; padding: 1rem 2rem; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
-.nav-links a { margin-left: 20px; text-decoration: none; color: var(--text); font-weight: 500; }
-.avatar { width: 32px; height: 32px; background: #cbd5e1; border-radius: 50%; display: inline-block; vertical-align: middle; margin-right: 10px; }
-.container { padding: 2rem; max-width: 1200px; margin: auto; }
-.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
-.card { background: #fff; padding: 1.5rem; border: 1px solid var(--border); border-radius: 8px; }
-table { width: 100%; border-collapse: collapse; background: #fff; margin-top: 1rem; }
-th { text-align: left; padding: 12px; border-bottom: 2px solid var(--border); background: #f1f5f9; }
-td { padding: 12px; border-bottom: 1px solid var(--border); }
-.badge { padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
-.status-active { background: #dcfce7; color: #166534; }
-.status-low { background: #fee2e2; color: #991b1b; }
-.form-group { margin-bottom: 1rem; }
-input { width: 100%; padding: 8px; margin-top: 4px; border: 1px solid var(--border); border-radius: 4px; }
-</style>
-</head>
-<body>
-
-<nav id="nav">
-    <div style="font-weight: bold; font-size: 1.2rem;">ADMIN DASHBOARD</div>
-    <div class="nav-links">
-        <a href="#stats">Dashboard</a>
-        <a href="#products-table">Products</a>
-        <a href="#orders-table">Orders</a>
-        <a href="#settings">Settings</a>
-        <span class="avatar"></span><span>Admin User</span>
-        <button style="margin-left: 20px;">Sign Out</button>
-    </div>
-</nav>
-
-<div class="container">
-
-<aap:section id="stats">
-    <div class="stats-grid">
-        <div class="card"><h3>Total Revenue</h3><p style="font-size: 1.5rem;">$124,500</p><small style="color: green;">↑ 12%</small></div>
-        <div class="card"><h3>Orders</h3><p style="font-size: 1.5rem;">1,205</p><small style="color: green;">↑ 8%</small></div>
-        <div class="card"><h3>Customers</h3><p style="font-size: 1.5rem;">892</p><small style="color: green;">↑ 2%</small></div>
-        <div class="card"><h3>Conversion</h3><p style="font-size: 1.5rem;">3.2%</p><small style="color: red;">↓ 1%</small></div>
-    </div>
-
-<aap:section id="recent-activity">
-    <h2>Recent Activity</h2>
-    <div class="card">
-        <ul style="list-style: none; padding: 0;">
-            <script>
-                const activities = ["User logged in", "Product updated", "Order placed", "New customer signed up", "System update completed"];
-                for(let i=1; i<=10; i++) {
-                    document.write(`<li style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>${activities[i%5]}</strong> - ${i} minutes ago</li>`);
-                }
-            </script>
-        </ul>
-    </div>
-</aap:section>
-</aap:section>
-
-<aap:section id="products-table">
-    <h2>Products</h2>
-    <table>
-        <thead><tr><th>Name</th><th>SKU</th><th>Price</th><th>Stock</th><th>Category</th><th>Status</th></tr></thead>
-        <tbody>
-            <script>
-                for(let i=1; i<=60; i++) {
-                    document.write(`<tr><td>Product ${i}</td><td>SKU-${1000+i}</td><td>$${(Math.random()*100).toFixed(2)}</td><td>${Math.floor(Math.random()*100)}</td><td>Category ${Math.floor(i/10)}</td><td><span class="badge ${i%5===0?'status-low':'status-active'}">${i%5===0?'Out':'In Stock'}</span></td></tr>`);
-                }
-            </script>
-        </tbody>
-    </table>
-</aap:section>
-
-<aap:section id="orders-table">
-    <h2>Orders</h2>
-    <table>
-        <thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Date</th><th>Status</th></tr></thead>
-        <tbody>
-            <script>
-                for(let i=1; i<=40; i++) {
-                    document.write(`<tr><td>ORD-${5000+i}</td><td>Customer Name ${i}</td><td>$${(Math.random()*500).toFixed(2)}</td><td>2023-10-${Math.floor(i/2)+1}</td><td><span class="badge status-active">Completed</span></td></tr>`);
-                }
-            </script>
-        </tbody>
-    </table>
-</aap:section>
-
-<aap:section id="settings">
-    <h2>Account Settings</h2>
-    <div class="card">
-        <div class="form-group"><label>Display Name</label><input type="text" value="Admin User"></div>
-        <div class="form-group"><label>Email Address</label><input type="email" value="admin@example.com"></div>
-        <div class="form-group"><label><input type="checkbox" checked> Enable email notifications</label></div>
-        <div class="form-group"><label><input type="checkbox"> Enable two-factor authentication</label></div>
-        <button style="background: var(--primary); color: white; padding: 10px 20px; border: none; border-radius: 4px;">Save Changes</button>
-    </div>
-</aap:section>
-
-</div>
-</body>
-</html>
+{
+  "protocol": "aap/0.1",
+  "id": "admin-dashboard",
+  "version": 1,
+  "name": "edit",
+  "operation": {"direction": "input", "format": "text/html"},
+  "content": [
+    {
+      "op": "replace",
+      "target": {"type": "id", "value": "total-revenue-value"},
+      "content": "$215,430"
+    },
+    {
+      "op": "replace",
+      "target": {"type": "id", "value": "total-revenue-trend"},
+      "content": "+12.3%"
+    }
+  ]
+}
