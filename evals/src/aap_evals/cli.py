@@ -234,230 +234,240 @@ def run_experiments(
     for exp_dir in exp_dirs:
         exp_name = exp_dir.name
         fmt, ext = _parse_experiment_format(exp_dir / "README.md")
-        console.print(f"[bold]{exp_name}[/bold] ({fmt})")
 
-        base_input = exp_dir / "inputs" / "base"
-        aap_input = exp_dir / "inputs" / "aap"
-        base_output = exp_dir / "outputs" / "base"
-        aap_output = exp_dir / "outputs" / "aap"
-        base_output.mkdir(parents=True, exist_ok=True)
-        aap_output.mkdir(parents=True, exist_ok=True)
-
-        # Read prompts
-        base_system = (base_input / "system.md").read_text().strip()
-        init_system = base_system + "\n\n" + AAP_SPEC
-        maintain_system = base_system + "\n\n" + AAP_SPEC
-        turn_files = _find_turn_files(base_input)
-
-        if not turn_files:
-            console.print("  [yellow]no turn files, skipping[/yellow]")
+        # Skip already-completed experiments
+        if (exp_dir / "metrics.json").exists():
+            console.print(f"[dim]{exp_name} — already done, skipping[/dim]")
             continue
 
-        turn_0_prompt = turn_files[0].read_text().strip()
-        edit_prompts = [(tf.stem, tf.read_text().strip()) for tf in turn_files[1:]]
+        console.print(f"[bold]{exp_name}[/bold] ({fmt})")
+        # noinspection PyBroadException
+        try:
+            base_input = exp_dir / "inputs" / "base"
+            aap_input = exp_dir / "inputs" / "aap"
+            base_output = exp_dir / "outputs" / "base"
+            aap_output = exp_dir / "outputs" / "aap"
+            base_output.mkdir(parents=True, exist_ok=True)
+            aap_output.mkdir(parents=True, exist_ok=True)
 
-        metrics: dict = {
-            "experiment_id": exp_name,
-            "model": model,
-            "provider": provider,
-            "seed": 42,
-            "temperature": 0,
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "format": fmt,
-        }
+            # Read prompts
+            base_system = (base_input / "system.md").read_text().strip()
+            init_system = base_system + "\n\n" + AAP_SPEC
+            maintain_system = base_system + "\n\n" + AAP_SPEC
+            turn_files = _find_turn_files(base_input)
 
-        # ── Turn 0: Base ──────────────────────────────────────────────
-        base_agent: Agent[None, str] = Agent(llm, system_prompt=base_system)
+            if not turn_files:
+                console.print("  [yellow]no turn files, skipping[/yellow]")
+                continue
 
-        t0 = time.perf_counter()
-        r = base_agent.run_sync(turn_0_prompt)
-        turn0_ms = int((time.perf_counter() - t0) * 1000)
-        turn0_usage = r.usage()
-        base_artifact_0 = clean_artifact(r.output)
-        (base_output / f"turn-0{ext}").write_text(base_artifact_0)
+            turn_0_prompt = turn_files[0].read_text().strip()
+            edit_prompts = [(tf.stem, tf.read_text().strip()) for tf in turn_files[1:]]
 
-        # ── Turn 0: AAP (with target markers) ────────────────────────
-        init_agent: Agent[None, str] = Agent(llm, system_prompt=init_system)
+            metrics: dict = {
+                "experiment_id": exp_name,
+                "model": model,
+                "provider": provider,
+                "seed": 42,
+                "temperature": 0,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "format": fmt,
+            }
 
-        t0_aap = time.perf_counter()
-        r_aap = init_agent.run_sync(turn_0_prompt)
-        turn0_aap_ms = int((time.perf_counter() - t0_aap) * 1000)
-        turn0_aap_usage = r_aap.usage()
-        aap_artifact_0 = clean_artifact(r_aap.output)
-        (aap_output / f"turn-0{ext}").write_text(aap_artifact_0)
+            # ── Turn 0: Base ──────────────────────────────────────────────
+            base_agent: Agent[None, str] = Agent(llm, system_prompt=base_system)
 
-        metrics["base_turn0"] = {
-            "input_tokens": turn0_usage.input_tokens,
-            "output_tokens": turn0_usage.output_tokens,
-            "latency_ms": turn0_ms,
-            "artifact_bytes": len(base_artifact_0.encode()),
-        }
-        metrics["aap_turn0"] = {
-            "input_tokens": turn0_aap_usage.input_tokens,
-            "output_tokens": turn0_aap_usage.output_tokens,
-            "latency_ms": turn0_aap_ms,
-            "artifact_bytes": len(aap_artifact_0.encode()),
-        }
-
-        console.print(f"  base turn-0: {turn0_usage.output_tokens} out tokens, {turn0_ms}ms")
-        console.print(f"  aap  turn-0: {turn0_aap_usage.output_tokens} out tokens, {turn0_aap_ms}ms")
-
-        # ── Base Flow (growing conversation) ──────────────────────────
-        base_turns = []
-        history = r.all_messages()
-        base_artifact = base_artifact_0
-
-        for turn_name, edit_prompt in edit_prompts:
             t0 = time.perf_counter()
-            r = base_agent.run_sync(edit_prompt, message_history=history)
-            ms = int((time.perf_counter() - t0) * 1000)
-            usage = r.usage()
+            r = base_agent.run_sync(turn_0_prompt)
+            turn0_ms = int((time.perf_counter() - t0) * 1000)
+            turn0_usage = r.usage()
+            base_artifact_0 = clean_artifact(r.output)
+            (base_output / f"turn-0{ext}").write_text(base_artifact_0)
+
+            # ── Turn 0: AAP (with target markers) ────────────────────────
+            init_agent: Agent[None, str] = Agent(llm, system_prompt=init_system)
+
+            t0_aap = time.perf_counter()
+            r_aap = init_agent.run_sync(turn_0_prompt)
+            turn0_aap_ms = int((time.perf_counter() - t0_aap) * 1000)
+            turn0_aap_usage = r_aap.usage()
+            aap_artifact_0 = clean_artifact(r_aap.output)
+            (aap_output / f"turn-0{ext}").write_text(aap_artifact_0)
+
+            metrics["base_turn0"] = {
+                "input_tokens": turn0_usage.input_tokens,
+                "output_tokens": turn0_usage.output_tokens,
+                "latency_ms": turn0_ms,
+                "artifact_bytes": len(base_artifact_0.encode()),
+            }
+            metrics["aap_turn0"] = {
+                "input_tokens": turn0_aap_usage.input_tokens,
+                "output_tokens": turn0_aap_usage.output_tokens,
+                "latency_ms": turn0_aap_ms,
+                "artifact_bytes": len(aap_artifact_0.encode()),
+            }
+
+            console.print(f"  base turn-0: {turn0_usage.output_tokens} out tokens, {turn0_ms}ms")
+            console.print(f"  aap  turn-0: {turn0_aap_usage.output_tokens} out tokens, {turn0_aap_ms}ms")
+
+            # ── Base Flow (growing conversation) ──────────────────────────
+            base_turns = []
             history = r.all_messages()
-            base_artifact = clean_artifact(r.output)
+            base_artifact = base_artifact_0
 
-            turn_num = int(turn_name.split("-")[1])
-            (base_output / f"{turn_name}{ext}").write_text(base_artifact)
-
-            base_turns.append({
-                "turn": turn_num,
-                "edit": edit_prompt[:80],
-                "input_tokens": usage.input_tokens,
-                "output_tokens": usage.output_tokens,
-                "latency_ms": ms,
-                "output_bytes": len(base_artifact.encode()),
-            })
-
-            console.print(
-                f"  base {turn_name}: {usage.output_tokens} out, "
-                f"{usage.input_tokens} in, {ms}ms"
-            )
-
-        base_total_in = sum(t["input_tokens"] for t in base_turns)
-        base_total_out = sum(t["output_tokens"] for t in base_turns)
-        base_total_ms = sum(t["latency_ms"] for t in base_turns)
-
-        metrics["default_flow"] = {
-            "system_prompt_tokens": turn0_usage.input_tokens,
-            "per_turn": base_turns,
-            "total_input_tokens": base_total_in,
-            "total_output_tokens": base_total_out,
-            "total_latency_ms": base_total_ms,
-        }
-
-        # ── AAP Flow (stateless dispatch) ─────────────────────────────
-        maintain_agent: Agent[None, Envelope] = Agent(
-            llm,
-            system_prompt=maintain_system,
-            output_type=Envelope,
-        )
-
-        aap_turns = []
-        aap_artifact = aap_artifact_0
-        version = 1
-        parse_successes = 0
-        apply_successes = 0
-
-        for turn_name, edit_prompt in edit_prompts:
-            turn_num = int(turn_name.split("-")[1])
-            user_msg = (
-                f"## Current Artifact\n\n```\n{aap_artifact}\n```\n\n"
-                f"## Edit Instruction\n\n{edit_prompt}"
-            )
-
-            t0 = time.perf_counter()
-            parsed = False
-            succeeded = False
-            env_name = ""
-            envelope_json = ""
-
-            try:
-                r = maintain_agent.run_sync(user_msg)
+            for turn_name, edit_prompt in edit_prompts:
+                t0 = time.perf_counter()
+                r = base_agent.run_sync(edit_prompt, message_history=history)
                 ms = int((time.perf_counter() - t0) * 1000)
                 usage = r.usage()
+                history = r.all_messages()
+                base_artifact = clean_artifact(r.output)
 
-                envelope = r.output
-                parsed = True
-                parse_successes += 1
-                env_name = envelope.name
-                envelope_json = envelope.model_dump_json(indent=2)
+                turn_num = int(turn_name.split("-")[1])
+                (base_output / f"{turn_name}{ext}").write_text(base_artifact)
 
-                new_artifact = apply_envelope(aap_artifact, envelope, fmt)
-                succeeded = True
-                apply_successes += 1
-                aap_artifact = new_artifact
-                version += 1
+                base_turns.append({
+                    "turn": turn_num,
+                    "edit": edit_prompt[:80],
+                    "input_tokens": usage.input_tokens,
+                    "output_tokens": usage.output_tokens,
+                    "latency_ms": ms,
+                    "output_bytes": len(base_artifact.encode()),
+                })
 
-            except Exception as e:
-                ms = int((time.perf_counter() - t0) * 1000)
-                usage = type("U", (), {"input_tokens": 0, "output_tokens": 0})()
-                console.print(f"  [red]aap {turn_name} failed: {e}[/red]")
+                console.print(
+                    f"  base {turn_name}: {usage.output_tokens} out, "
+                    f"{usage.input_tokens} in, {ms}ms"
+                )
 
-            # Save outputs
-            if envelope_json:
-                (aap_output / f"{turn_name}.json").write_text(envelope_json)
-            (aap_output / f"{turn_name}{ext}").write_text(aap_artifact)
+            base_total_in = sum(t["input_tokens"] for t in base_turns)
+            base_total_out = sum(t["output_tokens"] for t in base_turns)
+            base_total_ms = sum(t["latency_ms"] for t in base_turns)
 
-            aap_turns.append({
-                "turn": turn_num,
-                "edit": edit_prompt[:80],
-                "input_tokens": usage.input_tokens,
-                "output_tokens": usage.output_tokens,
-                "latency_ms": ms,
-                "output_bytes": len(aap_artifact.encode()),
-                "envelope_parsed": parsed,
-                "apply_succeeded": succeeded,
-                "envelope_name": env_name,
-            })
+            metrics["default_flow"] = {
+                "system_prompt_tokens": turn0_usage.input_tokens,
+                "per_turn": base_turns,
+                "total_input_tokens": base_total_in,
+                "total_output_tokens": base_total_out,
+                "total_latency_ms": base_total_ms,
+            }
 
-            status = "[green]ok[/green]" if succeeded else "[red]fail[/red]"
-            console.print(
-                f"  aap  {turn_name}: {usage.output_tokens} out, "
-                f"{usage.input_tokens} in, {ms}ms, {env_name} {status}"
+            # ── AAP Flow (stateless dispatch) ─────────────────────────────
+            maintain_agent: Agent[None, Envelope] = Agent(
+                llm,
+                system_prompt=maintain_system,
+                output_type=Envelope,
             )
 
-        num_edits = len(edit_prompts)
-        aap_total_in = sum(t["input_tokens"] for t in aap_turns)
-        aap_total_out = sum(t["output_tokens"] for t in aap_turns)
-        aap_total_ms = sum(t["latency_ms"] for t in aap_turns)
+            aap_turns = []
+            aap_artifact = aap_artifact_0
+            version = 1
+            parse_successes = 0
+            apply_successes = 0
 
-        metrics["aap_flow"] = {
-            "system_prompt_tokens": 0,
-            "per_turn": aap_turns,
-            "total_input_tokens": aap_total_in,
-            "total_output_tokens": aap_total_out,
-            "total_latency_ms": aap_total_ms,
-            "envelope_parse_rate": parse_successes / num_edits if num_edits else 0,
-            "apply_success_rate": apply_successes / num_edits if num_edits else 0,
-        }
+            for turn_name, edit_prompt in edit_prompts:
+                turn_num = int(turn_name.split("-")[1])
+                user_msg = (
+                    f"## Current Artifact\n\n```\n{aap_artifact}\n```\n\n"
+                    f"## Edit Instruction\n\n{edit_prompt}"
+                )
 
-        # ── Comparison ────────────────────────────────────────────────
-        out_savings = (
-            100 * (base_total_out - aap_total_out) / base_total_out
-            if base_total_out > 0 else 0
-        )
-        in_savings = (
-            100 * (base_total_in - aap_total_in) / base_total_in
-            if base_total_in > 0 else 0
-        )
-        latency_savings = (
-            100 * (base_total_ms - aap_total_ms) / base_total_ms
-            if base_total_ms > 0 else 0
-        )
+                t0 = time.perf_counter()
+                parsed = False
+                succeeded = False
+                env_name = ""
+                envelope_json = ""
 
-        metrics["comparison"] = {
-            "output_token_savings_pct": round(out_savings, 1),
-            "input_token_savings_pct": round(in_savings, 1),
-            "latency_savings_pct": round(latency_savings, 1),
-        }
+                try:
+                    r = maintain_agent.run_sync(user_msg)
+                    ms = int((time.perf_counter() - t0) * 1000)
+                    usage = r.usage()
 
-        # Write metrics
-        (exp_dir / "metrics.json").write_text(json.dumps(metrics, indent=2) + "\n")
+                    envelope = r.output
+                    parsed = True
+                    parse_successes += 1
+                    env_name = envelope.name
+                    envelope_json = envelope.model_dump_json(indent=2)
 
-        tag = f"[green]{out_savings:.1f}% out savings[/green]" if out_savings > 0 else f"[red]{out_savings:.1f}%[/red]"
-        console.print(
-            f"  [bold]summary:[/bold] base={base_total_out} out | aap={aap_total_out} out | "
-            f"{tag} | parse={parse_successes}/{num_edits} apply={apply_successes}/{num_edits}\n"
-        )
+                    new_artifact = apply_envelope(aap_artifact, envelope, fmt)
+                    succeeded = True
+                    apply_successes += 1
+                    aap_artifact = new_artifact
+                    version += 1
+
+                except Exception as e:
+                    ms = int((time.perf_counter() - t0) * 1000)
+                    usage = type("U", (), {"input_tokens": 0, "output_tokens": 0})()
+                    console.print(f"  [red]aap {turn_name} failed: {e}[/red]")
+
+                # Save outputs
+                if envelope_json:
+                    (aap_output / f"{turn_name}.json").write_text(envelope_json)
+                (aap_output / f"{turn_name}{ext}").write_text(aap_artifact)
+
+                aap_turns.append({
+                    "turn": turn_num,
+                    "edit": edit_prompt[:80],
+                    "input_tokens": usage.input_tokens,
+                    "output_tokens": usage.output_tokens,
+                    "latency_ms": ms,
+                    "output_bytes": len(aap_artifact.encode()),
+                    "envelope_parsed": parsed,
+                    "apply_succeeded": succeeded,
+                    "envelope_name": env_name,
+                })
+
+                status = "[green]ok[/green]" if succeeded else "[red]fail[/red]"
+                console.print(
+                    f"  aap  {turn_name}: {usage.output_tokens} out, "
+                    f"{usage.input_tokens} in, {ms}ms, {env_name} {status}"
+                )
+
+            num_edits = len(edit_prompts)
+            aap_total_in = sum(t["input_tokens"] for t in aap_turns)
+            aap_total_out = sum(t["output_tokens"] for t in aap_turns)
+            aap_total_ms = sum(t["latency_ms"] for t in aap_turns)
+
+            metrics["aap_flow"] = {
+                "system_prompt_tokens": 0,
+                "per_turn": aap_turns,
+                "total_input_tokens": aap_total_in,
+                "total_output_tokens": aap_total_out,
+                "total_latency_ms": aap_total_ms,
+                "envelope_parse_rate": parse_successes / num_edits if num_edits else 0,
+                "apply_success_rate": apply_successes / num_edits if num_edits else 0,
+            }
+
+            # ── Comparison ────────────────────────────────────────────────
+            out_savings = (
+                100 * (base_total_out - aap_total_out) / base_total_out
+                if base_total_out > 0 else 0
+            )
+            in_savings = (
+                100 * (base_total_in - aap_total_in) / base_total_in
+                if base_total_in > 0 else 0
+            )
+            latency_savings = (
+                100 * (base_total_ms - aap_total_ms) / base_total_ms
+                if base_total_ms > 0 else 0
+            )
+
+            metrics["comparison"] = {
+                "output_token_savings_pct": round(out_savings, 1),
+                "input_token_savings_pct": round(in_savings, 1),
+                "latency_savings_pct": round(latency_savings, 1),
+            }
+
+            # Write metrics
+            (exp_dir / "metrics.json").write_text(json.dumps(metrics, indent=2) + "\n")
+
+            tag = f"[green]{out_savings:.1f}% out savings[/green]" if out_savings > 0 else f"[red]{out_savings:.1f}%[/red]"
+            console.print(
+                f"  [bold]summary:[/bold] base={base_total_out} out | aap={aap_total_out} out | "
+                f"{tag} | parse={parse_successes}/{num_edits} apply={apply_successes}/{num_edits}\n"
+            )
+        except Exception as e:
+            console.print(f"  [red]EXPERIMENT FAILED: {e}[/red]\n")
+            continue
 
     console.print("[green]Done.[/green]")
 
