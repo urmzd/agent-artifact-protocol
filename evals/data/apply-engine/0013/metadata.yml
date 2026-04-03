@@ -1,0 +1,13 @@
+case_num: 13
+category: html-dashboard
+variant: dashboard for ecommerce admin
+format: text/html
+extension: .html
+filename: dashboard.html
+model: gemma4
+host: http://localhost:11434
+generated_at: 2026-04-03T03:24:50.158761+00:00
+artifact_bytes: 9768
+sections_expected: [nav, stats, content, footer]
+sections_found: []
+envelope_files: [diff-delete.jsonl, diff-multi.jsonl, diff-replace.jsonl, full.jsonl, template-fill.jsonl]
