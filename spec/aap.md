@@ -964,7 +964,7 @@ The architecture structurally reduces hallucination through context separation:
 - The **maintain context** sees the *actual current revision*, injected fresh from storage. It produces diffs against real content, not imagined content.
 - The **apply engine** is deterministic code. It either applies the operations correctly or returns an error.
 
-> **Non-normative note:** The maintain context *can* still hallucinate envelope operations — for example, targeting a search string that doesn't exist. However, the risk is structurally lower because: (1) the context contains *only* the artifact and the instruction; (2) the apply engine validates operations deterministically; (3) the artifact is always smaller than a full conversation thread. Implementations SHOULD track hallucination rates via the audit log. See [Section 8.5.4](#854-error-recovery) for the recommended recovery flow.
+> **Non-normative note:** The maintain context *can* still hallucinate envelope operations — for example, targeting a search string that doesn't exist. However, the risk is structurally lower because: (1) the context contains *only* the artifact and the instruction; (2) the apply engine validates operations deterministically; (3) the artifact is always smaller than a full conversation thread. Implementations SHOULD track hallucination rates via the audit log. See [Section 8.4.4](#844-error-recovery) for the recommended recovery flow.
 
 ### 8.2 Handle (`name: "handle"`)
 
