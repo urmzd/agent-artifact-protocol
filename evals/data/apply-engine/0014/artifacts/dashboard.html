@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Tracker Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f8fb;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+        }
+        header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+        /* Navigation Section Styling */
+        <nav {
+            background-color: #3498db;
+            padding: 15px 0;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+        nav li {
+            margin: 0 20px;
+        }
+        nav a {
+            text-decoration: none;
+            color: #ffffff;
+            font-weight: 600;
+            padding: 10px 15px;
+            display: block;
+            transition: background-color 0.3s, border-radius 0.3s;
+            border-radius: 5px;
+        }
+        nav a:hover {
+            background-color: #2980b9;
+            color: #fff;
+        }
+        /* Stats Cards Section Styling */
+        .stats-grid {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            background-color: #ffffff;
+            border-left: 5px solid;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            flex: 1 1 200px; /* Allows wrapping */
+        }
+        .stat-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 1rem;
+            color: #7f8c8d;
+        }
+        .stat-card p {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        /* Content Section Styling */
+        .content-main {
+            display: flex;
+            gap: 30px;
+        }
+        .activity-log, .goals-tracker {
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            flex: 1;
+            min-width: 300px;
+        }
+        .activity-log h2, .goals-tracker h2 {
+            color: #2ecc71;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        .log-entry {
+            border-bottom: 1px dotted #eee;
+            padding: 10px 0;
+        }
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+        .log-entry strong {
+            color: #34495e;
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 3px;
+        }
+        /* Footer Styling */
+        footer {
+            margin-top: 40px;
+            padding: 20px;
+            text-align: center;
+            background-color: #34495e;
+            color: #bdc3c7;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <header>
+        <h1>👋 Welcome Back, Alex Rivera</h1>
+        <p style="color: #555;">Your Personalized Fitness Dashboard for Today, October 27th</p>
+    </header>
+
+    <nav id="nav">
+        <ul>
+            <li><a href="#" style="background-color: #2ecc71;">Dashboard</a></li>
+            <li><a href="#">Activity Log</a></li>
+            <li><a href="#">Nutrition</a></li>
+            <li><a href="#">Goals</a></li>
+            <li><a href="#">Profile</a></li>
+        </ul>
+    </nav>
+
+    <section id="stats">
+        <h2>📊 Weekly Summary</h2>
+        <div class="stats-grid">
+            <div class="stat-card" style="border-left-color: #e74c3c;">
+                <h3>Calories Burned</h3>
+                <p>2,450 kcal</p>
+            </div>
+            <div class="stat-card" style="border-left-color: #3498db;">
+                <h3>Active Minutes</h3>
+                <p>5 H 15 M</p>
+            </div>
+            <div class="stat-card" style="border-left-color: #2ecc71;">
+                <h3>Sleep Quality</h3>
+                <p>87%</p>
+            </div>
+            <div class="stat-card" style="border-left-color: #f39c12;">
+                <h3>Steps Target</h3>
+                <p>9,200 / 10,000</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="content">
+        <div class="content-main">
+            <div class="activity-log">
+                <h2>🏃 Today's Activity Log</h2>
+                <div class="log-entry">
+                    <strong>Jogging Session</strong>
+                    <p>Duration: 35 min | Distance: 5.2 km | Avg Pace: 6:10/km</p>
+                </div>
+                <div class="log-entry">
+                    <strong>Weight Lifting</strong>
+                    <p>Duration: 45 min | Focus: Upper Body | Intensity: High</p>
+                </div>
+                <div class="log-entry">
+                    <strong>Yoga Flow</strong>
+                    <p>Duration: 20 min | Focus: Flexibility | Notes: Hamstrings felt tight.</p>
+                </div>
+            </div>
+
+            <div class="goals-tracker">
+                <h2>🎯 Progress Tracking</h2>
+                <div style="margin-bottom: 20px;">
+                    <strong>Weight Goal:</strong> 175 lbs (Last update: 3 Lbs down!)
+                    <div style="height: 15px; background-color: #eee; border-radius: 10px; margin-top: 5px;">
+                        <div style="height: 100%; width: 70%; background-color: #2ecc71; border-radius: 10px;"></div>
+                    </div>
+                </div>
+
+                <h3>Hydration Streak</h3>
+                <p style="font-size: 1.5rem; color: #3498db;">5 Day Streak 🔥</p>
+
+                <h3>Weekly Mileage</h3>
+                <p style="font-size: 2rem; text-align: center; margin: 15px 0;">180 km</p>
+                <button style="width: 100%; padding: 10px; background-color: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.2s;">View Detailed Graph</button>
+            </div>
+        </div>
+    </section>
+
+    <footer id="footer">&copy; 2023 FitLife Dashboard. Data provided by tracking services. Keep moving!</footer>
+</div>
+
+</body>
+</html>

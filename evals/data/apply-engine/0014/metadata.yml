@@ -1,0 +1,13 @@
+case_num: 14
+category: html-dashboard
+variant: dashboard for fitness tracker
+format: text/html
+extension: .html
+filename: dashboard.html
+model: gemma4
+host: http://localhost:11434
+generated_at: 2026-04-03T03:26:32.317442+00:00
+artifact_bytes: 6906
+sections_expected: [nav, stats, content, footer]
+sections_found: []
+envelope_files: [diff-delete.jsonl, diff-multi.jsonl, diff-replace.jsonl, full.jsonl, template-fill.jsonl]

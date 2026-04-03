@@ -1,0 +1,2 @@
+{"protocol":"aap/0.1","id":"artifact-0014","version":10,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"        <h1>\ud83d\udc4b Welcome Back, Alex Rivera</h1>"}}]}
+{"protocol":"aap/0.1","id":"artifact-0014","version":11,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"        <div class=\"content-main\">"}}]}
