@@ -1,2 +1,0 @@
-{"protocol":"aap/0.1","id":"artifact-0012","version":10,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"            <aap:section id=\"stats\">"}}]}
-{"protocol":"aap/0.1","id":"artifact-0012","version":11,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"                     <div style=\"flex: 1;\">"}}]}

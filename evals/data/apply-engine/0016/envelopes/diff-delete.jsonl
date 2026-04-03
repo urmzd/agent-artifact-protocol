@@ -1,2 +1,0 @@
-{"protocol":"aap/0.1","id":"artifact-0016","version":10,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"                         <div style=\"flex-basis: 15%; min-width: 100px; margin: 10px;\">"}}]}
-{"protocol":"aap/0.1","id":"artifact-0016","version":11,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"                    <h3>Atmospheric Pressure Details</h3>"}}]}

@@ -26,7 +26,7 @@ PROVIDER_DEFAULTS: dict[str, str] = {
     "openai": "gpt-4o-mini",
     "ollama": "gemma4",
     "github": "openai/gpt-4o-mini",
-    "groq": "llama-3.3-70b-versatile",
+    "groq": "qwen3-32b",
 }
 
 

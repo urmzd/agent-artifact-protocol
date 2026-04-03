@@ -1,2 +1,0 @@
-{"protocol":"aap/0.1","id":"artifact-0010","version":10,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"                            <p>Avg. Resolution Time</p>"}}]}
-{"protocol":"aap/0.1","id":"artifact-0010","version":11,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"                                <td>TKT-3990</td>"}}]}

@@ -1,2 +1,0 @@
-{"protocol":"aap/0.1","id":"artifact-0007","version":10,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"    <h1 class=\"section-title\">Performance Overview (Last 30 Days)</h1>"}}]}
-{"protocol":"aap/0.1","id":"artifact-0007","version":11,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"            <div class=\"chart-area\" style=\"height: 300px;\">"}}]}

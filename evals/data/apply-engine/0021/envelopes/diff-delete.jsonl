@@ -1,2 +1,0 @@
-{"protocol":"aap/0.1","id":"artifact-0021","version":10,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"                    <h3>Avg. Response Time</h3>"}}]}
-{"protocol":"aap/0.1","id":"artifact-0021","version":11,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"                    <div class=\"ticket-item\">"}}]}

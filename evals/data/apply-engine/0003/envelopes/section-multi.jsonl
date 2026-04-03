@@ -1,1 +1,0 @@
-{"protocol":"aap/0.1","id":"artifact-0003","version":40,"name":"section","operation":{"direction":"output","format":"text/html"},"content":[{"id":"stats","content":"<h2 style=\"color: var(--text-dark);\">Today's Snapshot</h2>\n                <div class=\"stat-grid\">\n \n"},{"id":"content","content":"\n"}]}

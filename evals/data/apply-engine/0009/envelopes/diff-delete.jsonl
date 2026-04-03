@@ -1,2 +1,0 @@
-{"protocol":"aap/0.1","id":"artifact-0009","version":10,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"                        <span class=\"stage-tag\">Medium</span >"}}]}
-{"protocol":"aap/0.1","id":"artifact-0009","version":11,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"                        <span class=\"value\">$550,000</span>"}}]}

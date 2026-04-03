@@ -21,7 +21,7 @@ Requirements:
 - At least 80 lines of meaningful content
 - Use diverse, realistic data values (names, numbers, strings)
 
-Wrap each major section with markers using EXACTLY this syntax: <aap:section id="ID"> ... </aap:section>
+Wrap each major section with markers using EXACTLY this syntax: <aap:target id="ID"> ... </aap:target>
 Replace ID with the section name.
 
 You MUST include these section IDs: nav, stats, content, footer

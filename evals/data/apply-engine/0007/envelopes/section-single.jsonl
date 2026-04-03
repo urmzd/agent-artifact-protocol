@@ -1,4 +1,0 @@
-{"protocol":"aap/0.1","id":"artifact-0007","version":30,"name":"section","operation":{"direction":"output","format":"text/html"},"content":[{"id":"nav","content":"<NAV>\n    <button class=\"active\">Overview</button>\n    <button>Engagement</button>\n    <button>Audience</button>\n    <button>Content</button>\n</nav>\n"}]}
-{"protocol":"aap/0.1","id":"artifact-0007","version":31,"name":"section","operation":{"direction":"output","format":"text/html"},"content":[{"id":"stats","content":"\n"}]}
-{"protocol":"aap/0.1","id":"artifact-0007","version":32,"name":"section","operation":{"direction":"output","format":"text/html"},"content":[{"id":"content","content":"\n"}]}
-{"protocol":"aap/0.1","id":"artifact-0007","version":33,"name":"section","operation":{"direction":"output","format":"text/html"},"content":[{"id":"footer","content":"\n"}]}
