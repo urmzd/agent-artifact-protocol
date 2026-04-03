@@ -1,0 +1,2 @@
+{"protocol":"aap/0.1","id":"artifact-0023","version":10,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"    <div class=\"card-grid\">"}}]}
+{"protocol":"aap/0.1","id":"artifact-0023","version":11,"name":"diff","operation":{"direction":"output","format":"text/html"},"content":[{"op":"delete","target":{"search":"                    <td>Sales</td>"}}]}
