@@ -8,7 +8,7 @@ from pathlib import Path
 from pydantic_ai import Agent
 from pydantic_ai.models import Model
 
-from ..agents import clean_artifact
+from ..agents import clean_artifact, collect_text_streaming_latency
 from ..models import BaseTurnResult
 
 
@@ -25,10 +25,11 @@ def run_base_turn0(
     """
     agent: Agent[None, str] = Agent(llm, system_prompt=system_prompt)
     t0 = time.perf_counter()
-    r = agent.run_sync(turn0_prompt)
+    r = agent.run_stream_sync(turn0_prompt)
+    raw_text, latency = collect_text_streaming_latency(r)
     ms = int((time.perf_counter() - t0) * 1000)
     usage = r.usage()
-    artifact = clean_artifact(r.output)
+    artifact = clean_artifact(raw_text)
     (output_dir / f"turn-0{ext}").write_text(artifact)
 
     metrics = {
@@ -36,6 +37,9 @@ def run_base_turn0(
         "output_tokens": usage.output_tokens,
         "latency_ms": ms,
         "artifact_bytes": len(artifact.encode()),
+        "ttft_ms": latency.ttft_ms,
+        "ttlt_ms": latency.ttlt_ms,
+        "median_itl_ms": latency.median_itl_ms,
     }
     return artifact, r.all_messages(), metrics
 
@@ -61,11 +65,12 @@ def run_base_flow(
         t0 = time.perf_counter()
 
         try:
-            r = agent.run_sync(edit_prompt, message_history=history)
+            r = agent.run_stream_sync(edit_prompt, message_history=history)
+            raw_text, latency = collect_text_streaming_latency(r)
             ms = int((time.perf_counter() - t0) * 1000)
             usage = r.usage()
             history = r.all_messages()
-            artifact = clean_artifact(r.output)
+            artifact = clean_artifact(raw_text)
             (output_dir / f"{turn_name}{ext}").write_text(artifact)
 
             results.append(BaseTurnResult(
@@ -75,6 +80,9 @@ def run_base_flow(
                 output_tokens=usage.output_tokens,
                 latency_ms=ms,
                 output_bytes=len(artifact.encode()),
+                ttft_ms=latency.ttft_ms,
+                ttlt_ms=latency.ttlt_ms,
+                median_itl_ms=latency.median_itl_ms,
             ))
         except Exception as e:
             ms = int((time.perf_counter() - t0) * 1000)

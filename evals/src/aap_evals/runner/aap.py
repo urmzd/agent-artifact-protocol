@@ -8,7 +8,12 @@ from pathlib import Path
 from pydantic_ai import Agent
 from pydantic_ai.models import Model
 
-from ..agents import clean_artifact
+from ..agents import (
+    StreamingLatency,
+    clean_artifact,
+    collect_structured_streaming_latency,
+    collect_text_streaming_latency,
+)
 from ..apply import apply_envelope
 from ..models import AAPTurnResult
 from ..schema import LLMEnvelope
@@ -27,10 +32,11 @@ def run_aap_turn0(
     """
     agent: Agent[None, str] = Agent(llm, system_prompt=init_system)
     t0 = time.perf_counter()
-    r = agent.run_sync(turn0_prompt)
+    r = agent.run_stream_sync(turn0_prompt)
+    raw_text, latency = collect_text_streaming_latency(r)
     ms = int((time.perf_counter() - t0) * 1000)
     usage = r.usage()
-    artifact = clean_artifact(r.output)
+    artifact = clean_artifact(raw_text)
     (output_dir / f"turn-0{ext}").write_text(artifact)
 
     metrics = {
@@ -38,6 +44,9 @@ def run_aap_turn0(
         "output_tokens": usage.output_tokens,
         "latency_ms": ms,
         "artifact_bytes": len(artifact.encode()),
+        "ttft_ms": latency.ttft_ms,
+        "ttlt_ms": latency.ttlt_ms,
+        "median_itl_ms": latency.median_itl_ms,
     }
     return artifact, metrics
 
@@ -76,13 +85,14 @@ def run_aap_flow(
         succeeded = False
         env_name = ""
         envelope_json = ""
+        latency = StreamingLatency()
 
         try:
-            r = maintain_agent.run_sync(user_msg)
+            r = maintain_agent.run_stream_sync(user_msg)
+            envelope, latency = collect_structured_streaming_latency(r)
             ms = int((time.perf_counter() - t0) * 1000)
             usage = r.usage()
 
-            envelope = r.output
             parsed = True
             env_name = envelope.name
             envelope_json = envelope.model_dump_json(indent=2)
@@ -107,6 +117,9 @@ def run_aap_flow(
             output_tokens=usage.output_tokens,
             latency_ms=ms,
             output_bytes=len(artifact.encode()),
+            ttft_ms=latency.ttft_ms,
+            ttlt_ms=latency.ttlt_ms,
+            median_itl_ms=latency.median_itl_ms,
             envelope_parsed=parsed,
             apply_succeeded=succeeded,
             envelope_name=env_name,
