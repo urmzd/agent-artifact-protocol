@@ -8,7 +8,7 @@
 use anyhow::{bail, Context, Result};
 
 use crate::aap::{
-    Artifact, EditOp, Envelope, HandleContentItem, Name, OpType, Operation, SynthesizeContentItem,
+    Artifact, EditOp, Envelope, HandleContentItem, Name, OpType, Meta, SynthesizeContentItem,
     Target, PROTOCOL_VERSION,
 };
 
@@ -98,8 +98,7 @@ fn build_handle_envelope(artifact: &Artifact) -> Result<Envelope> {
         id: artifact.id.clone(),
         version: artifact.version,
         name: Name::Handle,
-        operation: Operation {
-            direction: "output".to_string(),
+        meta: Meta {
             format: Some(artifact.format.clone()),
             tokens_used: None,
             checksum: None,
@@ -114,7 +113,7 @@ fn build_handle_envelope(artifact: &Artifact) -> Result<Envelope> {
 /// Stateless apply: `f(artifact?, envelope) → (Artifact, Handle)`.
 pub fn apply(artifact: Option<&Artifact>, envelope: &Envelope) -> Result<(Artifact, Envelope)> {
     let format = envelope
-        .operation
+        .meta
         .format
         .as_deref()
         .unwrap_or("text/html");
@@ -296,7 +295,7 @@ mod tests {
             id: id.to_string(),
             version,
             name: Name::Synthesize,
-            operation: Operation {
+            meta: Meta {
                 direction: "input".to_string(),
                 format: Some("text/html".to_string()),
                 tokens_used: None, checksum: None, state: None,
@@ -311,7 +310,7 @@ mod tests {
             id: id.to_string(),
             version,
             name: Name::Edit,
-            operation: Operation {
+            meta: Meta {
                 direction: "input".to_string(),
                 format: Some("text/html".to_string()),
                 tokens_used: None, checksum: None, state: None,
@@ -409,7 +408,7 @@ mod tests {
     fn test_edit_from_json_string() {
         let json = r#"{
             "protocol": "aap/0.1", "id": "x", "version": 2, "name": "edit",
-            "operation": {"direction": "input", "format": "text/html"},
+            "meta": {"format": "text/html"},
             "content": [{"op": "replace", "target": {"type": "id", "value": "rev"}, "content": "new"}]
         }"#;
         let env: Envelope = serde_json::from_str(json).unwrap();
@@ -429,7 +428,7 @@ mod tests {
             op: OpType::Replace, target: ptr_target("/name"),
             content: Some(r#""Bob""#.to_string()),
         }]);
-        edit.operation.format = Some("application/json".to_string());
+        edit.meta.format = Some("application/json".to_string());
         let (art2, _) = apply(Some(&art), &edit).unwrap();
         let parsed: serde_json::Value = serde_json::from_str(&art2.body).unwrap();
         assert_eq!(parsed["name"], "Bob");
@@ -444,7 +443,7 @@ mod tests {
         let mut edit = edit_env("t", 2, vec![EditOp {
             op: OpType::Delete, target: ptr_target("/temp"), content: None,
         }]);
-        edit.operation.format = Some("application/json".to_string());
+        edit.meta.format = Some("application/json".to_string());
         let (art2, _) = apply(Some(&art), &edit).unwrap();
         let parsed: serde_json::Value = serde_json::from_str(&art2.body).unwrap();
         assert!(parsed.get("temp").is_none());
@@ -455,7 +454,7 @@ mod tests {
         let env = Envelope {
             protocol: PROTOCOL_VERSION.to_string(),
             id: "t".to_string(), version: 1, name: Name::Handle,
-            operation: Operation {
+            meta: Meta {
                 direction: "output".to_string(), format: None,
                 tokens_used: None, checksum: None, state: None,
             },

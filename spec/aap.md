@@ -32,10 +32,8 @@ The **Agent-Artifact Protocol (AAP)** is a portable, format-agnostic standard th
 | Term | Definition |
 |---|---|
 | **Artifact** | A discrete unit of structured content (an HTML page, a source file, a config) |
-| **Envelope** | Universal JSON message carrying artifact identity, operation metadata, and content |
+| **Envelope** | JSON message carrying artifact identity, metadata, and content |
 | **Target** | A named, addressable region within an artifact, marked by `<aap:target id="...">` |
-| **Operation** | The `operation` object in an envelope — metadata about the action being performed |
-| **Direction** | Whether an envelope is `"input"` (to the system) or `"output"` (from the system) |
 | **Generation** | The act of producing artifact content (initial creation or update) |
 | **Reprovisioning** | Updating an existing artifact to a new version |
 | **Token budget** | Maximum token allocation for a generation |
@@ -61,30 +59,29 @@ Every protocol-aware payload is wrapped in an **envelope** — a JSON object wit
 | `id` | string | YES | Unique artifact identifier (UUID or user-supplied) |
 | `version` | integer | YES | Monotonically increasing version number (starts at 1). For `edit` operations, the apply engine validates `stored_version == version - 1` |
 | `name` | string | YES | Operation discriminator (see [Section 4](#4-operations)) |
-| `operation` | object | YES | Metadata about the action (see below) |
+| `meta` | object | YES | Metadata about the action (see below) |
 | `content` | array | YES | List of content objects — shape determined by `name` |
 
 The `name` field determines what the envelope represents and what shape the `content` items take. There are 3 envelope types:
 
-| Direction | Name | Description |
-|---|---|---|
-| input | `synthesize` | Full artifact generation |
-| input | `edit` | Targeted changes via Target union |
-| output | `handle` | Lightweight artifact reference returned after any mutation |
+| Name | Description |
+|---|---|
+| `synthesize` | Full artifact generation (input) |
+| `edit` | Targeted changes via Target union (input) |
+| `handle` | Lightweight artifact reference returned after any mutation (output) |
 
-#### 3.1.1 Operation Object
+#### 3.1.1 Meta Object
 
-The `operation` object carries metadata about the action:
+The `meta` object carries metadata about the action:
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `direction` | string | YES | `"input"` (to the system) or `"output"` (from the system) |
 | `format` | string | YES | MIME type of the artifact content (`text/html`, `text/x-python`, `application/json`, etc.) |
 | `tokens_used` | integer | no | Actual tokens consumed to produce this payload |
 | `checksum` | string | no | `sha256:<hex>` integrity hash of the resolved content |
 | `state` | string | no | Entity lifecycle state: `"draft"`, `"published"`, `"archived"` (see [Section 8](#8-artifact-entity-state)) |
 
-The `operation` object is extensible — implementations MAY add additional fields for vendor-specific or future extensions.
+The `meta` object is extensible — implementations MAY add additional fields for vendor-specific or future extensions.
 
 #### 3.1.2 Content Array
 
@@ -100,7 +97,7 @@ The shape of each content item is determined by `name`. See [Section 4](#4-opera
   "id": "dashboard-001",
   "version": 1,
   "name": "synthesize",
-  "operation": {"direction": "input", "format": "text/html"},
+  "meta": {"format": "text/html"},
   "content": [
     {
       "body": "<!DOCTYPE html><html><body><h1>Dashboard</h1></body></html>"
@@ -183,7 +180,7 @@ Complete artifact content. This is the baseline — most expensive, always corre
   "id": "report-42",
   "version": 1,
   "name": "synthesize",
-  "operation": {"direction": "input", "format": "text/html"},
+  "meta": {"format": "text/html"},
   "content": [
     {
       "body": "<html><body><aap:target id=\"summary\"><h1>Q4 Report</h1></aap:target>...</body></html>"
@@ -232,7 +229,7 @@ A target identifies where in the artifact the operation applies. The target is a
   "id": "dashboard-001",
   "version": 2,
   "name": "edit",
-  "operation": {"direction": "input", "format": "text/html"},
+  "meta": {"format": "text/html"},
   "content": [
     {
       "op": "replace",
@@ -256,7 +253,7 @@ A target identifies where in the artifact the operation applies. The target is a
   "id": "app-config",
   "version": 3,
   "name": "edit",
-  "operation": {"direction": "input", "format": "application/json"},
+  "meta": {"format": "application/json"},
   "content": [
     {
       "op": "replace",
@@ -311,28 +308,13 @@ Consumers SHOULD maintain a configurable version history (default: 10 versions).
 
 ---
 
-## 6. Token Budgeting
+## 6. Token Reporting
 
-### 6.1 Budget Declaration
-
-The `operation.token_budget` object declares constraints:
-
-| Field | Type | Description |
-|---|---|---|
-| `max_tokens` | integer | Maximum content tokens (excludes envelope overhead) |
-| `priority` | string | `"completeness"` (prefer full content), `"brevity"` (prefer concise), `"fidelity"` (prefer accuracy) |
-
-### 6.2 Budget Accounting
+Envelopes SHOULD include `meta.tokens_used` — the actual content tokens consumed to produce the payload. This enables consumers to track token efficiency over time.
 
 - **Content tokens**: tokens in the artifact payload (what the user sees)
-- **Overhead tokens**: envelope metadata, framing, operation descriptions
-- The budget applies to **content tokens only**
-- Producers MUST NOT exceed `max_tokens`
-- Producers SHOULD select the most token-efficient operation to stay within budget
-
-### 6.3 Reporting
-
-The final envelope MUST include `operation.tokens_used` — the actual content tokens consumed. This enables consumers to track token efficiency over time.
+- **Overhead tokens**: envelope JSON structure, framing — excluded from the count
+- Producers SHOULD select the most token-efficient operation for the change at hand
 
 ---
 
@@ -672,120 +654,20 @@ The handle contains the artifact's identity and optional metadata. Implementatio
   "id": "dashboard-001",
   "version": 5,
   "name": "handle",
-  "operation": {"direction": "output", "format": "text/html", "state": "published"},
+  "meta": {"format": "text/html", "state": "published"},
   "content": [
     {"id": "dashboard-001", "version": 5, "token_count": 10240}
   ]
 }
 ```
 
-### 7.3 Handle Result (`name: "handle_result"`)
+### 7.3 Error Recovery
 
-A **handle result** is returned when the orchestrator interacts with a handle — for questions, confirmations, or when an operation fails. It is a discriminated union with three variants.
-
-**Content item schema:**
-
-Each content item has a `type` field that determines its shape:
-
-| Type | Shape | Description |
-|---|---|---|
-| `text` | `{"type": "text", "body": "..."}` | Answer to a question about the artifact |
-| `edit` | `{"type": "edit", "status": "applied", "changes": [...]}` | Confirmation of an applied edit |
-| `error` | `{"type": "error", "code": "...", "message": "..."}` | Operation failure |
-
-#### Text variant
-
-Returned when the orchestrator asks a question about the artifact content. The maintain context reads the artifact and produces a textual answer without the orchestrator ever seeing the content.
-
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `type` | string | YES | `"text"` |
-| `body` | string | YES | The answer text |
-
-#### Edit variant
-
-Returned after a successful edit operation. Confirms what was changed.
-
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `type` | string | YES | `"edit"` |
-| `status` | string | YES | `"applied"`, `"partial"`, `"rejected"`, `"conflict"` |
-| `changes` | array | YES | Summary of changes (per-change: `target_id`, `description`) |
-| `tokens_used` | integer | no | Output tokens consumed by the edit |
-| `rejection_reason` | string | no | Why the edit was rejected (for `rejected` status) |
-| `conflict_detail` | string | no | Version mismatch information (for `conflict` status) |
-
-**Status semantics:**
-
-| Status | Meaning |
-|---|---|
-| `applied` | Edit fully executed as intended |
-| `rejected` | Edit could not be performed (invalid target, constraint violation) |
-| `partial` | Some changes succeeded, others did not. `changes` lists what was applied |
-| `conflict` | Version mismatch — the artifact was modified since the edit was formulated |
-
-#### Error variant
-
-Returned when a system-level failure occurs (not an edit rejection, but an infrastructure or protocol error).
-
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `type` | string | YES | `"error"` |
-| `code` | string | YES | Machine-readable error code (e.g., `"version_mismatch"`, `"target_not_found"`, `"budget_exceeded"`) |
-| `message` | string | YES | Human-readable error description |
-
-**Examples:**
-
-```json
-{
-  "protocol": "aap/0.1",
-  "id": "dashboard-001",
-  "version": 5,
-  "name": "handle_result",
-  "operation": {"direction": "output", "format": "text/html"},
-  "content": [
-    {"type": "text", "body": "The dashboard currently shows revenue of $15,720 and 1,342 active users."}
-  ]
-}
-```
-
-```json
-{
-  "protocol": "aap/0.1",
-  "id": "dashboard-001",
-  "version": 6,
-  "name": "handle_result",
-  "operation": {"direction": "output", "format": "text/html", "tokens_used": 65, "checksum": "sha256:a1b2c3..."},
-  "content": [
-    {
-      "type": "edit",
-      "status": "applied",
-      "changes": [{"target_id": "stats", "description": "Updated revenue to $18,500"}]
-    }
-  ]
-}
-```
-
-```json
-{
-  "protocol": "aap/0.1",
-  "id": "dashboard-001",
-  "version": 5,
-  "name": "handle_result",
-  "operation": {"direction": "output", "format": "text/html"},
-  "content": [
-    {"type": "error", "code": "target_not_found", "message": "Target 'nonexistent-id' does not exist in artifact dashboard-001 v5"}
-  ]
-}
-```
-
-#### 7.3.1 Error Recovery
-
-When the maintain context produces a bad edit — for example, targeting an ID that doesn't exist — the apply engine rejects the operation. The handle result returns an `error` or an `edit` with `status: "rejected"`.
+When the maintain context produces a bad edit — for example, targeting an ID that doesn't exist — the apply engine rejects the operation.
 
 **Recommended recovery flow:**
 
-1. Orchestrator reads the handle result error or rejection reason
+1. Orchestrator reads the error from the apply engine
 2. Orchestrator reformulates the edit with more specific context
 3. Retry with the maintain context
 4. If repeated failures, escalate to re-initialization: archive the current artifact and call the init context
@@ -794,15 +676,14 @@ When the maintain context produces a bad edit — for example, targeting an ID t
 
 ### 7.4 Operations Summary
 
-The Artifact Type Interface defines three abstract operations, all expressed as envelopes:
+The Artifact Type Interface defines two operations, both returning a handle:
 
 | Operation | Input | Output | Description |
 |---|---|---|---|
 | `synthesize` | `name: "synthesize"` | `name: "handle"` | Create or recreate artifact, return handle |
 | `edit` | `name: "edit"` | `name: "handle"` | Apply targeted changes, return updated handle |
-| interact with handle | *(implementation-specific)* | `name: "handle_result"` | Question, confirmation, or error from handle interaction |
 
-**Normative:** Orchestrators MUST use handles to interact with artifacts. The orchestrator never holds full artifact content; it dispatches through handles and receives handle results.
+**Normative:** Orchestrators MUST use handles to interact with artifacts. The orchestrator never holds full artifact content; it dispatches through handles.
 
 ---
 
@@ -836,7 +717,7 @@ Artifacts can optionally be treated as **managed entities** with lifecycle state
 | `archive` | published | archived |
 | `restore` | archived | published |
 
-State is carried in the `operation.state` field. State transitions are recorded in `operation.state_changed_at`.
+State is carried in the `metadata.state` field. State transitions are recorded in `metadata.state_changed_at`.
 
 ### 8.2 Entity Metadata
 
@@ -849,7 +730,7 @@ The optional `entity` object (carried in `content` for `name: "handle"` envelope
 | `tags` | array of strings | no | Freeform classification tags |
 | `permissions` | object | no | Access control (see [Section 8.3](#83-permissions)) |
 | `collection` | string | no | Workspace or collection grouping identifier |
-| `ttl` | integer | no | Time-to-live in seconds from `operation.updated_at` |
+| `ttl` | integer | no | Time-to-live in seconds from `metadata.updated_at` |
 | `expires_at` | string | no | ISO 8601 expiration timestamp (takes precedence over `ttl`) |
 | `relationships` | array | no | Links to other artifacts (see [Section 8.4](#84-relationships)) |
 
@@ -861,27 +742,19 @@ The optional `entity` object (carried in `content` for `name: "handle"` envelope
   "id": "dashboard-001",
   "version": 3,
   "name": "handle",
-  "operation": {"direction": "output", "format": "text/html", "state": "published"},
+  "meta": {"format": "text/html", "state": "published"},
   "content": [
     {
-      "sections": ["nav", "stats", "users"],
+      "id": "dashboard-001",
+      "version": 3,
       "token_count": 10240,
-      "entity": {
-        "owner": "user:alice",
-        "created_by": "agent:claude",
-        "tags": ["dashboard", "q4", "revenue"],
-        "collection": "workspace:finance-team",
-        "ttl": 86400,
-        "permissions": {
-          "read": ["team:finance", "user:bob"],
-          "write": ["user:alice", "agent:claude"],
-          "admin": ["user:alice"]
-        }
-      }
+      "state": "published"
     }
   ]
 }
 ```
+
+> **Non-normative note:** Entity metadata (ownership, tags, permissions, relationships) is carried outside the handle envelope by the platform layer. The handle itself is kept minimal — only the fields needed for the orchestrator to make decisions.
 
 ### 8.3 Permissions
 
@@ -923,7 +796,7 @@ Advisory locks are hints only. The version mechanism remains the authoritative c
 
 ### 8.6 TTL and Expiration
 
-- When `ttl` is set, the artifact expires at `operation.updated_at + ttl` seconds
+- When `ttl` is set, the artifact expires at `metadata.updated_at + ttl` seconds
 - When `expires_at` is set, it takes precedence over `ttl`
 - Expired artifacts SHOULD transition to `"archived"` state automatically
 - Consumers SHOULD check expiration on read and treat expired artifacts as archived
@@ -949,14 +822,12 @@ Implementations declare their conformance level. Each level is a superset of the
 ### Level 2 — Managed Artifacts
 
 - Level 1, plus:
-- MUST support `name: "handle"` and `name: "handle_result"` (all three variants: text, edit, error)
-- MUST implement the Artifact Type Interface ([Section 7](#7-artifact-type-interface)): synthesize, edit, handle interaction
+- MUST support `name: "handle"` as the output of every synthesize and edit operation
+- MUST implement the Artifact Type Interface ([Section 7](#7-artifact-type-interface)): synthesize and edit, both returning handles
 - MUST support context offloading: init context for creation, maintain context for edits. The orchestrator MUST provide a mechanism (tool calls, API dispatch, subprocess invocation, or equivalent) for secondary contexts to operate on artifacts
 - MUST support the stateless dispatch memory model — no edit history accumulates in any secondary context
 - The maintain context MUST produce `edit` envelopes, not `synthesize`, on edits
-- MUST support all four handle result edit status codes: `applied`, `rejected`, `partial`, `conflict`
-- MUST support `operation.state` and enforce state machine transitions ([Section 8.1](#81-state-machine))
-- MUST support entity metadata storage and retrieval ([Section 8.2](#82-entity-metadata))
+- MUST support `metadata.state` and enforce state machine transitions ([Section 8.1](#81-state-machine))
 - Orchestrators MUST use handles rather than full content for artifact interaction
 
 ---
@@ -964,7 +835,7 @@ Implementations declare their conformance level. Each level is a superset of the
 ## 10. Security Considerations
 
 - **Content injection**: consumers MUST sanitize artifact content before displaying in privileged contexts (e.g., web browsers). Content display and sandboxing are consumer responsibilities outside the protocol scope
-- **Checksum verification**: consumers SHOULD verify `operation.checksum` when present to detect tampering or corruption
+- **Checksum verification**: consumers SHOULD verify `metadata.checksum` when present to detect tampering or corruption
 - **Token budget enforcement**: producers MUST NOT exceed declared budgets; consumers SHOULD reject payloads that claim to use fewer tokens than they actually contain
 - **Entity permissions**: `permissions` in the entity object are metadata only — consumers MUST enforce access control at the platform level, not rely solely on envelope metadata
 
@@ -972,7 +843,7 @@ Implementations declare their conformance level. Each level is a superset of the
 
 ## 11. IANA Considerations
 
-This specification does not require any IANA registrations. The `operation.format` field uses existing MIME types.
+This specification does not require any IANA registrations. The `metadata.format` field uses existing MIME types.
 
 ---
 
@@ -980,10 +851,9 @@ This specification does not require any IANA registrations. The `operation.forma
 
 Machine-validatable schemas for all protocol structures are provided in the `schemas/` directory:
 
-- [`artifact-envelope.json`](schemas/artifact-envelope.json) — Envelope schema (covers all 4 envelope types)
-- [`edit-operation.json`](schemas/edit-operation.json) — Edit operation schema (content items for `name: "edit"`)
-- [`handle.json`](schemas/handle.json) — Handle schema (content items for `name: "handle"`)
-- [`handle-result.json`](schemas/handle-result.json) — Handle result schema (content items for `name: "handle_result"`)
+- [`artifact-envelope.json`](schemas/artifact-envelope.json) — Envelope schema (covers all 3 envelope types)
+- [`artifact.json`](schemas/artifact.json) — Artifact schema (standalone content object)
+- [`diff-operation.json`](schemas/diff-operation.json) — Edit operation schema (content items for `name: "edit"`)
 - [`entity-metadata.json`](schemas/entity-metadata.json) — Entity metadata schema
 - [`relationship.json`](schemas/relationship.json) — Artifact relationship schema
 
