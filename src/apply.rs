@@ -9,7 +9,7 @@ use anyhow::{bail, Context, Result};
 
 use crate::aap::{
     Artifact, EditOp, Envelope, HandleContentItem, Name, OpType, Meta, SynthesizeContentItem,
-    Target, PROTOCOL_VERSION,
+    Target, TargetInfo, PROTOCOL_VERSION,
 };
 
 // ── Resolve trait ────────────────────────────────────────────────────────
@@ -86,12 +86,23 @@ fn extract_synthesize_item(envelope: &Envelope) -> Result<SynthesizeContentItem>
 }
 
 fn build_handle_envelope(artifact: &Artifact) -> Result<Envelope> {
+    let target_ids = crate::markers::extract_targets(&artifact.body, &artifact.format);
+    let targets = if target_ids.is_empty() {
+        None
+    } else {
+        Some(target_ids.into_iter().map(|id| TargetInfo {
+            id,
+            label: None,
+            accepts: None,
+        }).collect())
+    };
     let handle = HandleContentItem {
         id: artifact.id.clone(),
         version: artifact.version,
         token_count: Some(artifact.body.len() as u64 / 4), // rough estimate
         state: None,
         content: None,
+        targets,
     };
     Ok(Envelope {
         protocol: PROTOCOL_VERSION.to_string(),
@@ -459,5 +470,46 @@ mod tests {
             content: vec![],
         };
         assert!(apply(None, &env).is_err());
+    }
+
+    #[test]
+    fn test_synthesize_returns_targets() {
+        let body = r#"<aap:target id="stats"><aap:target id="rev">$100</aap:target></aap:target>"#;
+        let (_, handle) = apply(None, &synth_env("t", 1, body)).unwrap();
+        let item: crate::aap::HandleContentItem =
+            serde_json::from_value(handle.content[0].clone()).unwrap();
+        let targets = item.targets.unwrap();
+        let ids: Vec<&str> = targets.iter().map(|t| t.id.as_str()).collect();
+        assert_eq!(ids, vec!["stats", "rev"]);
+    }
+
+    #[test]
+    fn test_nested_target_invalidation() {
+        let body = r#"<aap:target id="outer"><aap:target id="inner">v</aap:target></aap:target>"#;
+        let (art, _) = apply(None, &synth_env("t", 1, body)).unwrap();
+
+        // Replace outer with content that drops inner
+        let edit = edit_env("t", 2, vec![EditOp {
+            op: OpType::Replace, target: id_target("outer"),
+            content: Some("no nested targets here".to_string()),
+        }]);
+        let (_, handle) = apply(Some(&art), &edit).unwrap();
+        let item: crate::aap::HandleContentItem =
+            serde_json::from_value(handle.content[0].clone()).unwrap();
+        let targets = item.targets.unwrap();
+        let ids: Vec<&str> = targets.iter().map(|t| t.id.as_str()).collect();
+        // outer still exists (markers preserved), but inner is gone
+        assert_eq!(ids, vec!["outer"]);
+    }
+
+    #[test]
+    fn test_no_targets_for_json() {
+        let base = r#"{"key": "value"}"#;
+        let mut env = synth_env("t", 1, base);
+        env.meta.format = Some("application/json".to_string());
+        let (_, handle) = apply(None, &env).unwrap();
+        let item: crate::aap::HandleContentItem =
+            serde_json::from_value(handle.content[0].clone()).unwrap();
+        assert!(item.targets.is_none());
     }
 }
