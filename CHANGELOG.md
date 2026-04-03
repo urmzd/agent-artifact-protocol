@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12.0 (2026-04-03)
+
+### Features
+
+- eval consolidation, nested markers, and AAP spec updates (#2) ([d1158a3](https://github.com/urmzd/agent-artifact-protocol/commit/d1158a37d730351c8b27a0f25b116162cf2f97c7))
+
+[Full Changelog](https://github.com/urmzd/agent-artifact-protocol/compare/v0.11.0...v0.12.0)
+
+
 ## 0.11.0 (2026-04-03)
 
 ### Features
