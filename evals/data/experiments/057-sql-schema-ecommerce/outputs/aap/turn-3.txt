@@ -1,0 +1,133 @@
+<aap:target id="schema">
+CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    full_name VARCHAR(100) NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE categories (
+    category_id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    slug VARCHAR(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE products (
+    product_id SERIAL PRIMARY KEY,
+    category_id INT REFERENCES categories(category_id),
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    price DECIMAL(12, 2) NOT NULL CHECK (price >= 0),
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE inventory (
+    product_id INT PRIMARY KEY REFERENCES products(product_id),
+    stock_quantity INT NOT NULL DEFAULT 0 CHECK (stock_quantity >= 0)
+);
+
+CREATE TABLE addresses (
+    address_id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
+    address_line1 VARCHAR(255) NOT NULL,
+    city VARCHAR(100) NOT NULL,
+    postal_code VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE coupons (
+    coupon_id SERIAL PRIMARY KEY,
+    code VARCHAR(20) UNIQUE NOT NULL,
+    discount_percent INT NOT NULL CHECK (discount_percent > 0 AND discount_percent <= 100),
+    expires_at TIMESTAMPTZ
+);
+
+CREATE TABLE orders (
+    order_id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(user_id),
+    coupon_id INT REFERENCES coupons(coupon_id),
+    total_amount DECIMAL(12, 2) NOT NULL,
+    status VARCHAR(20) DEFAULT 'pending',
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE order_items (
+    order_item_id SERIAL PRIMARY KEY,
+    order_id INT REFERENCES orders(order_id) ON DELETE CASCADE,
+    product_id INT REFERENCES products(product_id),
+    quantity INT NOT NULL CHECK (quantity > 0),
+    price_at_purchase DECIMAL(12, 2) NOT NULL
+);
+
+CREATE TABLE reviews (
+    review_id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(user_id),
+    product_id INT REFERENCES products(product_id),
+    rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    comment TEXT,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_products_category ON products(category_id);
+CREATE INDEX idx_orders_user ON orders(user_id);
+CREATE INDEX idx_order_items_order ON order_items(order_id);
+CREATE INDEX idx_reviews_product ON reviews(product_id);
+CREATE INDEX idx_orders_created_at ON orders(created_at);
+
+CREATE TABLE wishlists (
+    wishlist_id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
+    product_id INT REFERENCES products(product_id) ON DELETE CASCADE,
+    added_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, product_id)
+);
+</aap:target>
+
+<aap:target id="views">
+CREATE VIEW order_summary AS
+SELECT o.order_id, u.full_name, o.total_amount, COUNT(oi.order_item_id) as item_count
+FROM orders o
+JOIN users u ON o.user_id = u.user_id
+JOIN order_items oi ON o.order_id = oi.order_id
+GROUP BY o.order_id, u.full_name;
+
+CREATE VIEW product_ratings AS
+SELECT product_id, AVG(rating) as avg_rating, COUNT(*) as review_count
+FROM reviews
+GROUP BY product_id;
+
+CREATE VIEW low_stock_products AS
+SELECT p.name, i.stock_quantity
+FROM products p
+JOIN inventory i ON p.product_id = i.product_id
+WHERE i.stock_quantity < 5;
+
+CREATE MATERIALIZED VIEW monthly_sales_summary AS
+SELECT 
+    DATE_TRUNC('month', created_at) AS report_month,
+    SUM(total_amount) AS total_revenue,
+    COUNT(order_id) AS total_orders,
+    AVG(total_amount) AS average_order_value
+FROM orders
+GROUP BY DATE_TRUNC('month', created_at);
+</aap:target>
+
+<aap:target id="seed_data">INSERT INTO products (category_id, name, price) VALUES 
+(1, 'Laptop', 999.99), (1, 'Mouse', 25.00), (2, 'SQL Guide', 45.00), (2, 'Novel', 15.00), 
+(3, 'Lamp', 30.00), (3, 'Chair', 150.00), (4, 'Lego', 50.00), (4, 'Ball', 10.00), 
+(5, 'T-Shirt', 20.00), (5, 'Jeans', 50.00),
+(1, 'Keyboard', 59.99), (1, 'Monitor', 249.99), (2, 'Sci-Fi Anthology', 19.99), 
+(2, 'Cookbook', 29.99), (3, 'Coffee Maker', 89.99), (3, 'Rug', 120.00), 
+(4, 'Board Game', 35.00), (4, 'Puzzle', 14.99), (5, 'Jacket', 85.00), (5, 'Hat', 9.99);
+
+INSERT INTO inventory (product_id, stock_quantity)
+SELECT product_id, (random() * 50)::int FROM products;
+
+INSERT INTO users (email, password_hash, full_name) VALUES 
+('alice@example.com', 'hash1', 'Alice Smith'), ('bob@example.com', 'hash2', 'Bob Jones'), ('charlie@example.com', 'hash3', 'Charlie Brown');
+
+INSERT INTO orders (user_id, total_amount) VALUES 
+(1, 1024.99), (1, 45.00), (2, 150.00), (2, 20.00), (3, 60.00);
+
+INSERT INTO order_items (order_id, product_id, quantity, price_at_purchase) VALUES 
+(1, 1, 1, 999.99), (1, 2, 1, 25.99), (2, 3, 1, 45.00), (3, 6, 1, 150.00), (4, 9, 1, 20.00), (5, 8, 6, 10.00);</aap:target>

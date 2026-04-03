@@ -1,0 +1,12 @@
+CREATE MATERIALIZED VIEW monthly_sales_summary AS
+SELECT 
+    DATE_TRUNC('month', created_at) AS sales_month,
+    EXTRACT(YEAR FROM created_at) AS sales_year,
+    SUM(total_amount) AS total_revenue,
+    COUNT(order_id) AS order_count,
+    AVG(total_amount) AS average_order_value
+FROM orders
+GROUP BY 1, 2
+WITH DATA;
+
+CREATE INDEX idx_monthly_sales_month ON monthly_sales_summary(sales_month);

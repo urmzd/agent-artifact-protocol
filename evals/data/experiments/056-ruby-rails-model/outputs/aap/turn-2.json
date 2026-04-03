@@ -1,0 +1,23 @@
+{
+  "protocol": "aap/0.1",
+  "id": "order-model",
+  "version": 1,
+  "name": "edit",
+  "operation": {
+    "direction": "output",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "scopes"
+      },
+      "content": "  scope :recent, -> { order(created_at: :desc) }\n  scope :by_status, ->(status) { where(status: status) }\n  scope :by_date_range, ->(start_date, end_date) { where(created_at: start_date..end_date) }\n  scope :high_value, -> { where(\"total_price > ?\", 500) }\n  scope :pending_shipment, -> { where(status: 'confirmed') }\n  scope :by_payment_method, ->(method) { joins(:payments).where(payments: { method: method }) }\n"
+    }
+  ]
+}

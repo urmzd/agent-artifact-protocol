@@ -1,0 +1,23 @@
+{
+  "protocol": "aap/0.1",
+  "id": "schema_and_views_v1",
+  "version": 1,
+  "name": "edit",
+  "operation": {
+    "direction": "input",
+    "format": "text/sql",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "insert_after",
+      "target": {
+        "type": "id",
+        "value": "views"
+      },
+      "content": "\nCREATE MATERIALIZED VIEW monthly_sales_summary AS\nSELECT \n    DATE_TRUNC('month', created_at) AS report_month,\n    SUM(total_amount) AS total_revenue,\n    COUNT(order_id) AS total_orders,\n    AVG(total_amount) AS average_order_value\nFROM orders\nGROUP BY DATE_TRUNC('month', created_at);\n"
+    }
+  ]
+}

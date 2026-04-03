@@ -1,0 +1,23 @@
+{
+  "protocol": "aap/0.1",
+  "id": "etl-pipeline",
+  "version": 2,
+  "name": "edit",
+  "operation": {
+    "direction": "output",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "replace",
+      "target": {
+        "type": "id",
+        "value": "transformation-logic"
+      },
+      "content": "        # Aggregation\n        region_stats = df.groupby('region').agg({'revenue': 'sum', 'profit_margin': 'mean'})\n        \n        # Customer lifetime value\n        df['customer_lifetime_value'] = df.groupby('customer_id')['revenue'].transform('sum')\n        \n        return df\n"
+    }
+  ]
+}

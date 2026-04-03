@@ -1,0 +1,18 @@
+{
+  "protocol": "aap/0.1",
+  "id": "etl-pipeline-updated",
+  "version": 1,
+  "name": "synthesize",
+  "operation": {
+    "direction": "output",
+    "format": "text/x-python",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "body": "<aap:target id=\"etl-pipeline\">\nimport pandas as pd\nimport numpy as np\nfrom dataclasses import dataclass\nfrom typing import List, Dict\nimport logging\n\n<aap:target id=\"config-settings\">\n@dataclass\nclass ETLConfig:\n    input_path: str\n    output_parquet: str\n    output_json: str\n    output_region_csv: str\n    expected_columns: List[str]\n    date_col: str\n</aap:target>\n\nclass SalesETLPipeline:\n    def __init__(self, config: ETLConfig):\n        self.config = config\n        self.logger = logging.getLogger(__name__)\n\n    <aap:target id=\"extraction-logic\">\n    def extract(self) -> pd.DataFrame:\n        self.logger.info(\"Extracting data...\")\n        df = pd.read_csv(\n            self.config.input_path, \n            encoding='utf-8-sig',\n            parse_dates=[self.config.date_col]\n        )\n        return df\n    </aap:target>\n\n    <aap:target id=\"transformation-logic\">\n    def transform(self, df: pd.DataFrame) -> pd.DataFrame:\n        # Aggregation\n        region_stats = df.groupby('region').agg({'revenue': 'sum', 'profit_margin': 'mean'})\n        \n        # Customer lifetime value\n        df['customer_lifetime_value'] = df.groupby('customer_id')['revenue'].transform('sum')\n        \n        return df\n    </aap:target>\n\n    <aap:target id=\"validation-logic\">\n    def validate(self, df: pd.DataFrame):\n        # Null checks\n        if df.isnull().values.any():\n            raise ValueError(\"Data contains null values\")\n            \n        # Range checks\n        if (df['revenue'] < 0).any():\n            raise ValueError(\"Negative revenue detected\")\n            \n        # Date check\n        if (df[self.config.date_col] > pd.Timestamp.now()).any():\n            raise ValueError(\"Future sale dates detected\")\n            \n        # Duplicate detection\n        if df.duplicated().any():\n            self.logger.warning(\"Duplicates found, removing...\")\n            df.drop_duplicates(inplace=True)\n    </aap:target>\n\n    <aap:target id=\"loading-logic\">\n    def load(self, df: pd.DataFrame):\n        df.to_parquet(self.config.output_parquet)\n        df.to_json(self.config.output_json, orient='records')\n        \n        # Output regional summary\n        region_summary = df.groupby('region').agg(\n            total_revenue=('revenue', 'sum'),\n            order_count=('revenue', 'count'),\n            avg_order_value=('revenue', 'mean')\n        )\n        region_summary.to_csv(self.config.output_region_csv)\n        \n        summary = {\n            \"total_records\": len(df),\n            \"mean_revenue\": float(df['revenue'].mean())\n        }\n        return summary\n    </aap:target>\n\ndef run_pipeline(config: ETLConfig):\n    pipeline = SalesETLPipeline(config)\n    data = pipeline.extract()\n    pipeline.validate(data)\n    transformed_data = pipeline.transform(data)\n    stats = pipeline.load(transformed_data)\n    return stats\n\n</aap:target>\n"
+    }
+  ]
+}

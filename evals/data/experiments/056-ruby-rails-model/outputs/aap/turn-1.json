@@ -1,0 +1,31 @@
+{
+  "protocol": "aap/0.1",
+  "id": "order-model-artifact",
+  "version": 2,
+  "name": "edit",
+  "operation": {
+    "direction": "output",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "insert_after",
+      "target": {
+        "type": "id",
+        "value": "associations"
+      },
+      "content": "  has_many :refunds, dependent: :destroy\n"
+    },
+    {
+      "op": "insert_after",
+      "target": {
+        "type": "id",
+        "value": "instance-methods"
+      },
+      "content": "  def refund!\n    refunds.create!\n    update!(status: 'refunded')\n  end\n"
+    }
+  ]
+}

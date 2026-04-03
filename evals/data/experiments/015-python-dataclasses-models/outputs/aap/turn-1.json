@@ -1,0 +1,23 @@
+{
+  "protocol": "aap/0.1",
+  "id": "core-models",
+  "version": 1,
+  "name": "edit",
+  "operation": {
+    "direction": "output",
+    "format": "text/html",
+    "tokens_used": null,
+    "checksum": null,
+    "state": null
+  },
+  "content": [
+    {
+      "op": "insert_after",
+      "target": {
+        "type": "id",
+        "value": "sprint-fields"
+      },
+      "content": "\n@dataclass\nclass Milestone(BaseEntity):\n    <aap:target id=\"milestone-fields\">\n    name: str\n    target_date: datetime\n    status: Status = Status.TODO\n    project_id: UUID\n    task_ids: List[UUID] = field(default_factory=list)\n    </aap:target>\n"
+    }
+  ]
+}

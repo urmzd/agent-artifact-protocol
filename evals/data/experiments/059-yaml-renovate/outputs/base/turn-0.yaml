@@ -1,0 +1,42 @@
+extends:
+  - config:base
+  - ":semanticCommits"
+  - ":disableRateLimiting"
+  - ":preserveSemverRanges"
+
+schedule:
+  - "before 6am on monday"
+
+labels:
+  - "dependencies"
+
+automerge: true
+major:
+  automerge: false
+  labels:
+    - "dependencies"
+    - "major"
+
+packageRules:
+  - matchPackagePatterns:
+      - "^@types/"
+      - "^typescript$"
+    groupName: "typescript-ecosystem"
+    groupSlug: "typescript"
+  - matchUpdateTypes:
+      - "minor"
+      - "patch"
+    automerge: true
+  - matchManagers:
+      - "npm"
+    matchPackagePatterns:
+      - "^eslint"
+      - "^prettier"
+      - "@typescript-eslint/"
+    groupName: "linting-and-formatting"
+
+ignoreDeps:
+  - "node"
+
+prConcurrentLimit: 10
+rebaseWhen: "behind-base-branch"
