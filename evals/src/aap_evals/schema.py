@@ -51,10 +51,9 @@ class SynthesizeContentItem(BaseModel):
 # ── Operation metadata ────────────────────────────────────────────────────
 
 
-class OperationMeta(BaseModel):
-    """Envelope operation metadata."""
+class Meta(BaseModel):
+    """Envelope metadata."""
 
-    direction: Literal["input", "output"] = "output"
     format: str = "text/html"
     tokens_used: int | None = None
     checksum: str | None = None
@@ -71,7 +70,7 @@ class SynthesizeEnvelope(BaseModel):
     id: str
     version: int
     name: Literal["synthesize"]
-    operation: OperationMeta = Field(default_factory=OperationMeta)
+    meta: Meta = Field(default_factory=Meta)
     content: list[SynthesizeContentItem]
 
 
@@ -82,7 +81,7 @@ class EditEnvelope(BaseModel):
     id: str
     version: int
     name: Literal["edit"]
-    operation: OperationMeta = Field(default_factory=OperationMeta)
+    meta: Meta = Field(default_factory=Meta)
     content: list[EditOp]
 
 
@@ -106,7 +105,7 @@ class HandleEnvelope(BaseModel):
     id: str
     version: int
     name: Literal["handle"]
-    operation: OperationMeta = Field(default_factory=OperationMeta)
+    meta: Meta = Field(default_factory=Meta)
     content: list[HandleContentItem]
 
 

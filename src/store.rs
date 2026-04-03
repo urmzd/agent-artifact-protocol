@@ -90,9 +90,8 @@ mod tests {
     use super::*;
     use crate::aap::*;
 
-    fn make_op(fmt: &str) -> Meta {
+    fn make_meta(fmt: &str) -> Meta {
         Meta {
-            direction: "input".to_string(),
             format: Some(fmt.to_string()),
             tokens_used: None, checksum: None, state: None,
         }
@@ -103,7 +102,7 @@ mod tests {
             protocol: PROTOCOL_VERSION.to_string(),
             id: id.to_string(), version,
             name: Name::Synthesize,
-            meta: make_op("text/html"),
+            meta: make_meta("text/html"),
             content: vec![serde_json::json!({ "body": body })],
         }
     }
@@ -113,7 +112,7 @@ mod tests {
             protocol: PROTOCOL_VERSION.to_string(),
             id: id.to_string(), version,
             name: Name::Edit,
-            meta: make_op("text/html"),
+            meta: make_meta("text/html"),
             content: ops.iter().map(|o| serde_json::to_value(o).unwrap()).collect(),
         }
     }

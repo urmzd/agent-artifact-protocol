@@ -4,7 +4,7 @@
   "title": "Artifact Envelope",
   "description": "Wire-format message for the Agent-Artifact Protocol (AAP). Three envelope types: synthesize (in), edit (in), handle (out).",
   "type": "object",
-  "required": ["protocol", "id", "version", "name", "operation", "content"],
+  "required": ["protocol", "id", "version", "name", "meta", "content"],
   "properties": {
     "protocol": {
       "type": "string",
@@ -26,16 +26,10 @@
       "enum": ["synthesize", "edit", "handle"],
       "description": "Operation discriminator. Input: synthesize, edit. Output: handle."
     },
-    "operation": {
+    "meta": {
       "type": "object",
-      "required": ["direction"],
       "description": "Metadata about the action",
       "properties": {
-        "direction": {
-          "type": "string",
-          "enum": ["input", "output"],
-          "description": "Message direction: input (to the system) or output (from the system)"
-        },
         "format": {
           "type": "string",
           "pattern": "^[a-z]+/[a-z0-9.+-]+$",

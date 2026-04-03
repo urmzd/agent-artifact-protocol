@@ -296,8 +296,7 @@ mod tests {
             version,
             name: Name::Synthesize,
             meta: Meta {
-                direction: "input".to_string(),
-                format: Some("text/html".to_string()),
+                    format: Some("text/html".to_string()),
                 tokens_used: None, checksum: None, state: None,
             },
             content: vec![serde_json::json!({ "body": body })],
@@ -311,8 +310,7 @@ mod tests {
             version,
             name: Name::Edit,
             meta: Meta {
-                direction: "input".to_string(),
-                format: Some("text/html".to_string()),
+                    format: Some("text/html".to_string()),
                 tokens_used: None, checksum: None, state: None,
             },
             content: ops.iter().map(|o| serde_json::to_value(o).unwrap()).collect(),
@@ -455,7 +453,7 @@ mod tests {
             protocol: PROTOCOL_VERSION.to_string(),
             id: "t".to_string(), version: 1, name: Name::Handle,
             meta: Meta {
-                direction: "output".to_string(), format: None,
+                format: None,
                 tokens_used: None, checksum: None, state: None,
             },
             content: vec![],

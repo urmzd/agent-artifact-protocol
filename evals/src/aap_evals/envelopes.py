@@ -22,7 +22,7 @@ def make_envelope(
         "id": artifact_id,
         "version": version,
         "name": name,
-        "operation": {"direction": "output", "format": fmt},
+        "meta": {"format": fmt},
         "content": content,
     }
 

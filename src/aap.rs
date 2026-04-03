@@ -28,8 +28,6 @@ pub enum ArtifactState {
 /// Envelope metadata.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Meta {
-    pub direction: String,
-
     #[serde(skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
 
