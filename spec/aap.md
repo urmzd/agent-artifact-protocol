@@ -191,7 +191,7 @@ Complete artifact content. This is the baseline — most expensive, always corre
 
 ### 4.2 Edit (`name: "edit"`)
 
-Express changes as operations against the previous version. Each `content` item is an edit operation applied sequentially.
+Express changes as operations against the previous version. Each `content` item is an edit operation applied sequentially. If any operation fails, the entire envelope is rejected and the artifact remains unchanged (all-or-nothing).
 
 **When to use**: small, localized changes (value updates, insertions, deletions).
 
@@ -212,7 +212,25 @@ A target identifies where in the artifact the operation applies. The target is a
 | ID | `{"type": "id", "value": "target-id"}` | Target a named `<aap:target>` marker by ID **(recommended)** |
 | Pointer | `{"type": "pointer", "value": "/path/to/value"}` | Target a value by JSON Pointer (RFC 6901) — for `application/json` and `application/yaml` formats |
 
-**ID targeting** is the recommended mode. The init context places `<aap:target id="...">` markers on updatable regions; the maintain context references them by ID. The apply engine locates the marker and operates on the content between `<aap:target id="ID">` and its closing `</aap:target>`. For `replace`, the content between markers is replaced. For `delete`, the markers and their content are removed. For `insert_before` / `insert_after`, new content is inserted adjacent to the marker boundaries.
+**ID targeting** is the recommended mode. The init context places `<aap:target id="...">` markers on updatable regions; the maintain context references them by ID. The apply engine locates the marker and operates on the content between `<aap:target id="ID">` and its closing `</aap:target>`. For `replace`, the content between markers is replaced. For `delete`, the content between markers is removed (markers are preserved). For `insert_before`, new content is inserted at the start of the range (after the opening marker). For `insert_after`, new content is inserted at the end of the range (before the closing marker). Markers themselves are never moved or removed by edit operations.
+
+**Insertion example** (given artifact content):
+
+```html
+<aap:target id="list">item1, item2</aap:target>
+```
+
+An `insert_after` on target `list` with content `, item3` produces:
+
+```html
+<aap:target id="list">item1, item2, item3</aap:target>
+```
+
+An `insert_before` on target `list` with content `item0, ` produces:
+
+```html
+<aap:target id="list">item0, item1, item2</aap:target>
+```
 
 **Pointer targeting semantics:**
 - `replace`: `content` MUST be a valid JSON value. Replaces the value at the pointer location.
@@ -646,6 +664,8 @@ The handle contains the artifact's identity and optional metadata. Implementatio
 | `state` | string | no | Entity lifecycle state |
 | `content` | string | no | Artifact body (included only when explicitly requested) |
 
+> **Note:** The `id` and `version` fields in handle content items intentionally duplicate the envelope-level fields. This allows handle content items to be extracted and used standalone — for example, when an orchestrator maintains a collection of handles independent of their original envelopes.
+
 **Example:**
 
 ```json
@@ -663,7 +683,26 @@ The handle contains the artifact's identity and optional metadata. Implementatio
 
 ### 7.3 Error Recovery
 
-When the maintain context produces a bad edit — for example, targeting an ID that doesn't exist — the apply engine rejects the operation.
+When the maintain context produces a bad edit — for example, targeting an ID that doesn't exist — the apply engine rejects the operation and returns an error.
+
+**Apply engine error object:**
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `code` | string | YES | Machine-readable error code (see table below) |
+| `message` | string | YES | Human-readable description |
+| `artifact_id` | string | no | Artifact that triggered the error |
+
+**Error codes:**
+
+| Code | Description |
+|---|---|
+| `version_conflict` | `version` does not equal `stored_version + 1` |
+| `target_not_found` | A referenced target ID or JSON Pointer does not exist in the artifact |
+| `invalid_envelope` | Envelope failed structural validation (missing fields, wrong types) |
+| `invalid_content` | Content items failed operation-specific validation |
+
+> **Note:** Transport-level errors (timeouts, budget exhaustion, reconnection) are defined separately in the [SSE transport binding](aap-sse.md#5-error-signaling).
 
 **Recommended recovery flow:**
 
@@ -717,7 +756,7 @@ Artifacts can optionally be treated as **managed entities** with lifecycle state
 | `archive` | published | archived |
 | `restore` | archived | published |
 
-State is carried in the `metadata.state` field. State transitions are recorded in `metadata.state_changed_at`.
+State is carried in the `meta.state` field.
 
 ### 8.2 Entity Metadata
 
