@@ -1,99 +1,33 @@
-//! Format-aware section marker resolution.
+//! Universal XML section marker resolution.
 //!
-//! Maps MIME types to the appropriate section marker syntax and provides
-//! centralized marker lookup for the apply engine.
+//! All formats use the same `<aap:section id="...">` / `</aap:section>` markers.
+//! The `aap:` namespace prefix is uniquely identifiable and LLMs follow XML tags
+//! reliably. JSON uses pointer addressing instead.
 
 use anyhow::{bail, Context, Result};
 
 use crate::aap::SectionDef;
 
-/// Marker style families derived from MIME type.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum MarkerStyle {
-    /// `<!-- section:id -->` / `<!-- /section:id -->`
-    HtmlComment,
-    /// `// #region id` / `// #endregion id`
-    CStyleRegion,
-    /// `# region id` / `# endregion id`
-    HashRegion,
-    /// Format does not support text-based section markers.
-    Unsupported,
-}
-
-/// Determine the marker style for a given MIME type.
-pub fn marker_style_for_format(format: &str) -> MarkerStyle {
-    match format {
-        // HTML family
-        "text/html" | "text/markdown" | "image/svg+xml" => MarkerStyle::HtmlComment,
-
-        // C-style comment languages
-        "application/javascript"
-        | "text/javascript"
-        | "text/typescript"
-        | "text/x-rust"
-        | "text/x-go"
-        | "text/x-c"
-        | "text/x-c++"
-        | "text/x-java"
-        | "text/x-csharp"
-        | "text/x-scala"
-        | "text/x-kotlin"
-        | "text/x-swift"
-        | "text/css" => MarkerStyle::CStyleRegion,
-
-        // Hash-comment languages
-        "text/x-python"
-        | "text/x-ruby"
-        | "application/x-sh"
-        | "text/x-shellscript"
-        | "application/x-toml"
-        | "text/x-yaml"
-        | "application/yaml"
-        | "text/x-perl"
-        | "text/x-r" => MarkerStyle::HashRegion,
-
-        // Structured formats — use JSON Pointer instead
-        "application/json" => MarkerStyle::Unsupported,
-
-        // Fallback: XML-family gets HTML comments, other text gets HTML comments
-        other => {
-            if other.ends_with("+xml") {
-                MarkerStyle::HtmlComment
-            } else if other.starts_with("text/") {
-                MarkerStyle::HtmlComment
-            } else {
-                MarkerStyle::Unsupported
-            }
-        }
+/// Build start and end markers for a section ID.
+///
+/// All text formats use the same XML-style markers:
+/// `<aap:section id="nav">` / `</aap:section>`
+///
+/// JSON (`application/json`) does not support text markers — use pointer addressing.
+pub fn markers_for(section_id: &str, format: &str) -> Result<(String, String)> {
+    if format == "application/json" {
+        bail!("JSON does not support text-based section markers; use pointer addressing instead");
     }
-}
-
-/// Build start and end markers for a section ID given a marker style.
-fn markers_for_style(style: MarkerStyle, section_id: &str) -> Result<(String, String)> {
-    match style {
-        MarkerStyle::HtmlComment => Ok((
-            format!("<!-- section:{section_id} -->"),
-            format!("<!-- /section:{section_id} -->"),
-        )),
-        MarkerStyle::CStyleRegion => Ok((
-            format!("// #region {section_id}"),
-            format!("// #endregion {section_id}"),
-        )),
-        MarkerStyle::HashRegion => Ok((
-            format!("# region {section_id}"),
-            format!("# endregion {section_id}"),
-        )),
-        MarkerStyle::Unsupported => {
-            bail!("format does not support text-based section markers; use JSON Pointer addressing instead")
-        }
-    }
+    Ok((
+        format!(r#"<aap:section id="{section_id}">"#),
+        "</aap:section>".to_string(),
+    ))
 }
 
 /// Resolve section markers for a given section ID and format.
 ///
 /// If the `section_def` provides explicit `start_marker` and `end_marker`,
-/// those are used (user override). Otherwise, markers are derived from the
-/// MIME type.
+/// those are used (user override). Otherwise, the universal XML markers are used.
 pub fn resolve_markers(
     section_id: &str,
     format: &str,
@@ -106,8 +40,7 @@ pub fn resolve_markers(
         }
     }
 
-    let style = marker_style_for_format(format);
-    markers_for_style(style, section_id)
+    markers_for(section_id, format)
 }
 
 /// Find the byte range of a section's content within a string.
@@ -165,22 +98,22 @@ mod tests {
     #[test]
     fn test_html_markers() {
         let (start, end) = resolve_markers("nav", "text/html", None).unwrap();
-        assert_eq!(start, "<!-- section:nav -->");
-        assert_eq!(end, "<!-- /section:nav -->");
+        assert_eq!(start, r#"<aap:section id="nav">"#);
+        assert_eq!(end, "</aap:section>");
     }
 
     #[test]
     fn test_javascript_markers() {
         let (start, end) = resolve_markers("utils", "application/javascript", None).unwrap();
-        assert_eq!(start, "// #region utils");
-        assert_eq!(end, "// #endregion utils");
+        assert_eq!(start, r#"<aap:section id="utils">"#);
+        assert_eq!(end, "</aap:section>");
     }
 
     #[test]
     fn test_python_markers() {
         let (start, end) = resolve_markers("imports", "text/x-python", None).unwrap();
-        assert_eq!(start, "# region imports");
-        assert_eq!(end, "# endregion imports");
+        assert_eq!(start, r#"<aap:section id="imports">"#);
+        assert_eq!(end, "</aap:section>");
     }
 
     #[test]
@@ -203,27 +136,29 @@ mod tests {
     }
 
     #[test]
-    fn test_xml_family_fallback() {
-        let style = marker_style_for_format("application/xhtml+xml");
-        assert_eq!(style, MarkerStyle::HtmlComment);
+    fn test_xml_format() {
+        let (start, end) = resolve_markers("data", "application/xhtml+xml", None).unwrap();
+        assert_eq!(start, r#"<aap:section id="data">"#);
+        assert_eq!(end, "</aap:section>");
     }
 
     #[test]
-    fn test_unknown_text_fallback() {
-        let style = marker_style_for_format("text/x-unknown");
-        assert_eq!(style, MarkerStyle::HtmlComment);
+    fn test_unknown_text_format() {
+        let (start, end) = resolve_markers("block", "text/x-unknown", None).unwrap();
+        assert_eq!(start, r#"<aap:section id="block">"#);
+        assert_eq!(end, "</aap:section>");
     }
 
     #[test]
     fn test_find_section_range() {
-        let content = "before\n<!-- section:stats -->\nold stats\n<!-- /section:stats -->\nafter";
+        let content = "before\n<aap:section id=\"stats\">\nold stats\n</aap:section>\nafter";
         let (start, end) = find_section_range(content, "stats", "text/html", None).unwrap();
         assert_eq!(&content[start..end], "\nold stats\n");
     }
 
     #[test]
     fn test_find_section_range_python() {
-        let content = "import os\n# region imports\nimport sys\n# endregion imports\ncode";
+        let content = "import os\n<aap:section id=\"imports\">\nimport sys\n</aap:section>\ncode";
         let (start, end) = find_section_range(content, "imports", "text/x-python", None).unwrap();
         assert_eq!(&content[start..end], "\nimport sys\n");
     }
