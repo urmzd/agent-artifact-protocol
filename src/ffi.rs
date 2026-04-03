@@ -2,7 +2,7 @@
 //!
 //! Exposes `resolve_envelope` to Python, which takes an operation envelope
 //! JSON string and an optional base artifact envelope JSON string, and
-//! returns the resolved artifact as a JSON envelope string.
+//! returns `{"artifact": {...}, "handle": {...}}` as a JSON string.
 
 use pyo3::prelude::*;
 
@@ -13,11 +13,11 @@ use crate::apply;
 ///
 /// Args:
 ///     operation_json: JSON string of the operation envelope.
-///     artifact_json: JSON string of the base artifact envelope (a `name:"full"` envelope).
-///         Required for diff/section ops, ignored for full/template.
+///     artifact_json: JSON string of the base artifact envelope (a `name:"synthesize"` envelope).
+///         Required for edit ops, ignored for synthesize.
 ///
 /// Returns:
-///     Resolved artifact as a JSON envelope string (`name:"full"`).
+///     JSON string: `{"artifact": <envelope>, "handle": <envelope>}`
 ///
 /// Raises:
 ///     ValueError: If the envelope is malformed or the operation fails.
@@ -33,8 +33,15 @@ fn resolve_envelope(operation_json: &str, artifact_json: Option<&str>) -> PyResu
         })
         .transpose()?;
 
-    let result = apply::apply(artifact.as_ref(), &operation)
+    let (resolved, handle) = apply::apply(artifact.as_ref(), &operation)
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("apply failed: {e}")))?;
+
+    let result = serde_json::json!({
+        "artifact": serde_json::to_value(&resolved)
+            .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("artifact serialization failed: {e}")))?,
+        "handle": serde_json::to_value(&handle)
+            .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("handle serialization failed: {e}")))?,
+    });
 
     serde_json::to_string(&result)
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(format!("serialization failed: {e}")))
