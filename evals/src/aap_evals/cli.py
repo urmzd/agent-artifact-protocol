@@ -208,7 +208,7 @@ def run_experiments(
 
     from .agents import clean_artifact, create_model
     from .apply import apply_envelope
-    from .schema import Envelope
+    from .schema import LLMEnvelope as Envelope
 
     llm = create_model(provider, model, host, fallback)
 
