@@ -1,16 +1,77 @@
-# generative-artifact-protocol
+<p align="center">
+  <h1 align="center">Generative Artifact Protocol</h1>
+  <p align="center">
+    Token-efficient artifact updates and streaming for LLMs — 90-99% output token reduction per edit.
+    <br /><br />
+    <a href="https://crates.io/crates/generative-artifact-protocol">Crates.io</a>
+    &middot;
+    <a href="https://github.com/urmzd/generative-artifact-protocol/issues">Report Bug</a>
+    &middot;
+    <a href="spec/gap.md">Specification</a>
+  </p>
+</p>
+
+<p align="center">
+  <a href="https://github.com/urmzd/generative-artifact-protocol/actions/workflows/ci.yml"><img src="https://github.com/urmzd/generative-artifact-protocol/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://crates.io/crates/generative-artifact-protocol"><img src="https://img.shields.io/crates/v/generative-artifact-protocol" alt="crates.io"></a>
+</p>
 
 > **Warning**: This project is `v0` — the protocol, schemas, and APIs are subject to breaking changes without notice until a formal release.
 
-An open standard for token-efficient artifact updates and streaming — the **[Generative Artifact Protocol (GAP)](spec/gap.md)**. The protocol defines how LLMs can declare, diff, and reprovision text artifacts with minimal token expenditure — 90-99% output token reduction per update, translating to 43-86% total cost savings depending on the model's pricing (see [cost model](spec/gap.md#811-cost-model)).
+An open standard protocol — **[GAP](spec/gap.md)** — that lets LLMs declare, diff, and reprovision text artifacts with minimal token expenditure. Includes a Rust reference implementation of the apply engine plus a Python evaluation framework for measuring token efficiency against real LLM runs.
 
-Includes a Rust reference implementation of the **apply engine** — a stateless, deterministic function that resolves protocol envelopes into artifact content — plus a Python evaluation framework for measuring token efficiency against real LLM runs.
+## Features
 
-## How it works
+- **Envelope system** — three operation types (`synthesize`, `edit`, `handle`) for full generation, targeted updates, and lightweight references
+- **Stateless apply engine** — pure function, no I/O, ~2μs per edit; portable to browsers (WASM), IDEs, CLIs, or service backends
+- **ID-based targeting** — `<gap:target id="ID">` markers and JSON Pointer paths eliminate hallucinated search strings
+- **Format-agnostic** — works with HTML, Python, JavaScript, JSON, YAML, Rust, Go, SVG, and more
+- **90-99% output token reduction** per edit, translating to 43-86% total cost savings ([cost model](spec/gap.md#811-cost-model))
+- **SSE transport binding** — wire format for streaming with reconnection support ([GAP-SSE](spec/gap-sse.md))
+- **Evaluation framework** — 89 experiment datasets measuring token efficiency and reliability against real LLM runs
 
-1. An LLM produces an artifact envelope (JSON) — either a `synthesize` envelope (full content with target markers) or an `edit` envelope (targeted changes by ID or JSON Pointer).
-2. The apply engine resolves the envelope against the current artifact state to produce the updated artifact and a lightweight handle.
-3. The orchestrator holds handles; the resolved artifact (HTML, SVG, source code, config, etc.) is stored and consumed by downstream tools — browsers, IDEs, etc.
+## Install
+
+**Rust crate:**
+
+```sh
+cargo add generative-artifact-protocol
+```
+
+**From source (full workspace):**
+
+```sh
+git clone https://github.com/urmzd/generative-artifact-protocol
+cd generative-artifact-protocol
+```
+
+Requires [Rust](https://rustup.rs/) (stable), [uv](https://github.com/astral-sh/uv) (for evals), and optionally [just](https://github.com/casey/just) (for recipes).
+
+## Quick Start
+
+```sh
+# Build the Rust library
+just build
+
+# Run tests
+just test
+
+# Run criterion benchmarks (apply engine speed)
+just bench
+
+# Sync workspace — build FFI via maturin + Python packages
+just bind
+
+# Run LLM evaluations
+just run count=5 model="gemini-2.0-flash" provider="google"
+
+# Generate report from experiment metrics
+just report
+```
+
+## Usage
+
+### How it works
 
 ```
 LLM ──produces──▶ envelope ──apply──▶ (artifact, handle)
@@ -18,9 +79,11 @@ LLM ──produces──▶ envelope ──apply──▶ (artifact, handle)
                            gap (stateless, ~2μs)
 ```
 
-> GAP produces text artifacts; rendering is a consumer responsibility.
+1. An LLM produces an artifact envelope (JSON) — either a `synthesize` envelope (full content with target markers) or an `edit` envelope (targeted changes by ID or JSON Pointer).
+2. The apply engine resolves the envelope against the current artifact state to produce the updated artifact and a lightweight handle.
+3. The orchestrator holds handles; the resolved artifact is stored and consumed by downstream tools — browsers, IDEs, etc.
 
-## Apply engine
+### Apply engine
 
 The core of the library is a single stateless function:
 
@@ -28,62 +91,34 @@ The core of the library is a single stateless function:
 pub fn apply(artifact: Option<&Artifact>, envelope: &Envelope) -> Result<(Artifact, Envelope)>
 ```
 
-It takes the current artifact (if any) and an operation envelope, and returns the updated artifact plus a handle envelope. Three envelope types:
-
 | Envelope | Direction | Description |
 |---|---|---|
 | **synthesize** | input | Complete artifact content (baseline or reset) with `<gap:target>` markers |
 | **edit** | input | Targeted changes via ID (`<gap:target>` markers) or JSON Pointer |
 | **handle** | output | Lightweight reference returned after every synthesize or edit |
 
-The function is pure — no I/O, no state, no side effects. This makes it portable: embed it in browsers (via WASM), IDEs, CLI tools, or service backends.
-
-## Requirements
-
-- [Rust](https://rustup.rs/) (stable)
-- [uv](https://github.com/astral-sh/uv) (Python package manager, for evals)
-- [just](https://github.com/casey/just) (optional, for recipes)
-
-## Quick start
-
-```sh
-# Build the library
-just build
-
-# Run tests
-just test
-
-# Run Rust criterion benchmarks (apply engine speed)
-just bench
-```
-
-## Recipes
+### Recipes
 
 | Recipe | Description |
 |---|---|
 | `just build` | Compile the Rust library |
 | `just test` | Run Rust unit tests |
-| `just bench` | Rust criterion micro-benchmarks (apply engine speed) |
-| `just generate [count] [model]` | Generate benchmark corpus (artifacts + envelopes via Ollama) |
-| `just experiment [count] [model]` | Run baseline vs GAP experiment (LLM quality eval) |
-| `just run [count] [model] [id]` | Run conversation benchmark experiments (base vs GAP flows) |
-| `just report` | Generate experiment report (markdown) |
+| `just bench` | Criterion micro-benchmarks (apply engine speed) |
+| `just bind` | Sync workspace — build FFI via maturin + Python packages |
+| `just run [count] [model] [id] [provider]` | Run conversation benchmark experiments (base vs GAP flows) |
+| `just report` | Generate markdown report from experiment metrics |
 
-## Evals
+### Cost model
 
-The `evals/` directory contains an evaluation framework that measures GAP's token efficiency and envelope reliability against real LLM runs. See [`evals/README.md`](evals/README.md) for details.
+GAP saves tokens by replacing full artifact regeneration with small diff envelopes. The savings vary with the model's tokenizer, output/input price ratio, and whether a cheaper model handles diffs. See the [full derivation in the spec](spec/gap.md#811-cost-model).
 
-## Cost model
-
-GAP saves tokens by replacing full artifact regeneration with small diff envelopes. The savings are real but **LLM-dependent** — they vary with the model's tokenizer, output/input price ratio, and whether a cheaper model handles diffs. See the [full derivation in the spec](spec/gap.md#811-cost-model).
-
-**The mechanism:** the maintain context reads the full artifact ($S$ input tokens) and produces an edit envelope ($d$ output tokens, where $d$ is typically 1–5% of $S$). The apply engine resolves the edit at zero token cost (CPU, ~2μs). The orchestrator never reads the artifact at all — it holds only lightweight handles.
+The maintain context reads the full artifact ($S$ input tokens) and produces an edit envelope ($d$ output tokens, where $d$ is typically 1–5% of $S$). The apply engine resolves the edit at zero token cost (CPU, ~2μs).
 
 - **Output token reduction:** $d$ instead of $S$ per edit (95–99% fewer output tokens)
-- **Context flattening:** no conversation history accumulates — each edit reads only the current artifact ($S$), not all prior versions ($k \cdot S$ at edit $k$ in a naive conversation)
+- **Context flattening:** each edit reads only the current artifact ($S$), not all prior versions ($k \cdot S$ at edit $k$)
 - **Model asymmetry:** the maintain context can use a cheaper model, multiplying savings further
 
-**Concrete example** (2,000-token artifact, 30-token edit, $r = p_{\text{out}}/p_{\text{in}} = 4\text{x}$):
+**Example** (2,000-token artifact, 30-token edit, $r = p_{\text{out}}/p_{\text{in}} = 4\text{x}$):
 
 | After $N$ edits | Naive conversation | GAP | Total savings |
 |---:|---:|---:|---:|
@@ -91,13 +126,11 @@ GAP saves tokens by replacing full artifact regeneration with small diff envelop
 | 5 | \$0.304 | \$0.070 | 77% |
 | 10 | \$0.763 | \$0.107 | 86% |
 
-At $r = 1$ (equal pricing), the same scenario yields ~49% savings after 10 edits. At $r = 5$, it reaches ~87%. The output token reduction is constant — what changes is how much of total cost it represents.
+### Payload benchmarks
 
-## GAP payload benchmarks
+Payload size and apply time for each envelope type, measured against an 8 KB HTML dashboard fixture.
 
-Payload size and apply time for each [Generative Artifact Protocol (GAP)](spec/gap.md) envelope type, measured against an 8 KB HTML dashboard fixture.
-
-> **Note:** The "Payload savings" column measures **byte reduction** in the envelope payload — a proxy for output token reduction but not identical (tokenizers vary). Actual cost savings depend on the model's output/input price ratio; see [cost model](spec/gap.md#711-cost-model) for the full derivation.
+> **Note:** "Payload savings" measures **byte reduction** — a proxy for output token reduction but not identical (tokenizers vary). See [cost model](spec/gap.md#711-cost-model) for the full derivation.
 
 <!-- embed-src src="benches/results.md" -->
 | Envelope | Scenario | Payload | % of Full | Payload savings | Apply Time |
