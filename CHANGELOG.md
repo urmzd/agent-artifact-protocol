@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.13.0 (2026-04-04)
+
+### Breaking Changes
+
+- fix apply engine delete, add tests, restructure into uv workspace (#5) ([4c710d7](https://github.com/urmzd/generative-artifact-protocol/commit/4c710d74390994b13eef7c1b82f8ee8f28f1bfb6))
+
+### Documentation
+
+- improve spec notation and clean up evals (#4) ([b6431d2](https://github.com/urmzd/generative-artifact-protocol/commit/b6431d28cffc45216f532cf9b4b6564a29cc8cb7))
+- improve mathematical notation and clean up outputs (#3) ([ad21615](https://github.com/urmzd/generative-artifact-protocol/commit/ad2161512967c5c3648fe5ef1353c47f25e400a5))
+
+[Full Changelog](https://github.com/urmzd/generative-artifact-protocol/compare/v0.12.0...v0.13.0)
+
+
 ## Unreleased
 
 ### Breaking Changes
