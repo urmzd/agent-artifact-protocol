@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.14.0 (2026-04-09)
+
+### Features
+
+- **cli**: add version, update, --format flag, and install.sh ([d4d7247](https://github.com/urmzd/generative-artifact-protocol/commit/d4d7247ae1147eb909cd6455808f2d6cccc625b0))
+
+### Documentation
+
+- rewrite README to follow standard structure (#7) ([bea03f6](https://github.com/urmzd/generative-artifact-protocol/commit/bea03f6f536ccd5c8c108c98287bef391715696b))
+- update repo name and URLs to generative-artifact-protocol (#6) ([0e0f21a](https://github.com/urmzd/generative-artifact-protocol/commit/0e0f21ad6065f1f2867126c3d2fbdac4f623d560))
+
+### Miscellaneous
+
+- add linguist overrides to fix language stats ([57f3d84](https://github.com/urmzd/generative-artifact-protocol/commit/57f3d840f3575f700bc1eede1d662f98f3b67264))
+
+[Full Changelog](https://github.com/urmzd/generative-artifact-protocol/compare/v0.13.0...v0.14.0)
+
+
 ## 0.13.0 (2026-04-04)
 
 ### Breaking Changes

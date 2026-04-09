@@ -1,6 +1,6 @@
 [package]
 name = "generative-artifact-protocol"
-version = "0.13.0"
+version = "0.14.0"
 edition = "2021"
 description = "Generative Artifact Protocol (GAP) — token-efficient artifact generation and updates for LLMs"
 license = "Apache-2.0"
