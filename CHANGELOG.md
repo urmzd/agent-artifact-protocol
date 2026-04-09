@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.14.1 (2026-04-09)
+
+### Bug Fixes
+
+- **ci**: add --allow-dirty to cargo publish for dirty Cargo.lock ([51a5ea4](https://github.com/urmzd/generative-artifact-protocol/commit/51a5ea4d32ffe3967cacf71f64c5f20c02d465c3))
+
+[Full Changelog](https://github.com/urmzd/generative-artifact-protocol/compare/v0.14.0...v0.14.1)
+
+
 ## 0.14.0 (2026-04-09)
 
 ### Features
