@@ -1,0 +1,366 @@
+{
+"meta": {
+"request_id": "a1b2c3d4e5f67890",
+"timestamp": "2024-05-21T10:30:00Z",
+"api_version": "v2.1"
+},
+"data": [
+{
+"id": 1001,
+"email": "alex.rivera@examplecorp.com",
+"first_name": "Alex",
+"last_name": "Rivera",
+"avatar_url": "http://cdn.example.com/avatars/1001.jpg",
+"role": "Software Engineer",
+"department": "Technology",
+"is_active": true,
+"created_at": "2018-03-15T09:00:00Z",
+"last_login_at": "2024-05-21T10:25:12Z",
+"preferences": {
+"theme": "dark",
+"notifications": true,
+"timezone": "America/Los_Angeles"
+}
+},
+{
+"id": 1002,
+"email": "maria.garza@examplecorp.com",
+"first_name": "Maria",
+"last_name": "Garza",
+"avatar_url": "http://cdn.example.com/avatars/1002.jpg",
+"role": "Product Manager",
+"department": "Product",
+"is_active": true,
+"created_at": "2019-11-20T14:30:00Z",
+"last_login_at": "2024-05-21T10:20:05Z",
+"preferences": {
+"theme": "light",
+"notifications": true,
+"timezone": "America/Los_Angeles"
+}
+},
+{
+"id": 1003,
+"email": "david.chen@examplecorp.com",
+"first_name": "David",
+"last_name": "Chen",
+"avatar_url": "http://cdn.example.com/avatars/1003.jpg",
+"role": "UX Designer",
+"department": "Design",
+"is_active": true,
+"created_at": "2021-07-01T11:15:00Z",
+"last_login_at": "2024-05-21T09:55:30Z",
+"preferences": {
+"theme": "system",
+"notifications": false,
+"timezone": "Asia/Shanghai"
+}
+},
+{
+"id": 1004,
+"email": "sarah.oconnell@examplecorp.com",
+"first_name": "Sarah",
+"last_name": "O'Connell",
+"avatar_url": "http://cdn.example.com/avatars/1004.jpg",
+"role": "HR Specialist",
+"department": "Human Resources",
+"is_active": true,
+"created_at": "2017-01-10T08:45:00Z",
+"last_login_at": "2024-05-21T10:15:00Z",
+"preferences": {
+"theme": "light",
+"notifications": true,
+"timezone": "Europe/Dublin"
+}
+},
+{
+"id": 1005,
+"email": "jorge.vega@examplecorp.com",
+"first_name": "Jorge",
+"last_name": "Vega",
+"avatar_url": "http://cdn.example.com/avatars/1005.jpg",
+"role": "Data Scientist",
+"department": "Technology",
+"is_active": true,
+"created_at": "2020-04-22T16:00:00Z",
+"last_login_at": "2024-05-21T10:28:40Z",
+"preferences": {
+"theme": "dark",
+"notifications": true,
+"timezone": "America/Mexico_City"
+}
+},
+{
+"id": 1006,
+"email": "emily.jones@examplecorp.com",
+"first_name": "Emily",
+"last_name": "Jones",
+"avatar_url": "http://cdn.example.com/avatars/1006.jpg",
+"role": "Marketing Coordinator",
+"department": "Marketing",
+"is_active": true,
+"created_at": "2022-09-01T10:10:00Z",
+"last_login_at": "2024-05-21T08:50:10Z",
+"preferences": {
+"theme": "light",
+"notifications": true,
+"timezone": "America/New_York"
+}
+},
+{
+"id": 1007,
+"email": "robert.kim@examplecorp.com",
+"first_name": "Robert",
+"last_name": "Kim",
+"avatar_url": "http://cdn.example.com/avatars/1007.jpg",
+"role": "Financial Analyst",
+"department": "Finance",
+"is_active": true,
+"created_at": "2016-05-20T12:00:00Z",
+"last_login_at": "2024-05-21T09:30:00Z",
+"preferences": {
+"theme": "dark",
+"notifications": false,
+"timezone": "Asia/Seoul"
+}
+},
+{
+"id": 1008,
+"email": "laura.martin@examplecorp.com",
+"first_name": "Laura",
+"last_name": "Martin",
+"avatar_url": "http://cdn.example.com/avatars/1008.jpg",
+"role": "Project Manager",
+"department": "Technology",
+"is_active": true,
+"created_at": "2020-11-05T13:40:00Z",
+"last_login_at": "2024-05-21T10:22:15Z",
+"preferences": {
+"theme": "system",
+"notifications": true,
+"timezone": "America/Los_Angeles"
+}
+},
+{
+"id": 1009,
+"email": "james.wilson@examplecorp.com",
+"first_name": "James",
+"last_name": "Wilson",
+"avatar_url": "http://cdn.example.com/avatars/1009.jpg",
+"role": "Sales Representative",
+"department": "Sales",
+"is_active": true,
+"created_at": "2021-02-14T10:00:00Z",
+"last_login_at": "2024-05-21T10:05:00Z",
+"preferences": {
+"theme": "light",
+"notifications": true,
+"timezone": "America/New_York"
+}
+},
+{
+"id": 1010,
+"email": "olivia.wright@examplecorp.com",
+"first_name": "Olivia",
+"last_name": "Wright",
+"avatar_url": "http://cdn.example.com/avatars/1010.jpg",
+"role": "Content Creator",
+"department": "Marketing",
+"is_active": true,
+"created_at": "2022-10-30T09:30:00Z",
+"last_login_at": "2024-05-21T09:45:00Z",
+"preferences": {
+"theme": "dark",
+"notifications": false,
+"timezone": "America/New_York"
+}
+},
+{
+"id": 1011,
+"email": "liam.harris@examplecorp.com",
+"first_name": "Liam",
+"last_name": "Harris",
+"avatar_url": "http://cdn.example.com/avatars/1011.jpg",
+"role": "Cloud Architect",
+"department": "Technology",
+"is_active": true,
+"created_at": "2019-08-15T11:20:00Z",
+"last_login_at": "2024-05-21T10:18:30Z",
+"preferences": {
+"theme": "dark",
+"notifications": true,
+"timezone": "America/Chicago"
+}
+},
+{
+"id": 1012,
+"email": "sophia.adams@examplecorp.com",
+"first_name": "Sophia",
+"last_name": "Adams",
+"avatar_url": "http://cdn.example.com/avatars/1012.jpg",
+"role": "Recruiter",
+"department": "Human Resources",
+"is_active": true,
+"created_at": "2021-12-01T14:00:00Z",
+"last_login_at": "2024-05-21T09:35:10Z",
+"preferences": {
+"theme": "light",
+"notifications": true,
+"timezone": "America/New_York"
+}
+},
+{
+"id": 1013,
+"email": "noah.jackson@examplecorp.com",
+"first_name": "Noah",
+"last_name": "Jackson",
+"avatar_url": "http://cdn.example.com/avatars/1013.jpg",
+"role": "Financial Analyst",
+"department": "Finance",
+"is_active": true,
+"created_at": "2018-10-05T09:00:00Z",
+"last_login_at": "2024-05-21T09:15:00Z",
+"preferences": {
+"theme": "system",
+"notifications": false,
+"timezone": "America/Chicago"
+}
+},
+{
+"id": 1014,
+"email": "isaac.wright@examplecorp.com",
+"first_name": "Isaac",
+"last_name": "Wright",
+"avatar_url": "http://cdn.example.com/avatars/1014.jpg",
+"role": "Software Engineer",
+"department": "Technology",
+"is_active": true,
+"created_at": "2022-03-25T15:30:00Z",
+"last_login_at": "2024-05-21T10:24:00Z",
+"preferences": {
+"theme": "dark",
+"notifications": true,
+"timezone": "America/Los_Angeles"
+}
+},
+{
+"id": 1015,
+"email": "ava.thompson@examplecorp.com",
+"first_name": "Ava",
+"last_name": "Thompson",
+"avatar_url": "http://cdn.example.com/avatars/1015.jpg",
+"role": "Graphic Designer",
+"department": "Design",
+"is_active": true,
+"created_at": "2020-12-15T11:00:00Z",
+"last_login_at": "2024-05-21T08:30:00Z",
+"preferences": {
+"theme": "light",
+"notifications": true,
+"timezone": "America/New_York"
+}
+},
+{
+"id": 1016,
+"email": "william.brown@examplecorp.com",
+"first_name": "William",
+"last_name": "Brown",
+"avatar_url": "http://cdn.example.com/avatars/1016.jpg",
+"role": "Account Executive",
+"department": "Sales",
+"is_active": true,
+"created_at": "2019-06-01T09:00:00Z",
+"last_login_at": "2024-05-21T09:50:00Z",
+"preferences": {
+"theme": "system",
+"notifications": true,
+"timezone": "America/Chicago"
+}
+},
+{
+"id": 1017,
+"email": "chloe.patel@examplecorp.com",
+"first_name": "Chloe",
+"last_name": "Patel",
+"avatar_url": "http://cdn.example.com/avatars/1017.jpg",
+"role": "Marketing Analyst",
+"department": "Marketing",
+"is_active": true,
+"created_at": "2021-04-01T12:00:00Z",
+"last_login_at": "2024-05-21T10:28:00Z",
+"preferences": {
+"theme": "dark",
+"notifications": true,
+"timezone": "Asia/Kolkata"
+}
+},
+{
+"id": 1018,
+"email": "daniel.lee@examplecorp.com",
+"first_name": "Daniel",
+"last_name": "Lee",
+"avatar_url": "http://cdn.example.com/avatars/1018.jpg",
+"role": "DevOps Engineer",
+"department": "Technology",
+"is_active": true,
+"created_at": "2021-09-10T13:00:00Z",
+"last_login_at": "2024-05-21T10:10:00Z",
+"preferences": {
+"theme": "dark",
+"notifications": true,
+"timezone": "Asia/Los_Angeles"
+}
+},
+{
+"id": 1019,
+"email": "grace.harris@examplecorp.com",
+"first_name": "Grace",
+"last_name": "Harris",
+"avatar_url": "http://cdn.example.com/avatars/1019.jpg",
+"role": "HR Generalist",
+"department": "Human Resources",
+"is_active": true,
+"created_at": "2022-11-15T09:00:00Z",
+"last_login_at": "2024-05-21T09:58:00Z",
+"preferences": {
+"theme": "light",
+"notifications": true,
+"timezone": "America/New_York"
+}
+},
+{
+"id": 1020,
+"email": "michael.scott@examplecorp.com",
+"first_name": "Michael",
+"last_name": "Scott",
+"avatar_url": "http://cdn.example.com/avatars/1020.jpg",
+"role": "Director of Operations",
+"department": "Operations",
+"is_active": true,
+"created_at": "2015-06-25T14:20:00Z",
+"last_login_at": "2024-05-21T10:29:00Z",
+"preferences": {
+"theme": "system",
+"notifications": true,
+"timezone": "America/New_York"
+}
+},
+{
+"id": 1021,
+"email": "jessica.wang@examplecorp.com",
+"first_name": "Jessica",
+"last_name": "Wang",
+"avatar_url": "http://cdn.example.com/avatars/1021.jpg",
+"role": "Business Analyst",
+"department": "Finance",
+"is_active": true,
+"created_at": "2020-01-30T10:00:00Z",
+"last_login_at": "2024-05-21T09:40:00Z",
+"preferences": {
+"theme": "dark",
+"notifications": true,
+"timezone": "America/Shanghai"
+}
+},
+{
+"id": 1022, "description": "Example placeholder entry."}

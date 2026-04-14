@@ -1,0 +1,58 @@
+{
+  "meta": {
+    "request_id": "...",
+    "timestamp": "..."
+  },
+  "data": [
+    {
+      "id": 1021,
+      "name": "Ethan Miller",
+      "role": "Billing Administrator",
+      "department": "Finance",
+      "status": "Active"
+    },
+    {
+      "id": 1022,
+      "name": "Sophia Chen",
+      "role": "Customer Support Specialist",
+      "department": "Support",
+      "status": "Active"
+    },
+    {
+      "id": 1023,
+      "name": "Liam Rodriguez",
+      "role": "Senior Billing Analyst",
+      "department": "Finance",
+      "status": "Active"
+    },
+    {
+      "id": 1024,
+      "name": "Ava Patel",
+      "role": "Support Technician",
+      "department": "Support",
+      "status": "Active"
+    },
+    {
+      "id": 1025,
+      "name": "Noah Garcia",
+      "role": "Billing Coordinator",
+      "department": "Finance",
+      "status": "Active"
+    },
+    {
+      "id": 1026, "name": "Isabella Kim", "role": "Tier 2 Support", "department": "Support", "status": "Active"
+    },
+    {
+      "id": 1027, "name": "Jackson Lewis", "role": "Billing Specialist", "department": "Finance", "status": "Active"
+    },
+    {
+      "id": 1028, "name": "Charlotte Brown", "role": "Customer Success Representative", "department": "Support", "status": "Active"
+    },
+    {
+      "id": 1029, "name": "Mason Harris", "role": "Accounts Payable Clerk", "department": "Finance", "status": "Active"
+    },
+    {
+      "id": 1030, "name": "Amelia Clark", "role": "Junior Support Associate", "department": "Support", "status": "Active"
+    }
+  ]
+}

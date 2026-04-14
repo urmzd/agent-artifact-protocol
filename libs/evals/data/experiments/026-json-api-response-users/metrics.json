@@ -1,0 +1,160 @@
+{
+  "base_turn0": {
+    "input_tokens": 145,
+    "output_tokens": 4012,
+    "latency_ms": 101642,
+    "artifact_bytes": 10241,
+    "ttft_ms": 8914,
+    "ttlt_ms": 101605,
+    "median_itl_ms": 23.11075
+  },
+  "comparison": {
+    "input_token_savings_pct": -74.8,
+    "latency_savings_pct": 47.6,
+    "output_token_savings_pct": 70.6
+  },
+  "default_flow": {
+    "per_turn": [
+      {
+        "turn": 1,
+        "edit": "Add 10 more users to the data array with roles 'billing_admin' and 'support_agen",
+        "input_tokens": 4082,
+        "output_tokens": 517,
+        "latency_ms": 20707,
+        "output_bytes": 1530,
+        "ttft_ms": 7645,
+        "ttlt_ms": 20679,
+        "median_itl_ms": 25.218917,
+        "failed": false
+      },
+      {
+        "turn": 2,
+        "edit": "Update the pagination to show page 3 of 12 with per_page set to 30 and update ha",
+        "input_tokens": 624,
+        "output_tokens": 1562,
+        "latency_ms": 34257,
+        "output_bytes": 4689,
+        "ttft_ms": 1245,
+        "ttlt_ms": 34235,
+        "median_itl_ms": 21.110188,
+        "failed": false
+      },
+      {
+        "turn": 3,
+        "edit": "Add a 'team_id' and 'team_name' field to each user object, with users grouped in",
+        "input_tokens": 2230,
+        "output_tokens": 1955,
+        "latency_ms": 47238,
+        "output_bytes": 5641,
+        "ttft_ms": 319,
+        "ttlt_ms": 47212,
+        "median_itl_ms": 23.983833,
+        "failed": false
+      }
+    ],
+    "total_input_tokens": 6936,
+    "total_latency_ms": 102202,
+    "total_output_tokens": 4034
+  },
+  "experiment_id": "026-json-api-response-users",
+  "format": "application/json",
+  "gap_flow": {
+    "apply_success_rate": 0,
+    "envelope_parse_rate": 0.6666666666666666,
+    "per_turn": [
+      {
+        "turn": 1,
+        "edit": "Add 10 more users to the data array with roles 'billing_admin' and 'support_agen",
+        "input_tokens": 4042,
+        "output_tokens": 721,
+        "latency_ms": 26271,
+        "output_bytes": 8661,
+        "ttft_ms": 7749,
+        "ttlt_ms": 26245,
+        "median_itl_ms": 25.297209,
+        "failed": true,
+        "failure_reason": "parse or apply failed",
+        "envelope_parsed": false,
+        "apply_succeeded": false
+      },
+      {
+        "turn": 2,
+        "edit": "Update the pagination to show page 3 of 12 with per_page set to 30 and update ha",
+        "input_tokens": 4040,
+        "output_tokens": 191,
+        "latency_ms": 12687,
+        "output_bytes": 8661,
+        "ttft_ms": 7896,
+        "ttlt_ms": 12661,
+        "median_itl_ms": 25.205,
+        "failed": true,
+        "failure_reason": "parse or apply failed",
+        "envelope_parsed": true,
+        "apply_succeeded": false
+      },
+      {
+        "turn": 3,
+        "edit": "Add a 'team_id' and 'team_name' field to each user object, with users grouped in",
+        "input_tokens": 4044,
+        "output_tokens": 272,
+        "latency_ms": 14538,
+        "output_bytes": 8661,
+        "ttft_ms": 7678,
+        "ttlt_ms": 14513,
+        "median_itl_ms": 25.230771,
+        "failed": true,
+        "failure_reason": "parse or apply failed",
+        "envelope_parsed": true,
+        "apply_succeeded": false
+      }
+    ],
+    "total_input_tokens": 12126,
+    "total_latency_ms": 53496,
+    "total_output_tokens": 1184
+  },
+  "gap_turn0": {
+    "input_tokens": 145,
+    "output_tokens": 3963,
+    "latency_ms": 89295,
+    "artifact_bytes": 8661,
+    "ttft_ms": 429,
+    "ttlt_ms": 89267,
+    "median_itl_ms": 22.372584
+  },
+  "model": "gemma4",
+  "provider": "ollama",
+  "timestamp": "2026-04-14T20:16:33Z",
+  "token_table": {
+    "totals": {
+      "base_combined": 0,
+      "base_input": 0,
+      "base_latency_ms": 0,
+      "base_output": 0,
+      "combined_savings_pct": 0,
+      "gap_combined": 0,
+      "gap_input": 0,
+      "gap_latency_ms": 0,
+      "gap_output": 0,
+      "input_delta_pct": 0,
+      "latency_savings_pct": 0,
+      "output_savings_pct": 0
+    },
+    "turns": [
+      {
+        "base_input": 0,
+        "base_latency_ms": 0,
+        "base_median_itl_ms": null,
+        "base_output": 0,
+        "base_ttft_ms": null,
+        "base_ttlt_ms": null,
+        "gap_input": 0,
+        "gap_latency_ms": 0,
+        "gap_median_itl_ms": null,
+        "gap_output": 0,
+        "gap_ttft_ms": null,
+        "gap_ttlt_ms": null,
+        "turn": 0
+      }
+    ]
+  }
+}

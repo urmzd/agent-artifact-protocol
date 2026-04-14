@@ -1,0 +1,257 @@
+{
+  "meta": {
+    "request_id": "...",
+    "timestamp": "..."
+  },
+  "pagination": {
+    "page": 3,
+    "per_page": 30,
+    "total_items": 360,
+    "total_pages": 12,
+    "has_next": true,
+    "has_prev": true
+  },
+  "data": [
+    {
+      "id": 1,
+      "name": "Alice Johnson",
+      "role": "System Administrator",
+      "department": "IT",
+      "status": "Active",
+      "team_id": 1,
+      "team_name": "Platform"
+    },
+    {
+      "id": 2,
+      "name": "Bob Williams",
+      "role": "Lead Developer",
+      "department": "Engineering",
+      "status": "Active",
+      "team_id": 1,
+      "team_name": "Platform"
+    },
+    {
+      "id": 3,
+      "name": "Charlie Brown",
+      "role": "Product Manager",
+      "department": "Product",
+      "status": "Active",
+      "team_id": 1,
+      "team_name": "Platform"
+    },
+    {
+      "id": 4,
+      "name": "Diana Taylor",
+      "role": "UX Designer",
+      "department": "Design",
+      "status": "Active",
+      "team_id": 4,
+      "team_name": "Design"
+    },
+    {
+      "id": 5,
+      "name": "Ethan Miller",
+      "role": "Billing Administrator",
+      "department": "Finance",
+      "status": "Active",
+      "team_id": 2,
+      "team_name": "Growth"
+    },
+    {
+      "id": 6,
+      "name": "Sophia Chen",
+      "role": "Customer Support Specialist",
+      "department": "Support",
+      "status": "Active",
+      "team_id": 3,
+      "team_name": "Infrastructure"
+    },
+    {
+      "id": 7,
+      "name": "Liam Rodriguez",
+      "role": "Senior Billing Analyst",
+      "department": "Finance",
+      "status": "Active",
+      "team_id": 2,
+      "team_name": "Growth"
+    },
+    {
+      "id": 8,
+      "name": "Ava Patel",
+      "role": "Support Technician",
+      "department": "Support",
+      "status": "Active",
+      "team_id": 3,
+      "team_name": "Infrastructure"
+    },
+    {
+      "id": 9,
+      "name": "Noah Garcia",
+      "role": "Billing Coordinator",
+      "department": "Finance",
+      "status": "Active",
+      "team_id": 2,
+      "team_name": "Growth"
+    },
+    {
+      "id": 10,
+      "name": "Isabella Kim",
+      "role": "Tier 2 Support",
+      "department": "Support",
+      "status": "Active",
+      "team_id": 3,
+      "team_name": "Infrastructure"
+    },
+    {
+      "id": 11,
+      "name": "Jackson Lewis",
+      "role": "Billing Specialist",
+      "department": "Finance",
+      "status": "Active",
+      "team_id": 2,
+      "team_name": "Growth"
+    },
+    {
+      "id": 12,
+      "name": "Charlotte Brown",
+      "role": "Customer Success Representative",
+      "department": "Support",
+      "status": "Active",
+      "team_id": 3,
+      "team_name": "Infrastructure"
+    },
+    {
+      "id": 13,
+      "name": "Mason Harris",
+      "role": "Accounts Payable Clerk",
+      "department": "Finance",
+      "status": "Active",
+      "team_id": 2,
+      "team_name": "Growth"
+    },
+    {
+      "id": 14,
+      "name": "Amelia Clark",
+      "role": "Junior Support Associate",
+      "department": "Support",
+      "status": "Active",
+      "team_id": 3,
+      "team_name": "Infrastructure"
+    },
+    {
+      "id": 15,
+      "name": "Samuel Green",
+      "role": "DevOps Engineer",
+      "department": "Engineering",
+      "status": "Active",
+      "team_id": 1,
+      "team_name": "Platform"
+    },
+    {
+      "id": 16,
+      "name": "Olivia Adams",
+      "role": "Data Scientist",
+      "department": "Analytics",
+      "status": "Active",
+      "team_id": 1,
+      "team_name": "Platform"
+    },
+    {
+      "id": 17,
+      "name": "Daniel White",
+      "role": "Marketing Director",
+      "department": "Marketing",
+      "status": "Active",
+      "team_id": 2,
+      "team_name": "Growth"
+    },
+    {
+      "id": 18,
+      "name": "Mia Harris",
+      "role": "Content Writer",
+      "department": "Marketing",
+      "status": "Active",
+      "team_id": 2,
+      "team_name": "Growth"
+    },
+    {
+      "id": 19,
+      "name": "James Clark",
+      "role": "Technical Writer",
+      "department": "Content",
+      "status": "Active",
+      "team_id": 4,
+      "team_name": "Design"
+    },
+    {
+      "id": 20,
+      "name": "Grace Hall",
+      "role": "Project Coordinator",
+      "department": "Operations",
+      "status": "Active",
+      "team_id": 1,
+      "team_name": "Platform"
+    },
+    {
+      "id": 21,
+      "name": "Henry Lewis",
+      "role": "Operations Manager",
+      "department": "Operations",
+      "status": "Active",
+      "team_id": 1,
+      "team_name": "Platform"
+    },
+    {
+      "id": 22,
+      "name": "Abigail King",
+      "role": "HR Specialist",
+      "department": "HR",
+      "status": "Active",
+      "team_id": 3,
+      "team_name": "Infrastructure"
+    },
+    {
+      "id": 23,
+      "name": "Benjamin Walker",
+      "role": "Recruiter",
+      "department": "HR",
+      "status": "Active",
+      "team_id": 3,
+      "team_name": "Infrastructure"
+    },
+    {
+      "id": 24,
+      "name": "Eleanor Scott",
+      "role": "Compensation Analyst",
+      "department": "HR",
+      "status": "Active",
+      "team_id": 3,
+      "team_name": "Infrastructure"
+    },
+    {
+      "id": 25,
+      "name": "Lucas Baker",
+      "role": "Financial Analyst",
+      "department": "Finance",
+      "status": "Active",
+      "team_id": 2,
+      "team_name": "Growth"
+    },
+    {
+      "id": 26,
+      "name": "Aurora Nelson",
+      "role": "Credit Accountant",
+      "department": "Finance",
+      "status": "active",
+      "team_id": 2,
+      "team_name": "Infrastructure"
+    },
+    {
+      "id": 27,
+      "name": "Gabriel",
+      "role": "Manager",
+      "team_id": 3,
+      "team_name": "Infrastructure"
+    }
+  ]
+}

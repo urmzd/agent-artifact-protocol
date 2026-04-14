@@ -1,0 +1,343 @@
+{
+  "meta": {
+    "request_id": "a1b2c3d4e5f67890",
+    "timestamp": "2024-03-15T10:30:00Z",
+    "api_version": "2.1"
+  },
+  "data": [
+    {
+      "id": 1001,
+      "email": "alice.johnson@examplecorp.com",
+      "first_name": "Alice",
+      "last_name": "Johnson",
+      "avatar_url": "https://cdn.examplecorp.com/avatars/alice.jpg",
+      "role": "Admin",
+      "department": "Executive",
+      "is_active": true,
+      "created_at": "2020-01-15T08:00:00Z",
+      "last_login_at": "2024-03-14T16:45:22Z",
+      "preferences": {
+        "theme": "dark",
+        "notifications": true,
+        "timezone": "America/New_York"
+      }
+    },
+    {
+      "id": 1002,
+      "email": "bob.smith@examplecorp.com",
+      "first_name": "Bob",
+      "last_name": "Smith",
+      "avatar_url": "https://cdn.examplecorp.com/avatars/bob.png",
+      "role": "Developer",
+      "department": "Technology",
+      "is_active": true,
+      "created_at": "2019-11-20T09:15:00Z",
+      "last_login_at": "2024-03-15T09:10:55Z",
+      "preferences": {
+        "theme": "light",
+        "notifications": true,
+        "timezone": "America/Los_Angeles"
+      }
+    },
+    {
+      "id": 1003,
+      "email": "charlotte.brown@examplecorp.com",
+      "first_name": "Charlotte",
+      "last_name": "Brown",
+      "avatar_url": "https://cdn.examplecorp.com/avatars/charlotte.jpg",
+      "role": "Marketing Specialist",
+      "department": "Marketing",
+      "is_active": true,
+      "created_at": "2021-05-01T11:30:00Z",
+      "last_login_at": "2024-03-15T08:01:10Z",
+      "preferences": {
+        "theme": "system",
+        "notifications": false,
+        "timezone": "Europe/London"
+      }
+    },
+    {
+      "id": 1004,
+      "email": "david.wilson@examplecorp.com",
+      "first_name": "David",
+      "last_name": "Wilson",
+      "avatar_url": "https://cdn.examplecorp.com/avatars/david.jpg",
+      "role": "Data Scientist",
+      "department": "Analytics",
+      "is_active": true,
+      "created_at": "2018-08-10T09:00:00Z",
+      "last_login_at": "2024-03-13T11:50:40Z",
+      "preferences": {
+        "theme": "dark",
+        "notifications": true,
+        "timezone": "America/New_York"
+      }
+    },
+    {
+      "id": 1005,
+      "email": "emma.miller@examplecorp.com",
+      "first_name": "Emma",
+      "last_name": "Miller",
+      "avatar_url": "https://cdn.examplecorp.com/avatars/emma.png",
+      "role": "HR Coordinator",
+      "department": "Human Resources",
+      "is_active": true,
+      "created_at": "2022-02-28T14:00:00Z",
+      "last_login_at": "2024-03-15T07:30:15Z",
+      "preferences": {
+        "theme": "light",
+        "notifications": true,
+        "timezone": "America/Chicago"
+      }
+    },
+    {
+      "id": 1006,
+      "email": "frank.taylor@examplecorp.com",
+      "first_name": "Frank",
+      "last_name": "Taylor",
+      "avatar_url": "https://cdn.examplecorp.com/avatars/frank.jpg",
+      "role": "Developer",
+      "department": "Technology",
+      "is_active": true,
+      "created_at": "2019-03-15T10:10:00Z",
+      "last_login_at": "2024-03-15T09:15:00Z",
+      "preferences": {
+        "theme": "dark",
+        "notifications": true,
+        "timezone": "America/New_York"
+      }
+    },
+    {
+      "id": 1007,
+      "email": "grace.anderson@examplecorp.com",
+      "first_name": "Grace",
+      "last_name": "Anderson",
+      "avatar_url": "https://cdn.examplecorp.com/avatars/grace.jpg",
+      "role": "Manager",
+      "department": "Sales",
+      "is_active": true,
+      "created_at": "2020-07-22T13:45:00Z",
+      "last_login_at": "2024-03-15T08:15:33Z",
+      "preferences": {
+        "theme": "system",
+        "notifications": true,
+        "timezone": "America/New_York"
+      }
+    },
+    {
+      "id": 1008,
+      "email": "liam.thomas@examplecorp.com",
+      "first_name": "Liam",
+      "last_name": "Thomas",
+      "avatar_url": "https://cdn.examplecorp.com/avatars/liam.png",
+      "role": "Analyst",
+      "department": "Analytics",
+      "is_active": true,
+      "created_at": "2021-11-01T15:20:00Z",
+      "last_login_at": "2024-03-12T14:22:11Z",
+      "preferences": {
+        "theme": "light",
+        "notifications": false,
+        "timezone": "America/Chicago"
+      }
+    },
+    {
+      "id": 1009,
+      "email": "mia.jackson@examplecorp.com",
+      "first_name": "Mia",
+      "last_name": "Jackson",
+      "avatar_url": "https://cdn.examplecorp.com/avatars/mia.jpg",
+      "role": "Content Writer",
+      "department": "Marketing",
+      "is_active": true,
+      "created_at": "2022-09-10T11:00:00Z",
+      "last_login_at": "2024-03-15T10:20:05Z",
+      "preferences": {
+        "theme": "dark",
+        "notifications": true,
+        "timezone": "Europe/London"
+      }
+    },
+    {
+      "id": 1010,
+      "email": "noah.harris@examplecorp.com",
+      "first_name": "Noah",
+      "last_name": "Harris",
+      "avatar_url": "https://cdn.examplecorp.com/avatars/noah.jpg",
+      "role": "Engineer I",
+      "department": "Technology",
+      "is_active": true,
+      "created_at": "2023-01-25T16:30:00Z",
+      "last_login_at": "2024-03-15T09:00:00Z",
+      "preferences": {
+        "theme": "system",
+        "notifications": true,
+        "timezone": "America/New_York"
+      }
+    },
+    {
+      "id": 1011,
+      "email": "olivia.martin@examplecorp.com",
+      "first_name": "Olivia",
+      "last_name": "Martin",
+      "avatar_url": "https://cdn.examplecorp.com/avatars/olivia.png",
+      "role": "Executive Assistant",
+      "department": "Executive",
+      "is_active": true,
+      "created_at": "2021-04-12T10:00:00Z",
+      "last_login_at": "2024-03-14T11:15:30Z",
+      "preferences": {
+        "theme": "light",
+        "notifications": true,
+        "timezone": "America/New_York"
+      }
+    },
+    {
+      "id": 1012,
+      "email": "penelope.garcia@examplecorp.com",
+      "first_name": "Penelope",
+      "last_name": "Garcia",
+      "avatar_url": "https://cdn.examplecorp.com/avatars/penelope.jpg",
+      "role": "Sales Representative",
+      "department": "Sales",
+      "is_active": true,
+      "created_at": "2022-07-01T14:00:00Z",
+      "last_login_at": "2024-03-15T08:30:00Z",
+      "preferences": {
+        "theme": "dark",
+        "notifications": true,
+        "timezone": "America/New_York"
+      }
+    },
+    {
+      "id": 1013,
+      "email": "quinn.rodriguez@examplecorp.com",
+      "first_name": "Quinn",
+      "last_name": "Rodriguez",
+      "avatar_url": "https://cdn.examplecorp.com/avatars/quinn.jpg",
+      "role": "Data Analyst",
+      "department": "Analytics",
+      "is_active": true,
+      "created_at": "2020-10-15T12:00:00Z",
+      "last_login_at": "2024-03-12T10:35:45Z",
+      "preferences": {
+        "theme": "system",
+        "notifications": false,
+        "timezone": "America/Los_Angeles"
+      }
+    },
+    {
+      "id": 1014,
+      "email": "ryan.martinez@examplecorp.com",
+      "first_name": "Ryan",
+      "last_name": "Martinez",
+      "avatar_url": "https://cdn.examplecorp.com/avatars/ryan.png",
+      "role": "Developer II",
+      "department": "Technology",
+      "is_active": true,
+      "created_at": "2021-03-20T15:00:00Z",
+      "last_login_at": "2024-03-15T10:10:10Z",
+      "preferences": {
+        "theme": "light",
+        "notifications": true,
+        "timezone": "America/Los_Angeles"
+      }
+    },
+    {
+      "id": 1015,
+      "email": "sarah.jones@examplecorp.com",
+      "first_name": "Sarah",
+      "last_name": "Jones",
+      "avatar_url": "https://cdn.examplecorp.com/avatars/sarah.jpg",
+      "role": "Product Manager",
+      "department": "Product",
+      "is_active": true,
+      "created_at": "2019-06-01T11:00:00Z",
+      "last_login_at": "2024-03-13T16:00:00Z",
+      "preferences": {
+        "theme": "dark",
+        "notifications": true,
+        "timezone": "America/New_York"
+      }
+    },
+    {
+      "id": 1016,
+      "email": "tom.perez@examplecorp.com",
+      "first_name": "Tom",
+      "last_name": "Perez",
+      "avatar_url": "https://cdn.examplecorp.com/avatars/tom.jpg",
+      "role": "Sales Associate",
+      "department": "Sales",
+      "is_active": false,
+      "created_at": "2022-11-15T10:00:00Z",
+      "last_login_at": "2023-12-01T09:00:00Z",
+      "preferences": {
+        "theme": "system",
+        "notifications": false,
+        "timezone": "America/New_York"
+      }
+    },
+    {
+      "id": 1017,
+      "email": "ursula.kim@examplecorp.com",
+      "first_name": "Ursula",
+      "last_name": "Kim",
+      "avatar_url": "https://cdn.examplecorp.com/avatars/ursula.png",
+      "role": "UX Designer",
+      "department": "Technology",
+      "is_active": true,
+      "created_at": "2020-01-20T14:30:00Z",
+      "last_login_at": "2024-03-15T11:00:00Z",
+      "preferences": {
+        "theme": "dark",
+        "notifications": true,
+        "timezone": "America/Los_Angeles"
+      }
+    },
+    {
+      "id": 1018,
+      "email": "victor.wright@examplecorp.com",
+      "first_name": "Victor",
+      "last_name": "Wright",
+      "avatar_url": "https://cdn.examplecorp.com/avatars/victor.jpg",
+      "role": "Director",
+      "department": "Executive",
+      "is_active": true,
+      "created_at": "2017-05-01T09:00:00Z",
+      "last_login_at": "2024-03-15T10:00:00Z",
+      "preferences": {
+        "theme": "system",
+        "notifications": true,
+        "timezone": "America/New_York"
+      }
+    },
+    {
+      "id": 1019,
+      "email": "wendy.adams@examplecorp.com",
+      "first_name": "Wendy",
+      "last_name": "Adams",
+      "avatar_url": "https://cdn.examplecorp.com/avatars/wendy.jpg",
+      "role": "Marketing Coordinator",
+      "department": "Marketing",
+      "is_active": true,
+      "created_at": "2021-09-01T16:00:00Z",
+      "last_login_at": "2024-03-15T09:30:00Z",
+      "preferences": {
+        "theme": "light",
+        "notifications": true,
+        "timezone": "Europe/London"
+      }
+    },
+    {
+      "id": 1020,
+      "email": "xavier.rivera@examplecorp.com",
+      "first_name": "Xavier",
+      "last_name": "Rivera",
+      "avatar_url": "https://cdn.examplecorp.com/avatars/xavier.png",
+      "role": "Junior Developer",
+      "product": "XYZ",
+      "isActive": true
+    },
+    {"id": 2021, "name": "Sample User"},
+    {"id": 2022, "name": "Another Sample User"}
+]

@@ -1,0 +1,216 @@
+{
+  "meta": {
+    "request_id": "...",
+    "timestamp": "..."
+  },
+  "pagination": {
+    "page": 3,
+    "per_page": 30,
+    "total_items": 360,
+    "total_pages": 12,
+    "has_next": true,
+    "has_prev": true
+  },
+  "data": [
+    {
+      "id": 1,
+      "name": "Alice Johnson",
+      "role": "System Administrator",
+      "department": "IT",
+      "status": "Active"
+    },
+    {
+      "id": 2,
+      "name": "Bob Williams",
+      "role": "Lead Developer",
+      "department": "Engineering",
+      "status": "Active"
+    },
+    {
+      "id": 3,
+      "name": "Charlie Brown",
+      "role": "Product Manager",
+      "department": "Product",
+      "status": "Active"
+    },
+    {
+      "id": 4,
+      "name": "Diana Taylor",
+      "role": "UX Designer",
+      "department": "Design",
+      "status": "Active"
+    },
+    {
+      "id": 5,
+      "name": "Ethan Miller",
+      "role": "Billing Administrator",
+      "department": "Finance",
+      "status": "Active"
+    },
+    {
+      "id": 6,
+      "name": "Sophia Chen",
+      "role": "Customer Support Specialist",
+      "department": "Support",
+      "status": "Active"
+    },
+    {
+      "id": 7,
+      "name": "Liam Rodriguez",
+      "role": "Senior Billing Analyst",
+      "department": "Finance",
+      "status": "Active"
+    },
+    {
+      "id": 8, "name": "Ava Patel", "role": "Support Technician", "department": "Support", "status": "Active"
+    },
+    {
+      "id": 9, "name": "Noah Garcia", "role": "Billing Coordinator", "department": "Finance", "status": "Active"
+    },
+    {
+      "id": 10, "name": "Isabella Kim",
+      "role": "Tier 2 Support",
+      "department": "Support",
+      "status": "Active"
+    },
+    {
+      "id": 11, "name": "Jackson Lewis",
+      "role": "Billing Specialist",
+      "department": "Finance",
+      "status": "Active"
+    },
+    {
+      "id": 12,
+      "name": "Charlotte Brown",
+      "role": "Customer Success Representative",
+      "department": "Support",
+      "status": "Active"
+    },
+    {
+      "id": 13,
+      "name": "Mason Harris",
+      "role": "Accounts Payable Clerk",
+      "department": "Finance",
+      "status": "Active"
+    },
+    {
+      "id": 14,
+      "name": "Amelia Clark",
+      "role": "Junior Support Associate",
+      "department": "Support",
+      "status": "Active"
+    },
+    {
+      "id": 15,
+      "name": "Samuel Green",
+      "role": "DevOps Engineer",
+      "department": "Engineering",
+      "status": "Active"
+    },
+    {
+      "id": 16,
+      "name": "Olivia Adams",
+      "role": "Data Scientist",
+      "department": "Analytics",
+      "status": "Active"
+    },
+    {
+      "id": 17,
+      "name": "Daniel White",
+      "role": "Marketing Director",
+      "department": "Marketing",
+      "status": "Active"
+    },
+    {
+      "id": 18,
+      "name": "Mia Harris",
+      "role": "Content Writer",
+      "department": "Marketing",
+      "status": "Active"
+    },
+    {
+      "id": 19,
+      "name": "James Clark",
+      "role": "Technical Writer",
+      "department": "Content",
+      "status": "Active"
+    },
+    {
+      "id": 20,
+      "name": "Grace Hall",
+      "role": "Project Coordinator",
+      "department": "Operations",
+      "status": "Active"
+    },
+    {
+      "id": 21,
+      "name": "Henry Lewis",
+      "role": "Operations Manager",
+      "department": "Operations",
+      "status": "Active"
+    },
+    {
+      "id": 22,
+      "name": "Abigail King",
+      "role": "HR Specialist",
+      "department": "HR",
+      "status": "Active"
+    },
+    {
+      "id": 23,
+      "name": "Benjamin Walker",
+      "role": "Recruiter",
+      "department": "HR",
+      "status": "Active"
+    },
+    {
+      "id": 24,
+      "name": "Eleanor Scott",
+      "role": "Compensation Analyst",
+      "department": "HR",
+      "status": "Active"
+    },
+    {
+      "id": 25,
+      "name": "Lucas Baker",
+      "role": "Financial Analyst",
+      "department": "Finance",
+      "status": "Active"
+    },
+    {
+      "id": 26,
+      "name": "Aurora Nelson",
+      "role": "Credit Accountant",
+      "department": "Finance",
+      "status": "Active"
+    },
+    {
+      "id": 27,
+      "name": "Julian Carter",
+      "role": "Billing Associate",
+      "department": "Finance",
+      "status": "Active"
+    },
+    {
+      "id": 28,
+      "name": "Victoria Reed",
+      "role": "Support Agent",
+      "department": "Support",
+      "status": "Active"
+    },
+    {
+      "id": 29,
+      "name": "Gabriel Wood",
+      "role": "Tier 1 Support",
+      "department": "Support",
+      "status": "Active"
+    },
+    {
+      "id": 30,
+      "name": "Hazel Moore",
+      "role": "Customer Success Associate",
+      "department": "Support",
+      "status": "Active"
+    }
+  ]
+}
