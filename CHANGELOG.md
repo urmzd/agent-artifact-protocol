@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.15.0 (2026-04-14)
+
+### Features
+
+- add Go eval CLI with CGo FFI bridge to Rust apply engine ([a204308](https://github.com/urmzd/generative-artifact-protocol/commit/a204308298a7e472685d1dce7a9bd55e53f74bd6))
+
+### Miscellaneous
+
+- migrate sr config and action to v4 ([56761f2](https://github.com/urmzd/generative-artifact-protocol/commit/56761f2fc4036e38d6e6794c763982ab7cc7047f))
+- commit Cargo.lock to fix release pipeline ([1857e95](https://github.com/urmzd/generative-artifact-protocol/commit/1857e954e4ee58060e63696c6288c33efc5e8c54))
+
+[Full Changelog](https://github.com/urmzd/generative-artifact-protocol/compare/v0.14.2...v0.15.0)
+
+
 ## 0.14.2 (2026-04-09)
 
 ### Bug Fixes
