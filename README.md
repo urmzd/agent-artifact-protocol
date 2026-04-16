@@ -143,6 +143,16 @@ Payload size and apply time for each envelope type, measured against an 8 KB HTM
 | **edit** | 1 section replace (ID targeting) | 441 B | 5.4% | **94.6%** | 1.4 µs |
 | **edit** | 2 section replaces (ID targeting) | 516 B | 6.3% | **93.7%** | 3.8 µs |
 
+## Limitations
+
+1. **Conflict resolution** — GAP uses optimistic concurrency: the apply engine rejects edits whose version doesn't match `stored_version + 1`. Concurrent edits are rejected, not merged. There is no CRDT, OT, or automatic merge strategy — coordination is left to the orchestrator.
+
+2. **Envelope generation** — The LLM must produce well-formed envelopes with correct target IDs, valid JSON structure, and appropriate operation types. In practice, generation can fail: malformed envelopes, hallucinated target IDs, or the model falling back to full regeneration when a targeted edit would suffice. The spec mitigates recall errors by passing a closed `targets` list in handles ([Section 7.2](spec/gap.md#72-handle-name-handle)), but reliable envelope production remains an active area of work.
+
+3. **Granularity tradeoff** — Target placement affects generation reliability. Too coarse and edits replace large sections, losing efficiency. Too fine and the target set grows, increasing the chance of targeting errors and prompt complexity. When the system can't produce a valid envelope for a given granularity, it must fall back — and those fallback strategies need to be thought through.
+
+4. **Adoption** — GAP requires tooling on both sides: producers must emit valid envelopes, consumers must implement the apply engine. The protocol is open and the spec is public, but the ecosystem is early.
+
 ## License
 
 This project is dual-licensed:
