@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.17.1 (2026-07-26)
+
+[Full Changelog](https://github.com/urmzd/generative-artifact-protocol/compare/v0.17.0...v0.17.1)
+
+
 ## 0.17.0 (2026-07-15)
 
 ### Features
