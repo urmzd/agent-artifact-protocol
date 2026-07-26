@@ -1,5 +1,23 @@
 package liveeval
 
+import (
+	"time"
+
+	"github.com/urmzd/saige/eval/harness"
+)
+
+// Harness types reused where the JSON wire format is identical to GAP's
+// original local definitions. The GAP-specific per-turn keys
+// (envelope_parsed, apply_succeeded, envelope_name) travel in
+// TurnResult.Extra and are flattened into the same JSON object.
+type (
+	TurnMetrics = harness.TurnMetrics
+	TurnResult  = harness.TurnResult
+	FlowMetrics = harness.FlowMetrics
+	Comparison  = harness.Comparison
+	Reliability = harness.Reliability
+)
+
 type Metrics struct {
 	ExperimentID  string          `json:"experiment_id"`
 	Model         string          `json:"model"`
@@ -19,50 +37,10 @@ type Metrics struct {
 	Validity      *Validity       `json:"validity,omitempty"`
 }
 
-type TurnMetrics struct {
-	InputTokens       uint64 `json:"input_tokens"`
-	OutputTokens      uint64 `json:"output_tokens"`
-	CachedInputTokens uint64 `json:"cached_input_tokens,omitempty"`
-	LatencyMS         uint64 `json:"latency_ms"`
-	ArtifactBytes     int    `json:"artifact_bytes"`
-}
-
-type TurnResult struct {
-	Turn              int     `json:"turn"`
-	Edit              string  `json:"edit"`
-	InputTokens       uint64  `json:"input_tokens"`
-	OutputTokens      uint64  `json:"output_tokens"`
-	CachedInputTokens uint64  `json:"cached_input_tokens,omitempty"`
-	LatencyMS         uint64  `json:"latency_ms"`
-	OutputBytes       int     `json:"output_bytes"`
-	Retried           *bool   `json:"retried,omitempty"`
-	Failed            bool    `json:"failed"`
-	FailureReason     *string `json:"failure_reason,omitempty"`
-	EnvelopeParsed    *bool   `json:"envelope_parsed,omitempty"`
-	ApplySucceeded    *bool   `json:"apply_succeeded,omitempty"`
-	EnvelopeName      *string `json:"envelope_name,omitempty"`
-	RepairAttempts    int     `json:"repair_attempts,omitempty"`
-	ValidationError   *string `json:"validation_error,omitempty"`
-}
-
-type FlowMetrics struct {
-	PerTurn            []TurnResult `json:"per_turn"`
-	TotalInputTokens   uint64       `json:"total_input_tokens"`
-	TotalOutputTokens  uint64       `json:"total_output_tokens"`
-	TotalCachedInput   uint64       `json:"total_cached_input_tokens,omitempty"`
-	TotalLatencyMillis uint64       `json:"total_latency_ms"`
-}
-
 type GapFlowMetrics struct {
 	FlowMetrics
 	EnvelopeParseRate float64 `json:"envelope_parse_rate"`
 	ApplySuccessRate  float64 `json:"apply_success_rate"`
-}
-
-type Comparison struct {
-	OutputTokenSavingsPct float64 `json:"output_token_savings_pct"`
-	InputTokenSavingsPct  float64 `json:"input_token_savings_pct"`
-	LatencySavingsPct     float64 `json:"latency_savings_pct"`
 }
 
 type Decomposition struct {
@@ -70,19 +48,6 @@ type Decomposition struct {
 	OutputSavingsCVsBPct float64 `json:"output_savings_c_vs_b_pct"`
 	InputSavingsCVsAPct  float64 `json:"input_savings_c_vs_a_pct"`
 	OutputSavingsCVsAPct float64 `json:"output_savings_c_vs_a_pct"`
-}
-
-type Reliability struct {
-	EditTurns            int            `json:"edit_turns"`
-	MissCount            int            `json:"miss_count"`
-	MissRate             float64        `json:"miss_rate"`
-	ParseMissCount       int            `json:"parse_miss_count"`
-	ValidationMissCount  int            `json:"validation_miss_count"`
-	InvalidEnvelopeCount int            `json:"invalid_envelope_count"`
-	ApplyMissCount       int            `json:"apply_miss_count"`
-	RequestFailureCount  int            `json:"request_failure_count"`
-	UnknownMissCount     int            `json:"unknown_miss_count"`
-	ByReason             map[string]int `json:"by_reason,omitempty"`
 }
 
 type Economics struct {
@@ -121,14 +86,177 @@ type Validity struct {
 	BaseInputMonotone bool `json:"base_input_monotone"`
 }
 
-func toFlowMetrics(turns []TurnResult) FlowMetrics {
-	var flow FlowMetrics
-	flow.PerTurn = turns
-	for _, turn := range turns {
-		flow.TotalInputTokens += turn.InputTokens
-		flow.TotalOutputTokens += turn.OutputTokens
-		flow.TotalCachedInput += turn.CachedInputTokens
-		flow.TotalLatencyMillis += turn.LatencyMS
+// assembleMetrics maps the per-flow harness results into the GAP Metrics
+// document, then fills the derived analytics.
+func assembleMetrics(model string, exp harness.Experiment, results map[string]harness.FlowResult) Metrics {
+	metrics := Metrics{
+		ExperimentID: exp.ID,
+		Model:        model,
+		Provider:     "openai-compatible",
+		Timestamp:    time.Now().UTC().Format(time.RFC3339),
+		Format:       exp.Format,
 	}
-	return flow
+	if result, ok := results[baseFlowName]; ok {
+		t0 := result.Turn0
+		flow := harness.ToFlowMetrics(result.Turns)
+		metrics.BaseTurn0 = &t0
+		metrics.DefaultFlow = &flow
+	}
+	if result, ok := results[statelessFlowName]; ok {
+		t0 := result.Turn0
+		flow := harness.ToFlowMetrics(result.Turns)
+		metrics.StatelessT0 = &t0
+		metrics.StatelessFlow = &flow
+	}
+	if result, ok := results[gapFlowName]; ok {
+		t0 := result.Turn0
+		gapMetrics := GapFlowMetrics{
+			FlowMetrics: harness.ToFlowMetrics(result.Turns),
+			EnvelopeParseRate: harness.Rate(result.Turns, func(t TurnResult) bool {
+				return extraBool(t.Extra, "envelope_parsed")
+			}),
+			ApplySuccessRate: harness.Rate(result.Turns, func(t TurnResult) bool {
+				return extraBool(t.Extra, "apply_succeeded")
+			}),
+		}
+		metrics.GAPTurn0 = &t0
+		metrics.GAPFlow = &gapMetrics
+	}
+	fillDerived(&metrics)
+	return metrics
+}
+
+func fillDerived(metrics *Metrics) {
+	if metrics.DefaultFlow != nil && metrics.GAPFlow != nil {
+		comparison := harness.Compare(*metrics.DefaultFlow, metrics.GAPFlow.FlowMetrics)
+		metrics.Comparison = &comparison
+		metrics.Economics = economics(metrics.BaseTurn0, metrics.GAPTurn0, metrics.DefaultFlow, metrics.GAPFlow)
+	}
+	if metrics.GAPFlow != nil {
+		metrics.Reliability = harness.ComputeReliability(metrics.GAPFlow.PerTurn)
+	}
+	if metrics.DefaultFlow != nil && metrics.StatelessFlow != nil && metrics.GAPFlow != nil {
+		aIn, aOut := initInclusive(metrics.BaseTurn0, metrics.DefaultFlow)
+		bIn, bOut := initInclusive(metrics.StatelessT0, metrics.StatelessFlow)
+		cIn, cOut := initInclusive(metrics.GAPTurn0, &metrics.GAPFlow.FlowMetrics)
+		metrics.Decomposition = &Decomposition{
+			InputSavingsBVsAPct:  harness.Pct(aIn, bIn),
+			OutputSavingsCVsBPct: harness.Pct(bOut, cOut),
+			InputSavingsCVsAPct:  harness.Pct(aIn, cIn),
+			OutputSavingsCVsAPct: harness.Pct(aOut, cOut),
+		}
+	}
+	if metrics.DefaultFlow != nil || metrics.GAPFlow != nil {
+		metrics.Validity = &Validity{
+			GAPRunDegenerate: gapDegenerate(metrics.GAPFlow),
+			BaseInputMonotone: metrics.DefaultFlow == nil ||
+				inputMonotone(metrics.DefaultFlow.PerTurn),
+		}
+	}
+}
+
+func economics(baseTurn0 *TurnMetrics, gapTurn0 *TurnMetrics, baseFlow *FlowMetrics, gapFlow *GapFlowMetrics) *Economics {
+	baseIn, baseOut, gapIn, gapOut := alignedTotals(baseFlow.PerTurn, gapFlow.PerTurn)
+	fallbackIn, fallbackOut := gapIn, gapOut
+	var missAttemptIn, missAttemptOut, retryIn, retryOut uint64
+	for i, gapTurn := range gapFlow.PerTurn {
+		if i >= len(baseFlow.PerTurn) || !gapTurn.Failed {
+			continue
+		}
+		baseTurn := baseFlow.PerTurn[i]
+		missAttemptIn += gapTurn.InputTokens
+		missAttemptOut += gapTurn.OutputTokens
+		retryIn += baseTurn.InputTokens
+		retryOut += baseTurn.OutputTokens
+		fallbackIn += baseTurn.InputTokens
+		fallbackOut += baseTurn.OutputTokens
+	}
+
+	baseTotal := baseIn + baseOut
+	gapTotal := gapIn + gapOut
+	fallbackTotal := fallbackIn + fallbackOut
+	econ := &Economics{
+		FallbackAssumption:           "on each missed GAP edit, run the baseline full-regeneration edit after the failed GAP attempt",
+		MeasuredTotalTokenSavingsPct: harness.Pct(baseTotal, gapTotal),
+		FallbackAdjusted: &FallbackAdjusted{
+			InputTokens:               fallbackIn,
+			OutputTokens:              fallbackOut,
+			TotalTokens:               fallbackTotal,
+			MissAttemptInputTokens:    missAttemptIn,
+			MissAttemptOutputTokens:   missAttemptOut,
+			MissAttemptTotalTokens:    missAttemptIn + missAttemptOut,
+			FallbackRetryInputTokens:  retryIn,
+			FallbackRetryOutputTokens: retryOut,
+			FallbackRetryTotalTokens:  retryIn + retryOut,
+			InputTokenSavingsPct:      harness.Pct(baseIn, fallbackIn),
+			OutputTokenSavingsPct:     harness.Pct(baseOut, fallbackOut),
+			TotalTokenSavingsPct:      harness.Pct(baseTotal, fallbackTotal),
+		},
+	}
+	if baseTurn0 != nil && gapTurn0 != nil {
+		baseSession := baseTotal + baseTurn0.InputTokens + baseTurn0.OutputTokens
+		gapSession := gapTotal + gapTurn0.InputTokens + gapTurn0.OutputTokens
+		fallbackSession := fallbackTotal + gapTurn0.InputTokens + gapTurn0.OutputTokens
+		econ.Amortized = &AmortizedEconomics{
+			EditTurns:                            len(gapFlow.PerTurn),
+			BaseInitInclusiveTokens:              baseSession,
+			GAPInitInclusiveTokens:               gapSession,
+			FallbackInitInclusiveTokens:          fallbackSession,
+			MeasuredInitInclusiveTokenSavingsPct: harness.Pct(baseSession, gapSession),
+			FallbackInitInclusiveTokenSavingsPct: harness.Pct(baseSession, fallbackSession),
+		}
+	}
+	return econ
+}
+
+func alignedTotals(baseTurns []TurnResult, gapTurns []TurnResult) (uint64, uint64, uint64, uint64) {
+	var baseIn, baseOut, gapIn, gapOut uint64
+	limit := len(baseTurns)
+	if len(gapTurns) < limit {
+		limit = len(gapTurns)
+	}
+	for i := 0; i < limit; i++ {
+		baseIn += baseTurns[i].InputTokens
+		baseOut += baseTurns[i].OutputTokens
+		gapIn += gapTurns[i].InputTokens
+		gapOut += gapTurns[i].OutputTokens
+	}
+	return baseIn, baseOut, gapIn, gapOut
+}
+
+func initInclusive(t0 *TurnMetrics, flow *FlowMetrics) (uint64, uint64) {
+	in, out := flow.TotalInputTokens, flow.TotalOutputTokens
+	if t0 != nil {
+		in += t0.InputTokens
+		out += t0.OutputTokens
+	}
+	return in, out
+}
+
+func gapDegenerate(flow *GapFlowMetrics) bool {
+	if flow == nil || len(flow.PerTurn) < 2 {
+		return false
+	}
+	first := flow.PerTurn[0].OutputBytes
+	for _, turn := range flow.PerTurn[1:] {
+		if turn.OutputBytes != first {
+			return false
+		}
+	}
+	return true
+}
+
+func inputMonotone(turns []TurnResult) bool {
+	for i := 1; i < len(turns); i++ {
+		if turns[i].InputTokens < turns[i-1].InputTokens {
+			return false
+		}
+	}
+	return true
+}
+
+// extraBool reads a bool key from a TurnResult Extra map, false when absent.
+func extraBool(extra map[string]any, key string) bool {
+	value, ok := extra[key].(bool)
+	return ok && value
 }

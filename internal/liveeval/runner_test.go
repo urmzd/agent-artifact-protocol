@@ -146,8 +146,6 @@ func TestRunGAPFlowRepairsInvalidTarget(t *testing.T) {
 }
 
 func TestFillDerivedReportsMissEconomics(t *testing.T) {
-	parsed := true
-	applied := false
 	reason := "apply failed: missing target msg"
 	metrics := Metrics{
 		BaseTurn0: &TurnMetrics{InputTokens: 50, OutputTokens: 50},
@@ -164,7 +162,13 @@ func TestFillDerivedReportsMissEconomics(t *testing.T) {
 			FlowMetrics: FlowMetrics{
 				PerTurn: []TurnResult{
 					{InputTokens: 20, OutputTokens: 10},
-					{InputTokens: 20, OutputTokens: 5, Failed: true, FailureReason: &reason, EnvelopeParsed: &parsed, ApplySucceeded: &applied},
+					{
+						InputTokens:   20,
+						OutputTokens:  5,
+						Failed:        true,
+						FailureReason: &reason,
+						Extra:         map[string]any{"envelope_parsed": true, "apply_succeeded": false},
+					},
 				},
 				TotalInputTokens:  40,
 				TotalOutputTokens: 15,
